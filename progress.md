@@ -119,3 +119,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 
 ### 2026-10-16 · A1.2 — TestRunner · ✅ passed (auto-approved, D-010)
 - Handoff record appended, CP line in DECISION_LOG, CURRENT_PHASE advanced to A1.3, ROADMAP footer updated (A1 stays 🟨).
+- Commit `4905af7` (build, mirror, pass), then a commit recording the hash.

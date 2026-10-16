@@ -304,7 +304,7 @@ RESTORE POINT: backups/A1.2_passed_20261016-1518/ — 6 × .rbxm (D-010), each v
   314d124c · StarterPlayerScripts 1961 B 1fc169ff (same lengths as A1.1, different hashes: child order changed after Studio
   reopened) · ServerStorage 54253 B 658e5fb2 (TestRunner + spec added) · Workspace 12147 B 5ac584ad (A1.1: 7831 B; children
   unchanged — Terrain, SpawnLocation, Baseplate, Camera — after a Studio update and reopen; not investigated further).
-MIRROR COMMIT: see git log "A1.2: ..." — mirror/src/tests/TestRunner.luau (8894 B b61ebc85),
+MIRROR COMMIT: 4905af7 "A1.2: TestRunner ..." — mirror/src/tests/TestRunner.luau (8894 B b61ebc85),
   mirror/src/tests/unit/TestRunner.spec.luau (1088 B a07a2957); the 4 existing mirror files re-verified unchanged; sourcemap
   regenerated (adds Tests nodes; Bootstrap entries reordered to the current GetChildren order).
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010).
