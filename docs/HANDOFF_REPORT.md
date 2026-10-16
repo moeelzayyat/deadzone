@@ -183,3 +183,30 @@ NOTES / DEBT:
   - The questionnaire is submitted at PT.3. An unrated experience is restricted for all players.
 NEXT: P0.6
 ```
+
+```text
+CHECKPOINT: P0.6 Budget and cadence
+DATE: 2026-10-16
+TESTRUNNER: n/a — TestRunner is an A1 deliverable (D-002); no tests exist yet.
+SCRIPT ANALYSIS: 0 scripts in the place (execute_luau scan of LuaSourceContainer in 8 services → scripts=0), nothing to analyse.
+PLAY TEST: start_stop_play(start) → execute_luau(Server): printed "[P0.6] play test ok players=1 character=true ArtReference=true"
+  → get_console_output → start_stop_play(stop).
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, same as P0.1–P0.5).
+NUMBERS: stages with an owner-written planned start 14/14 + LO (ROADMAP §1 master tracker) · P0 → L2 start = 39.5 weeks
+  (2026-10-16 → 2027-07-19; roadmap range 38–44) · Beta art cap USD 14,300 (Standard; Lean ~4,400 / Premium ~38,800, incl. 15%
+  contingency) · art scope: 6 classes, 8 fodder, 6 bosses, 136 animations, 6 zone kits, 1 hub kit, ~60 icons, 11 cards/portraits ·
+  weekly rhythm rows 6.
+RESTORE POINT: backups/P0.6_passed_20261016-1346/ — 6 × .rbxm (rule: D-010). Place unchanged since P0.5 (docs-only substage):
+  a fresh SerializationService export of each service matched P0.5 on length and FNV-1a, so the P0.5 bytes were copied and
+  re-checked locally (all 6 OK). Lighting 3445 B 866e3754 · ServerStorage 48583 B e36937fc · Workspace 7831 B 68417a0c ·
+  ReplicatedStorage 577 B 866a0dbe · ServerScriptService 577 B f1d87fa0 · StarterPlayerScripts 577 B 29f33cc4.
+MIRROR COMMIT: see the P0.6 commit (mirror/src empty: 0 scripts to export)
+OWNER APPROVAL: yes, 2026-10-16 ("all ok and approved, go ahead", P0.6 thread 13:46 UTC), recorded as D-013.
+NOTES / DEBT:
+  - Art rates: Lean is anchored on a few Roblox freelancer price lists (DevForum, Fiverr, Carrd; mostly undated); Standard
+    and Premium are estimates. Replace with real quotes at B2.
+  - A3.5 Public Test runs 2026-12-14 → 2027-01-08 over the year-end holidays (owner kept it; no shift).
+  - A1 work may start before its planned 2026-10-19 start under unattended mode; being ahead of plan is not a deviation.
+  - D-012 (paid random items) is still open for the owner; must be decided before B1.
+NEXT: A1.1
+```

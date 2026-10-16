@@ -1,26 +1,28 @@
 # CURRENT PHASE
 
-**Stage:** P0 — Pre-production
-**Substage:** P0.6 — Budget and cadence
-**Status:** 🟦 Checkpoint pending: proposed dates, Beta art budget and rhythm are in `ROADMAP.md` §1.1; waiting on the owner to write the start date for each stage
-**Last checkpoint passed:** P0.5 (2026-10-16)
-**Started:** 2026-10-16
+**Stage:** A1 — Foundation
+**Substage:** A1.1 — Studio layout
+**Status:** ⬜ Not started
+**Last checkpoint passed:** P0.6 (2026-10-16) — P0 exit: all six ✅
+**Started:** —
+**Planned stage start:** A1 2026-10-19 (D-013)
 
 ## Deliverables (from ROADMAP.md)
-- `ROADMAP.md` dates filled in; contractor budget line for Beta art; weekly working rhythm agreed.
+- Folders per architecture §4.3 in ReplicatedStorage / ServerScriptService / StarterPlayerScripts / ServerStorage; Bootstrap scripts; ProfileStore inserted and version pinned.
 
 ## Checkpoint — passes when
-Owner writes the planned start date for each stage.
+Play test boots; console prints `[Boot] phases 0–8 complete` with the ordered service list and zero errors.
 
 ## Verify via
-Document.
+`start_stop_play`, `get_console_output`.
 
 ## Notes for this substage
-- Dates and budget are owner decisions: propose, never decide. The checkpoint needs the owner's own written dates, so this substage cannot auto-approve until the owner has written them.
-- Budget line covers the Beta art pass (architecture §22 sourcing plan, step 3: 3D artist + animator, UI artist).
-- Open owner item carried from P0.5: D-012 (paid random items, O-1/O-2). It doesn't block P0.6; it must be decided before B1.
+- First substage with scripts: every module `--!strict`, Script Analysis 0 warnings, mirror export to `mirror/src` is real from here on.
+- ProfileStore is Apache-2.0 (P0.5): keep the license header, mark modifications, keep a LICENSE copy beside the module; compare the store asset (109379033046155) against GitHub (wally.toml 1.0.3, last commit 2025-07-31) when inserting, and pin the version in `assets/ART_SOURCES.md`.
+- Service names must not collide with Roblox built-ins (D-008). UI library is decided at A2.1 (D-009), not here.
+- Open owner item: D-012 (paid random items). Doesn't block A1; must be decided before B1.
+- Starting before the planned 2026-10-19 date is fine (unattended mode); log it in `progress.md`.
 - `backups/` and `.claude/settings.local.json` stay out of git.
-- Do not start A1 work.
 
 ## On pass
-Set this file to **A1.1** (P0 exit: all six ✅), update `docs/ROADMAP.md` master tracker (P0 → ✅), append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.
+Set this file to **A1.2**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.

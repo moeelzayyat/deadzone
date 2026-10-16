@@ -3,9 +3,9 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** P0.6 — Budget and cadence (🟨 in progress). Proposed schedule, Beta art budget line and weekly rhythm drafted; waiting on the owner to write the stage start dates.
+- **Substage:** A1.1 — Studio layout (⬜ not started). P0 is complete (all six ✅). Next thread opens A1.1; A1 planned start 2026-10-19 (D-013).
 - **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency). Must be decided before B1.
-- **Last passed:** P0.5 Compliance basics (auto-approved 2026-10-16, D-010). Before that, P0.4 Content bible v0 (owner-approved, D-011 renames).
+- **Last passed:** P0.6 Budget and cadence (owner-approved 2026-10-16, D-013: stage dates, Beta art cap USD 14,300, weekly rhythm in ROADMAP §1.1). Before that, P0.5 Compliance basics (auto-approved).
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
 - **Studio:** place 72812275891657 / universe 10771233280. The Studio MCP lists several open places; always target "Deadzone (placeId: 72812275891657)".
 - **Place contents:** 0 scripts. Root folders exist (`ReplicatedStorage/Shared`, `ServerScriptService/Server`, `StarterPlayerScripts/Client`, `ServerStorage/Tests`) plus `ServerStorage/ArtReference` (P0.3 mood scenes).
@@ -71,3 +71,8 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - Beta art budget line (§22 step 3): scope 6 classes, 8 fodder, 6 bosses, 136 animations, 6 zone kits, hub, ~60 icons, 11 cards/portraits. Lean ~$4.4k / Standard ~$14.3k / Premium ~$38.8k with 15% contingency. Lean anchored on a few Roblox freelancer price lists (DevForum, Fiverr, Carrd, mostly undated); Standard/Premium are assumptions. Cap left blank for the owner. Proposed: no spend before A3.5 GO; contracts at B3 start.
 - Weekly rhythm drafted: Mon–Fri Studio sessions with MCP connected, unattended checkpoints, Friday review with batched owner decisions, gates in writing.
 - CURRENT_PHASE set to 🟦 checkpoint pending. Asking the owner in the P0.6 thread for: stage start dates (accept or edit), budget cap, rhythm.
+- 13:46 UTC: owner replied in the P0.6 thread: "all ok and approved, go ahead". Read as: proposed dates accepted (no holiday shift), Standard art tier (recommended), rhythm agreed. Recorded as D-013; "(proposed)" markers removed from ROADMAP.
+- Checkpoint: TestRunner n/a (A1), 0 scripts, play test 0 errors (5 known UIBlox warnings). Fresh service exports matched P0.5 exactly, so the P0.5 bytes were copied to `backups/P0.6_passed_20261016-1346` (all 6 verified).
+
+### 2026-10-16 · P0.6 — Budget and cadence · ✅ passed (owner-approved, D-013)
+- Handoff record appended, CP line in DECISION_LOG, ROADMAP master tracker P0 → ✅, CURRENT_PHASE advanced to A1.1. P0 exit met.

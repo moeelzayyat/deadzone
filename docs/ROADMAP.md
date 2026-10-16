@@ -35,32 +35,32 @@ A **stage** exits only when every substage is ✅ and the stage's exit numbers (
 
 | Stage | Name | Substages | Est. weeks | Planned start | Gate type | Status |
 |---|---|---|---|---|---|---|
-| P0 | Pre-production | 6 | 1 | 2026-10-16 (proposed) | Standard | 🟨 |
-| A1 | Foundation | 8 | 1.5–2 | 2026-10-19 (proposed) | Standard | ⬜ |
-| A2 | Combat Feel | 8 | 2–3 | 2026-11-02 (proposed) | Numeric | ⬜ |
-| A3 | Run Progression, Protocol, FTUE | 9 | 3 | 2026-11-23 (proposed) | Numeric | ⬜ |
-| A3.5 | **Public Test** | 6 | 3–4 live | 2026-12-14 (proposed) | **GO/NO-GO** | ⬜ |
-| A4 | Classes and Bosses | 7 | 4 | 2027-01-11 (proposed) | Standard | ⬜ |
-| A5 | Multiplayer and Persistence | 8 | 4 | 2027-02-08 (proposed) | Numeric | ⬜ |
-| B1 | Persistent Progression | 7 | 4 | 2027-03-08 (proposed) | Standard | ⬜ |
-| B2 | Hub and Campaign | 6 | 3 | 2027-04-05 (proposed) | Standard | ⬜ |
-| B3 | Facilities and Endgame Foundation | 8 | 5 | 2027-04-26 (proposed) | Standard | ⬜ |
-| B4 | **Closed Beta** | 7 | 4 | 2027-05-31 (proposed) | **GO/NO-GO** | ⬜ |
-| L1 | Release Candidate | 8 | 3 | 2027-06-28 (proposed) | Checklist | ⬜ |
-| L2 | **Public Launch** | 5 | 1 + 2 monitoring | 2027-07-19 (proposed) | Standard | ⬜ |
-| L3 | Season 1 | 6 | 6–8 | 2027-08-09 (proposed) | Standard | ⬜ |
-| LO | Live Operations | ongoing | — | 2027-07-30 (proposed) | Cadence | ⬜ |
+| P0 | Pre-production | 6 | 1 | 2026-10-16 | Standard | ✅ |
+| A1 | Foundation | 8 | 1.5–2 | 2026-10-19 | Standard | ⬜ |
+| A2 | Combat Feel | 8 | 2–3 | 2026-11-02 | Numeric | ⬜ |
+| A3 | Run Progression, Protocol, FTUE | 9 | 3 | 2026-11-23 | Numeric | ⬜ |
+| A3.5 | **Public Test** | 6 | 3–4 live | 2026-12-14 | **GO/NO-GO** | ⬜ |
+| A4 | Classes and Bosses | 7 | 4 | 2027-01-11 | Standard | ⬜ |
+| A5 | Multiplayer and Persistence | 8 | 4 | 2027-02-08 | Numeric | ⬜ |
+| B1 | Persistent Progression | 7 | 4 | 2027-03-08 | Standard | ⬜ |
+| B2 | Hub and Campaign | 6 | 3 | 2027-04-05 | Standard | ⬜ |
+| B3 | Facilities and Endgame Foundation | 8 | 5 | 2027-04-26 | Standard | ⬜ |
+| B4 | **Closed Beta** | 7 | 4 | 2027-05-31 | **GO/NO-GO** | ⬜ |
+| L1 | Release Candidate | 8 | 3 | 2027-06-28 | Checklist | ⬜ |
+| L2 | **Public Launch** | 5 | 1 + 2 monitoring | 2027-07-19 | Standard | ⬜ |
+| L3 | Season 1 | 6 | 6–8 | 2027-08-09 | Standard | ⬜ |
+| LO | Live Operations | ongoing | — | 2027-07-30 | Cadence | ⬜ |
 
 ### 1.1 Schedule, Beta art budget and weekly rhythm (P0.6)
 
-**Status:** proposed by Claude on 2026-10-16, **awaiting the owner's written dates** (P0.6 checkpoint). Every value marked "(proposed)" changes to the owner's value when confirmed.
+**Status:** approved by the owner on 2026-10-16 ("all ok and approved, go ahead", P0.6 thread, 13:46 UTC): dates as listed in the master tracker, Standard budget tier, weekly rhythm as below (D-013).
 
 **How the dates were built:** each stage starts on a Monday; A1 and A2 use the upper estimate (2 and 3 weeks), A3.5 uses 1 prep + 3 live weeks, all other stages use their single estimate. P0 → L2 start = 39.5 weeks (roadmap range 38–44). L3 here is the start of Season 1 production; Season 1 goes live 6–8 weeks after launch (target ~2027-09-06). LO starts with the first Friday update (L2.5).
 
 - A3.5 Public Test (2026-12-14 → 2027-01-08) overlaps the year-end holidays. Holiday traffic helps the diagnostics, but owner availability may not; if the owner prefers, shift A3.5 and everything after it by 2 weeks.
 - Slip rule (from §17): a stage running past 150% of its estimate triggers a scope cut (zones, pets) before any checkpoint is cut. Downstream dates are re-planned at the Friday review, never silently.
 
-**Beta art budget line (architecture §22 step 3, used in B4.1):** proposed cap **— (owner to set)**. Scope and rough cost (USD):
+**Beta art budget line (architecture §22 step 3, used in B4.1):** cap **USD 14,300 (Standard tier, owner-approved 2026-10-16, D-013)**. Scope and rough cost (USD):
 
 | Item | Count | Lean | Standard | Premium |
 |---|---|---|---|---|
@@ -80,7 +80,7 @@ A **stage** exits only when every substage is ✅ and the stage's exit numbers (
 - Every contract grants the owner the right to use and modify; every asset gets an `assets/ART_SOURCES.md` row.
 - Optional, separate: PT.1 minimum presentation (one hero, Walker/Runner/Brute, one arena, audio) can use generated meshes and licensed Creator Store packs at ~$0–800; owner to decide whether to fund it.
 
-**Weekly working rhythm (proposed):**
+**Weekly working rhythm (agreed 2026-10-16):**
 
 | When | Who | What |
 |---|---|---|
@@ -384,5 +384,5 @@ NEXT: <next ID>
 
 ---
 
-**Current substage:** P0.6
-**Last checkpoint passed:** P0.5 (2026-10-16)
+**Current substage:** A1.1
+**Last checkpoint passed:** P0.6 (2026-10-16)

@@ -111,3 +111,13 @@ Consequences: monetization and §0/§21 wording are owner decisions, so nothing 
 Approved by: — (pending)
 
 ## CP — P0.5 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16 (D-012 remains open for the owner; not covered by this approval)
+
+## D-013 — Stage schedule, Beta art budget and weekly rhythm
+2026-10-16 · P0.6 · Accepted
+Context: P0.6 needs the owner's planned start date for each stage, a contractor budget line for the Beta art pass (architecture §22 step 3) and an agreed weekly rhythm.
+Decision: Planned starts (Mondays, upper estimates): A1 2026-10-19, A2 2026-11-02, A3 2026-11-23, A3.5 2026-12-14, A4 2027-01-11, A5 2027-02-08, B1 2027-03-08, B2 2027-04-05, B3 2027-04-26, B4 2027-05-31, L1 2027-06-28, L2 2027-07-19, L3 2027-08-09 (Season 1 live ~2027-09-06), LO from the first Friday update ~2027-07-30. A3.5 stays over the year-end holidays (no 2-week shift). Beta art cap USD 14,300 (Standard tier incl. 15% contingency); no spend before the A3.5 GO; contracts at B3 start, delivery by 2027-06-11. Weekly rhythm per `ROADMAP.md` §1.1 (Mon–Fri Studio sessions with MCP connected, Friday review with batched owner decisions, gates in writing).
+Alternatives: Lean (~USD 4,400) or Premium (~USD 38,800) art tier; shifting A3.5 and later stages by 2 weeks.
+Consequences: dates are plans, not checkpoints. A stage past 150% of its estimate triggers the §17 scope response, and re-planned dates are logged here. Art rates are estimates until real quotes at B2.
+Approved by: owner (2026-10-16, "all ok and approved, go ahead", P0.6 thread 13:46 UTC)
+
+## CP — P0.6 passed · 2026-10-16 · approved by owner ("all ok and approved, go ahead", P0.6 thread 13:46 UTC; dates, budget and rhythm per D-013). P0 exit: all six ✅.
