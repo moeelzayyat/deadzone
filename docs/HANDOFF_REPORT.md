@@ -374,3 +374,75 @@ NOTES / DEBT:
   - Temporary negative-control instances were made and destroyed in the live Team Create place; nothing else was changed.
 NEXT: A1.4
 ```
+
+## A1.4 — Domains and lifecycle — 2026-10-16
+
+```text
+CHECKPOINT: A1.4 Domains and lifecycle
+DATE: 2026-10-16 (started 15:33 UTC, passed 15:44 UTC)
+DELIVERED:
+  - ServerScriptService/Server/Lifecycle (ModuleScript, --!strict): §5.2 phase table, Lifecycle.plan / validate / run / boot,
+    Lifecycle.get (dependency resolution during Init only). Contract details in D-016.
+  - One placeholder service per domain (Init/Start no-ops): Platform/RemoteConfigService, Telemetry/ErrorReportService,
+    Data/MigrationService, Economy/TransactionService, Progression/ClassService, Combat/CombatService,
+    Encounter/MissionSessionService, Social/PartyService, Facilities/ShopService, LiveOps/SeasonService.
+  - Server/Bootstrap now checks the layout and boots through Lifecycle.boot; phase 3 and phase 8 lines come from hooks.
+  - ServerStorage/Tests/unit/Lifecycle.spec: 14 tests.
+TESTRUNNER: 17 passed / 0 failed. Edit mode, on a clone of ServerStorage.Tests:
+    local tests = game:GetService("ServerStorage").Tests:Clone()
+    return require(tests.TestRunner).run({ tests.unit, tests.integration }).summary
+  →
+    file                                     passed failed        ms
+    unit.Lifecycle.spec                          14      0      3.56
+    unit.TestRunner.spec                          3      0    128.15
+    17 passed, 0 failed (2 files, 131.73 ms)
+  Passes-when test: "real domains › asserts when two services' phases are swapped" plans the real domain folders, swaps
+  Platform/RemoteConfigService (phase 0) with Economy/TransactionService (phase 4) and expects
+  "[Boot] order: Economy/TransactionService belongs to phase 4 (Economy) but is listed in phase 0". Also covered: Combat ⇄
+  Encounter swapped inside phase 6, two phases swapped, a dependency swapped behind its user (Lifecycle.get order error,
+  no Start ran), Init failure stops the boot before any Start, Init yield rejected, Start failure named, get outside Init,
+  unknown dependency, missing Start, duplicate name, built-in name ("AnalyticsService"), unknown domain.
+SCRIPT ANALYSIS: `bash tools/analyze.sh` → "files: 16 / diagnostics: 0" (luau-lsp 1.70.1, D-014). One TypeError found on the
+  local draft (pcall over a method) was fixed before the code went into Studio.
+PLAY TEST: start_stop_play(start) → execute_luau(Server) runs the suite → get_console_output → start_stop_play(stop). Console:
+    [Boot] phase 0 Platform: Platform [RemoteConfigService]
+    [Boot] phase 1 Telemetry: Telemetry [ErrorReportService]
+    [Boot] phase 2 Data: Data [MigrationService]
+    [Boot] phase 3 Definitions: 18 definition folders, _Registry not yet built
+    [Boot] phase 4 Economy: Economy [TransactionService]
+    [Boot] phase 5 Progression: Progression [ClassService]
+    [Boot] phase 6 Combat → Encounter: Combat [CombatService]; Encounter [MissionSessionService]
+    [Boot] phase 7 Social, Facilities, LiveOps: Social [PartyService]; Facilities [ShopService]; LiveOps [SeasonService]
+    [Boot] phase 8 Network: 0 remotes
+    [Boot] phases 0–8 complete in 0.13 ms (Init 0.10 ms, Start 0.00 ms) · services (10): Platform/RemoteConfigService →
+      Telemetry/ErrorReportService → Data/MigrationService → Economy/TransactionService → Progression/ClassService →
+      Combat/CombatService → Encounter/MissionSessionService → Social/PartyService → Facilities/ShopService → LiveOps/SeasonService
+    [Boot][Client] ready for Lighthouse8282 in 0.02 ms · controllers (0): none yet
+    [TestRunner] 17 passed, 0 failed (2 files, 132.29 ms)
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, known since P0.1).
+NUMBERS:
+  - Boot (play test): 0.13 ms total, Init pass 0.10 ms (includes plan validation), Start pass 0.00 ms, 10 services, 0 remotes.
+  - Lifecycle.spec: 14 tests in 3.56 ms (Edit) / 3.65 ms (play test). Full suite 131.73 ms / 132.29 ms.
+  - Mutation control (Edit, on clones of Lifecycle): with the phase-membership check disabled the swap still throws (domain-rank
+    check: "Telemetry/ErrorReportService boots after Economy"); with both checks disabled the swapped plan boots with Economy
+    first. The swap test depends on the assertion.
+  - Service names: 49 names in architecture §5.1 checked with game:FindService; 3 are Roblox built-ins (D-017).
+  - Scripts: DataModel 17 · under roots 17 · mirror 17 · StringValues 1/1 · MATCH (mirror_write.py, ALL OK). script_search caps
+    at 10, so the DataModel-wide count is the reference (docs/MIRROR.md step 3). Local drafts == Studio export (diff -r clean).
+  - Sizes: Lifecycle 11,381 B, Lifecycle.spec 8,334 B, Bootstrap 1,869 B, placeholders 369–434 B.
+RESTORE POINT: backups/A1.4_passed_20261016-1542/ — 6 × .rbxm (D-010), each verified by length + FNV-1a against a fresh Studio
+  serialization: ServerScriptService 41821 B f7c13864 · ServerStorage 57616 B 2b661855 (exported, base64 via EncodingService) ·
+  Lighting 3445 B 866e3754 · ReplicatedStorage 872 B 24e5e75c · StarterPlayerScripts 1961 B 1fc169ff · Workspace 7831 B eaa94454
+  (these 4 equal A1.3, bytes copied).
+MIRROR COMMIT: see the commit "A1.4: ..." (hash recorded in the follow-up commit).
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Contract details D-016.
+NOTES / DEBT:
+  - D-017 (proposed, owner): AnalyticsService, PlayerDataService and MatchmakingService in §5.1 are Roblox built-in names; the
+    boot rejects them. A1.8 needs the rename answer before AnalyticsService is built.
+  - Init must not yield (asserted). Services that wait on DataStore/MemoryStore do it in Start.
+  - Services in one domain boot in name order. If a domain needs another intra-domain order, add it with that domain's API module.
+  - Lifecycle lives in ServerScriptService, outside Tests: in Edit mode its require is cached across execute_luau calls, so after
+    editing it run the suite in a play test or require a clone (as the mutation control did).
+  - The placeholder TransactionService has no Run yet (B1.1); nothing calls it.
+NEXT: A1.5
+```

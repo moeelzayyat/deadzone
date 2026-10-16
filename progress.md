@@ -3,13 +3,14 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** A1.4 — Domains and lifecycle (⬜ not started). A1.3 Git mirror ✅ passed 2026-10-16 (auto-approved). P0 complete.
-- **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency). Must be decided before B1.
-- **Last passed:** A1.3 Git mirror (auto-approved, D-010). Before that, A1.2 TestRunner and A1.1 Studio layout (auto-approved).
-- **Mirror (D-015):** `docs/MIRROR.md`. Paste `tools/mirror_export.luau` into execute_luau (Edit), then `python tools/mirror_write.py <result files>` → `ALL OK` + `MATCH`. Chunks at 95K (`START = next`); vendor re-sent only with `INCLUDE_VENDOR = true`.
+- **Substage:** A1.5 — Event bus (⬜ not started). A1.4 Domains and lifecycle ✅ passed 2026-10-16 (auto-approved). P0 complete.
+- **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency), before B1. D-017 (three §5.1 service names are Roblox built-ins: AnalyticsService, PlayerDataService, MatchmakingService; proposed MetricsService, ProfileDataService, MatchmakerService), before A1.8.
+- **Last passed:** A1.4 Domains and lifecycle (auto-approved, D-010; contract D-016). Before that A1.3, A1.2, A1.1.
+- **Lifecycle (D-016):** `Server/Lifecycle` boots the domain folders in §5.2 order. Init resolves dependencies with `Lifecycle.get` and must not yield; Start may yield. Built-in service names fail the boot.
+- **Mirror (D-015):** `docs/MIRROR.md`. Paste `tools/mirror_export.luau` into execute_luau (Edit), then `python tools/mirror_write.py <result files>` → `ALL OK` + `MATCH`. Chunks at 95K (`START = next`); vendor re-sent only with `INCLUDE_VENDOR = true`. 17 scripts now (past script_search's cap of 10).
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
 - **Studio:** place 72812275891657 / universe 10771233280. The Studio MCP lists several open places; always target "Deadzone (placeId: 72812275891657)".
-- **Place contents:** §4.3 layout (50 folders under the 4 roots), `Server/Bootstrap` (Script), `Client/Bootstrap` (LocalScript), ProfileStore in `Server/Domains/Data/Vendor` with `ProfileStore_LICENSE`. `ServerStorage/Tests/TestRunner` + `Tests/unit/TestRunner.spec` (A1.2). Plus `ServerStorage/ArtReference` (P0.3 mood scenes).
+- **Place contents:** §4.3 layout (50 folders under the 4 roots), `Server/Bootstrap` (Script), `Server/Lifecycle` + one placeholder service per domain (A1.4), `Client/Bootstrap` (LocalScript), ProfileStore in `Server/Domains/Data/Vendor` with `ProfileStore_LICENSE`. `ServerStorage/Tests/TestRunner` + `Tests/unit/TestRunner.spec` (A1.2), `Tests/unit/Lifecycle.spec` (A1.4). Plus `ServerStorage/ArtReference` (P0.3 mood scenes).
 - **Restore points (D-010):** `backups/<ID>_passed_<YYYYMMDD-HHMM UTC>/`, one `.rbxm` per service via `SerializationService`, git-ignored.
 - **Script Analysis (D-014):** `bash tools/analyze.sh` after the mirror export (luau-lsp 1.70.1 at `~/tools/luau-lsp/1.70.1`, Roblox None-security definitions, `mirror/sourcemap.json` regenerated from the Studio tree). Pass = `diagnostics: 0`. Vendor excluded.
 - **Working notes:**
@@ -139,3 +140,18 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 ### 2026-10-16 · A1.3 — Git mirror · ✅ passed (auto-approved, D-010)
 - Steps 1–7 met with real results (TestRunner 3/0, analysis 0, play test 0 errors, counts MATCH 5 = 5, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.4.
 - Commit `09202d7` (build, docs, pass), then a commit recording the hash.
+
+### 2026-10-16 · A1.4 — Domains and lifecycle · 🟨 in progress
+- 15:33 UTC: started. Read CLAUDE.md, progress.md, CURRENT_PHASE, ROADMAP A1.4 row, architecture §4.1–§5.3, DECISION_LOG D-012…D-015 + CP lines, A1.3 handoff.
+- Finding: `game:FindService` succeeds for any Roblox service class name. Of the 49 service names in architecture §5.1, three are Roblox built-ins: `AnalyticsService` (A1.8), `PlayerDataService` (A5), `MatchmakingService` (A5). CLAUDE.md rule 14 forbids them; renaming touches §5.1 (STOP AND ASK). Placeholders avoid them; asked the owner for names (not blocking A1.4).
+- Studio dropped once (~15:35 UTC) and came back on its own (new studio_id). Drafts were written locally and checked with luau-lsp meanwhile.
+- 15:39 UTC: added `Server/Lifecycle` (ModuleScript: §5.2 phase table, `plan`/`validate`/`run`/`boot`/`get`), 10 placeholder services (Platform/RemoteConfigService, Telemetry/ErrorReportService, Data/MigrationService, Economy/TransactionService, Progression/ClassService, Combat/CombatService, Encounter/MissionSessionService, Social/PartyService, Facilities/ShopService, LiveOps/SeasonService), `Server/Bootstrap` now boots through Lifecycle, `Tests/unit/Lifecycle.spec` (14 tests).
+- Edit run (Tests clone): `17 passed, 0 failed (2 files, 131.73 ms)`; Lifecycle.spec 14/0 in 3.56 ms.
+- Mutation control: Lifecycle copy with the phase-membership check off still throws on the swap (domain-rank check); with both checks off the swapped plan boots (Economy first), so the swap test depends on the assertion.
+- 15:41 UTC: play test: boot `phases 0–8 complete in 0.13 ms (Init 0.10 ms, Start 0.00 ms) · services (10)` in §5.2 order; Server suite `17 passed, 0 failed (2 files, 132.29 ms)`; 0 errors, 5 known UIBlox warnings.
+- Mirror export: 1 call (69 KB, saved by the harness) → `ALL OK`, written 16, `scripts: DataModel 17 · under roots 17 · mirror 17 · StringValues 1/1 · MATCH`; local drafts equal the export (`diff -r` clean). `tools/analyze.sh`: files 16, diagnostics 0.
+- 15:42 UTC: backup `backups/A1.4_passed_20261016-1542`: SSS 41821 B f7c13864 and ServerStorage 57616 B 2b661855 exported (base64 via `EncodingService:Base64Encode`); Lighting, ReplicatedStorage, StarterPlayerScripts, Workspace equal A1.3 (copied). All 6 verified.
+- Docs: D-016 (lifecycle details), D-017 (proposed renames, owner), SYSTEM_REGISTRY row → Tested, API_CONTRACTS boot lifecycle table, handoff record, CP line, CURRENT_PHASE → A1.5, ROADMAP footer.
+
+### 2026-10-16 · A1.4 — Domains and lifecycle · ✅ passed (auto-approved, D-010)
+- Steps 1–7 met with real results (TestRunner 17/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.5. D-017 waits on the owner (not blocking A1.5).

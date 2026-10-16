@@ -143,3 +143,19 @@ Consequences: same purpose and output as §4.2 (backup, diff and review; never i
 Approved by: implementation detail within §4.2, recorded under the standing owner approval of 2026-10-16 (D-010)
 
 ## CP — A1.3 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16
+
+## D-016 — Boot lifecycle details (Init/Start contract)
+2026-10-16 · A1.4 · Accepted
+Context: architecture §5.2 fixes the phase order, the `Service` type (`Name`, `Init`, `Start`) and "no Start before every Init", but not how a service resolves a dependency or what "bootstrap asserts order" checks.
+Decision: `Server/Lifecycle` holds the §5.2 phase table and boots the plan built from the domain folders (every ModuleScript directly inside a domain folder is a service, booted in name order inside its domain). It fails the boot when: a phase is out of place; a service is listed outside its domain's phase or before a domain §5.2 boots earlier; a module's shape is wrong or its `Name` differs from the module name; two services share a name; a name is a Roblox built-in service name (`game:FindService` succeeds; CLAUDE.md rule 14); an `Init` errors or yields; a `Start` errors. Dependencies are resolved in `Init` with `Lifecycle.get(name)`, which only returns services that already initialized, so a dependency booting later fails with an order error. The §5.2 `Service` type is unchanged.
+Alternatives: services declaring their own phase or dependency list (rejected: adds fields to the §5.2 type); letting `Init` yield (rejected: §5.2 says Init has no side effects, and a non-yielding Init keeps the order assertions deterministic).
+Consequences: Init stays synchronous; waiting work (DataStore reads, MemoryStore) goes in `Start`. The domain API module (§5.1 "init") is not built yet; it arrives with the first domain that needs one. Three §5.1 names fail the built-in check (D-017).
+Approved by: implementation detail within §5.2, recorded under the standing owner approval of 2026-10-16 (D-010)
+
+## D-017 — §5.1 service names that are Roblox built-ins
+2026-10-16 · A1.4 · **Proposed, awaiting owner**
+Context: `game:FindService` checked all 49 service names in architecture §5.1. Three are Roblox built-in service names, which CLAUDE.md rule 14 forbids and the A1.4 boot now rejects: `AnalyticsService` (Telemetry, A1.8), `PlayerDataService` (Data, A5), `MatchmakingService` (Social, A5). Renaming them changes §5.1 (STOP AND ASK).
+Proposal: `AnalyticsService` → `MetricsService`, `PlayerDataService` → `ProfileDataService`, `MatchmakingService` → `MatchmakerService` (all three checked free in Studio). A1.4 placeholders avoid the three names, so A1.4 is not blocked; A1.8 needs the answer.
+Approved by: pending (asked in the A1.4 thread, 2026-10-16)
+
+## CP — A1.4 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16

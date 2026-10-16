@@ -141,12 +141,28 @@
        "children": [
         {
          "name": "Combat",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "CombatService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Combat/CombatService.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Data",
          "className": "Folder",
          "children": [
+          {
+           "name": "MigrationService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Data/MigrationService.luau"
+           ]
+          },
           {
            "name": "Vendor",
            "className": "Folder",
@@ -168,36 +184,115 @@
         },
         {
          "name": "Economy",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "TransactionService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Economy/TransactionService.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Encounter",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "MissionSessionService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Encounter/MissionSessionService.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Facilities",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "ShopService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Facilities/ShopService.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "LiveOps",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SeasonService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/LiveOps/SeasonService.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Platform",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "RemoteConfigService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Platform/RemoteConfigService.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Progression",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "ClassService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Progression/ClassService.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Social",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "PartyService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Social/PartyService.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Telemetry",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "ErrorReportService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Telemetry/ErrorReportService.luau"
+           ]
+          }
+         ]
         }
+       ]
+      },
+      {
+       "name": "Lifecycle",
+       "className": "ModuleScript",
+       "filePaths": [
+        "mirror/src/server/Lifecycle.luau"
        ]
       }
      ]
@@ -237,6 +332,13 @@
        "name": "unit",
        "className": "Folder",
        "children": [
+        {
+         "name": "Lifecycle.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Lifecycle.spec.luau"
+         ]
+        },
         {
          "name": "TestRunner.spec",
          "className": "ModuleScript",

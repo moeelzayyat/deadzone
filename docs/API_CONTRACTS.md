@@ -75,3 +75,12 @@ Documented per domain in `init.luau` headers; this table lists the cross-domain 
 | Social | `Parties.*`, `Matchmaking.*`, `Leaderboards.Submit/Read` |
 | Facilities | `Forge.*`, `Pets.*`, `Eggs.Hatch`, `Shop.*` |
 | LiveOps | `Events.Active()`, `Seasons.Current()`, `Codes.Redeem`, `Purchases.Process`, `Raids.*` |
+
+### Boot lifecycle (`ServerScriptService/Server/Lifecycle`, A1.4, D-016)
+A service is a ModuleScript directly inside its domain folder returning `{ Name = <module name>, Init, Start }` (architecture §5.2 `Service` type, exported as `Lifecycle.Service`).
+
+| Function | Who calls it | Contract |
+|---|---|---|
+| `Lifecycle.get(name) → Service` | a service, inside its `Init` only | Returns a service whose `Init` already ran (earlier phase, or earlier in name order in the same domain). Anything else is a boot error. Keep the reference for `Start`. |
+| `Lifecycle.boot(domainsFolder, hooks?) → Report` | `Server/Bootstrap` only | Plans the domain folders, validates against §5.2, runs every `Init` (phase 3 hook inside), then every `Start`, then the phase 8 hook. |
+| `Lifecycle.plan` / `validate` / `run` | Bootstrap and tests | The three steps of `boot`, exposed so tests can build or mutate a plan. |
