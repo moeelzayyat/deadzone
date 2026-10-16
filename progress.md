@@ -243,3 +243,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - Commit `210424c` (build, mirror, docs, pass), then a commit recording the hash.
 - Steps 1–7 met with real results (TestRunner 297/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A2.1. A1 Foundation is complete (exit numbers in the handoff).
 - The §7.2 burst definition (run of drops) was decided under the owner's delegation (D-022) and recorded in D-021 as revisable.
+- 17:45 UTC (A1.8 follow-up): the owner answered the burst question directly in the A1.8 thread, "Run of drops" (sent 17:30 UTC, delivered after the pass). D-021 point (4) is now owner-approved; recorded in DECISION_LOG.
