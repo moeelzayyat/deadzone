@@ -210,3 +210,60 @@ NOTES / DEBT:
   - D-012 (paid random items) is still open for the owner; must be decided before B1.
 NEXT: A1.1
 ```
+
+---
+
+## A1.1 — Studio layout — 2026-10-16
+
+```text
+CHECKPOINT: A1.1 Studio layout
+DATE: 2026-10-16
+TESTRUNNER: n/a — TestRunner is the A1.2 deliverable; no tests exist yet.
+SCRIPT ANALYSIS: 0 diagnostics in the 2 project scripts (both --!strict), via luau-lsp 1.70.1 (D-014):
+  `tools/analyze.sh` → "files: 2 / diagnostics: 0". Roblox definitions globalTypes.None.d.luau (luau-lsp main 8e8a4e7,
+  2026-10-15, sha256 ad8c25d5…), sourcemap mirror/sourcemap.json built from the Studio tree. Negative control (a scratch file
+  with a type error, a bad member and unused locals) reported all 5 issues, so the checker is live.
+  Vendor ProfileStore (nonstrict, unmodified, out of scope per ROADMAP §0 step 2): 2 TypeErrors (Signal:Fire on an inferred
+  table, lines 2160/2169) + 3 lints (LocalUnused ×2, LocalShadow). Not fixed: changing it breaks "unmodified" (Apache-2.0).
+PLAY TEST: start_stop_play(start) → execute_luau(Server): require ProfileStore, wait for DataStoreState → get_console_output
+  → start_stop_play(stop). Console:
+    [Boot] phase 0 Platform: Platform [no services]
+    [Boot] phase 1 Telemetry: Telemetry [no services]
+    [Boot] phase 2 Data: Data [no services]
+    [Boot] phase 3 Definitions: 18 definition folders, _Registry not yet built
+    [Boot] phase 4 Economy: Economy [no services]
+    [Boot] phase 5 Progression: Progression [no services]
+    [Boot] phase 6 Combat → Encounter: Combat [no services]; Encounter [no services]
+    [Boot] phase 7 Social, Facilities, LiveOps: Social [no services]; Facilities [no services]; LiveOps [no services]
+    [Boot] phase 8 Network: 0 remotes
+    [Boot] phases 0–8 complete in 0.40 ms · services (0): none yet
+    [Boot][Client] ready for Lighthouse8282 in 0.01 ms · controllers (0): none yet
+    [ProfileStore]: Roblox API services available - data will be saved
+    [A1.1] ProfileStore require ok, DataStoreState=Access after 0.64s, players=1
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, same as P0.1–P0.6).
+NUMBERS: server boot 0.40 ms (phases 0–8) · client boot 0.01 ms · layout folders 50 (4 roots + 45 created + Data/Vendor)
+  · definition folders 18 · domain folders 10 (each in exactly one phase, asserted) · scripts 3 (2 project + 1 vendor)
+  · services 0 · remotes 0 · ProfileStore DataStoreState=Access in 0.64 s · analysis diagnostics 0 (project).
+RESTORE POINT: backups/A1.1_passed_20261016-1357/ — 6 × .rbxm (rule: D-010), each verified by length + FNV-1a against Studio.
+  Lighting 3445 B 866e3754 · Workspace 7831 B 68417a0c (both unchanged since P0.6, copied) · ReplicatedStorage 872 B 24e5e75c
+  · ServerScriptService 36523 B 4b51c889 · ServerStorage 48656 B 56e82a5e · StarterPlayerScripts 1961 B ec786e61.
+  The place was not changed after the backup (analysis ran on the mirror).
+MIRROR COMMIT: f1b0599 "A1.1: Studio layout (§4.3 folders), Server/Client Bootstrap, ProfileStore inserted and pinned; mirror
+  export ..." — mirror/src/server/Bootstrap.server.luau (3860 B 0df2e9a3), mirror/src/client/Bootstrap.client.luau
+  (976 B 4186be90), mirror/src/server/Domains/Data/Vendor/ProfileStore.luau (64517 B 1e3a6f3f) + ProfileStore_LICENSE.txt
+  (11357 B dc4aedc0); hashes equal the Studio sources. Sourcemap and tools/analyze.sh are in the pass commit.
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). luau-lsp download approved by the owner
+  ("ok download luau-lsp and install it", A1.1 thread 14:40 UTC), recorded as D-014.
+NOTES / DEBT:
+  - ProfileStore: store asset 109379033046155 = GitHub ProfileStore.luau @ 9580f7c (2025-03-25; unchanged at HEAD 45c9847)
+    except whitespace-only lines. Used as inserted. insert_asset set Sandboxed = true (capabilities include DataStore,
+    Network, ServerCommunication); left on. Re-check at A5 when PlayerDataService uses it.
+  - Domain folders and Definitions subfolders exist now because they are part of the §4.3 layout. A1.4 adds the Init/Start
+    contract, order assertions and placeholder services; Bootstrap only lists ModuleScripts directly inside domain folders
+    (Vendor/ subfolders are not services).
+  - Mirror path mapping used here: Shared→src/shared, Server→src/server, Client→src/client, Tests→src/tests (§4.3).
+    A1.3 formalises the export procedure and the script-count check.
+  - luau-lsp is not Studio's own Script Analysis; it runs the same Luau type checker and linter. If they ever disagree,
+    Studio's window wins (the owner can open View → Script Analysis).
+NEXT: A1.2
+```

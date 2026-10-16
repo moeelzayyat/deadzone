@@ -121,3 +121,13 @@ Consequences: dates are plans, not checkpoints. A stage past 150% of its estimat
 Approved by: owner (2026-10-16, "all ok and approved, go ahead", P0.6 thread 13:46 UTC)
 
 ## CP — P0.6 passed · 2026-10-16 · approved by owner ("all ok and approved, go ahead", P0.6 thread 13:46 UTC; dates, budget and rhythm per D-013). P0 exit: all six ✅.
+
+## D-014 — luau-lsp for checkpoint step 2 (Script Analysis)
+2026-10-16 · A1.1 · Accepted
+Context: Checkpoint step 2 needs "Script Analysis 0 warnings", but the Studio MCP cannot read Studio's Script Analysis window (no Luau API; `screen_capture` shows only the 3D viewport). Without a checker every checkpoint would wait on the owner.
+Decision: Use luau-lsp 1.70.1 (github.com/JohnnyMorganz/luau-lsp, win64 release, sha256 64225b97…) installed outside the repo at `%USERPROFILE%/tools/luau-lsp/1.70.1`, with the Roblox `globalTypes.None.d.luau` definitions and `mirror/sourcemap.json` built from the Studio tree. `tools/analyze.sh` runs it over every mirrored `.luau` except `*/Vendor/*` (nonstrict third-party code, ROADMAP §0 step 2). Step 2 passes at "diagnostics: 0". Version and definitions are pinned; updating them is a new entry here.
+Alternatives: owner reads Studio's Script Analysis window at every checkpoint (rejected: blocks unattended mode); syntax-only `loadstring` check (rejected: no type checking).
+Consequences: analysis runs on the mirror, so the mirror export happens before step 2 from now on. luau-lsp can differ slightly from Studio; if they disagree, Studio wins.
+Approved by: owner (2026-10-16, "ok download luau-lsp and install it", A1.1 thread 14:40 UTC)
+
+## CP — A1.1 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16

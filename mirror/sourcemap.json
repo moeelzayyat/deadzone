@@ -1,0 +1,279 @@
+{
+ "name": "Deadzone",
+ "className": "DataModel",
+ "children": [
+  {
+   "name": "ReplicatedStorage",
+   "className": "ReplicatedStorage",
+   "children": [
+    {
+     "name": "Shared",
+     "className": "Folder",
+     "children": [
+      {
+       "name": "Types",
+       "className": "Folder"
+      },
+      {
+       "name": "Definitions",
+       "className": "Folder",
+       "children": [
+        {
+         "name": "Classes",
+         "className": "Folder"
+        },
+        {
+         "name": "Weapons",
+         "className": "Folder"
+        },
+        {
+         "name": "Passives",
+         "className": "Folder"
+        },
+        {
+         "name": "Evolutions",
+         "className": "Folder"
+        },
+        {
+         "name": "Enemies",
+         "className": "Folder"
+        },
+        {
+         "name": "Protocol",
+         "className": "Folder"
+        },
+        {
+         "name": "Missions",
+         "className": "Folder"
+        },
+        {
+         "name": "Zones",
+         "className": "Folder"
+        },
+        {
+         "name": "Loot",
+         "className": "Folder"
+        },
+        {
+         "name": "Items",
+         "className": "Folder"
+        },
+        {
+         "name": "Skills",
+         "className": "Folder"
+        },
+        {
+         "name": "Pets",
+         "className": "Folder"
+        },
+        {
+         "name": "Eggs",
+         "className": "Folder"
+        },
+        {
+         "name": "Forge",
+         "className": "Folder"
+        },
+        {
+         "name": "Quests",
+         "className": "Folder"
+        },
+        {
+         "name": "Raids",
+         "className": "Folder"
+        },
+        {
+         "name": "Seasons",
+         "className": "Folder"
+        },
+        {
+         "name": "Shop",
+         "className": "Folder"
+        }
+       ]
+      },
+      {
+       "name": "Stats",
+       "className": "Folder"
+      },
+      {
+       "name": "Net",
+       "className": "Folder"
+      },
+      {
+       "name": "Events",
+       "className": "Folder"
+      },
+      {
+       "name": "Config",
+       "className": "Folder"
+      },
+      {
+       "name": "Util",
+       "className": "Folder"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ServerScriptService",
+   "className": "ServerScriptService",
+   "children": [
+    {
+     "name": "Server",
+     "className": "Folder",
+     "children": [
+      {
+       "name": "Domains",
+       "className": "Folder",
+       "children": [
+        {
+         "name": "Platform",
+         "className": "Folder"
+        },
+        {
+         "name": "Telemetry",
+         "className": "Folder"
+        },
+        {
+         "name": "Data",
+         "className": "Folder",
+         "children": [
+          {
+           "name": "Vendor",
+           "className": "Folder",
+           "children": [
+            {
+             "name": "ProfileStore",
+             "className": "ModuleScript",
+             "filePaths": [
+              "mirror/src/server/Domains/Data/Vendor/ProfileStore.luau"
+             ]
+            },
+            {
+             "name": "ProfileStore_LICENSE",
+             "className": "StringValue"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "name": "Economy",
+         "className": "Folder"
+        },
+        {
+         "name": "Combat",
+         "className": "Folder"
+        },
+        {
+         "name": "Encounter",
+         "className": "Folder"
+        },
+        {
+         "name": "Progression",
+         "className": "Folder"
+        },
+        {
+         "name": "Social",
+         "className": "Folder"
+        },
+        {
+         "name": "Facilities",
+         "className": "Folder"
+        },
+        {
+         "name": "LiveOps",
+         "className": "Folder"
+        }
+       ]
+      },
+      {
+       "name": "Admin",
+       "className": "Folder"
+      },
+      {
+       "name": "Bootstrap",
+       "className": "Script",
+       "filePaths": [
+        "mirror/src/server/Bootstrap.server.luau"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "ServerStorage",
+   "className": "ServerStorage",
+   "children": [
+    {
+     "name": "Tests",
+     "className": "Folder",
+     "children": [
+      {
+       "name": "unit",
+       "className": "Folder"
+      },
+      {
+       "name": "integration",
+       "className": "Folder"
+      },
+      {
+       "name": "fixtures",
+       "className": "Folder",
+       "children": [
+        {
+         "name": "profiles",
+         "className": "Folder"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "StarterPlayer",
+   "className": "StarterPlayer",
+   "children": [
+    {
+     "name": "StarterPlayerScripts",
+     "className": "StarterPlayerScripts",
+     "children": [
+      {
+       "name": "Client",
+       "className": "Folder",
+       "children": [
+        {
+         "name": "Controllers",
+         "className": "Folder"
+        },
+        {
+         "name": "UI",
+         "className": "Folder"
+        },
+        {
+         "name": "Effects",
+         "className": "Folder"
+        },
+        {
+         "name": "Render",
+         "className": "Folder"
+        },
+        {
+         "name": "Bootstrap",
+         "className": "LocalScript",
+         "filePaths": [
+          "mirror/src/client/Bootstrap.client.luau"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

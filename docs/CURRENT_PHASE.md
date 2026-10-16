@@ -1,28 +1,27 @@
 # CURRENT PHASE
 
 **Stage:** A1 — Foundation
-**Substage:** A1.1 — Studio layout
-**Status:** 🟦 Checkpoint pending — step 2 (Script Analysis) cannot be read through MCP; waiting on the owner
-**Last checkpoint passed:** P0.6 (2026-10-16) — P0 exit: all six ✅
-**Started:** 2026-10-16 13:50 UTC
+**Substage:** A1.2 — TestRunner
+**Status:** ⬜ Not started
+**Last checkpoint passed:** A1.1 (2026-10-16, auto-approved)
+**Started:** —
 **Planned stage start:** A1 2026-10-19 (D-013)
 
 ## Deliverables (from ROADMAP.md)
-- Folders per architecture §4.3 in ReplicatedStorage / ServerScriptService / StarterPlayerScripts / ServerStorage; Bootstrap scripts; ProfileStore inserted and version pinned.
+- `ServerStorage/Tests/TestRunner` with `describe/it/expect`, async support, summary table; 3 sample tests.
 
 ## Checkpoint — passes when
-Play test boots; console prints `[Boot] phases 0–8 complete` with the ordered service list and zero errors.
+`execute_luau` runs the suite and prints `3 passed, 0 failed`.
 
 ## Verify via
-`start_stop_play`, `get_console_output`.
+`execute_luau`.
 
 ## Notes for this substage
-- First substage with scripts: every module `--!strict`, Script Analysis 0 warnings, mirror export to `mirror/src` is real from here on.
-- ProfileStore is Apache-2.0 (P0.5): keep the license header, mark modifications, keep a LICENSE copy beside the module; compare the store asset (109379033046155) against GitHub (wally.toml 1.0.3, last commit 2025-07-31) when inserting, and pin the version in `assets/ART_SOURCES.md`.
-- Service names must not collide with Roblox built-ins (D-008). UI library is decided at A2.1 (D-009), not here.
+- `ServerStorage/Tests/{unit,integration,fixtures/profiles}` already exist (A1.1). TestRunner is a ModuleScript in `ServerStorage/Tests`; tests go in `unit/` and `integration/`.
+- Step 2 uses `tools/analyze.sh` (luau-lsp, D-014): export the mirror first and regenerate `mirror/sourcemap.json` from the Studio tree, then run the script; it must print `diagnostics: 0`.
+- Every module `--!strict`. Vendor code (`*/Vendor/*`) is out of the zero-warning rule.
+- Backups: pad the `execute_luau` JSON past ~64K characters so the harness saves it to a file (see progress.md).
 - Open owner item: D-012 (paid random items). Doesn't block A1; must be decided before B1.
-- Starting before the planned 2026-10-19 date is fine (unattended mode); log it in `progress.md`.
-- `backups/` and `.claude/settings.local.json` stay out of git.
 
 ## On pass
-Set this file to **A1.2**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.
+Set this file to **A1.3**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.
