@@ -126,3 +126,30 @@ NOTES / DEBT:
   - An earlier "Yes, approved" (project chat, 11:46 UTC) predated the review and was not counted.
 NEXT: P0.4
 ```
+
+```text
+CHECKPOINT: P0.4 Content bible v0
+DATE: 2026-10-16
+TESTRUNNER: n/a — TestRunner is an A1 deliverable (D-002); no tests exist yet.
+SCRIPT ANALYSIS: 0 scripts in the place (execute_luau scan of LuaSourceContainer in 8 services → scripts=0), nothing to analyse.
+PLAY TEST: start_stop_play(start) → execute_luau(Server): players=1 character=true ArtReference=true,
+  printed "[P0.4] play test ok" → get_console_output → start_stop_play(stop).
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, same as P0.1–P0.3).
+NUMBERS: docs/CONTENT_BIBLE.md = 2184 words · 6 classes · 8 enemies (1 new: Burrower) + 6 zone bosses (5 new names) ·
+  6 zones · 7 protocol levels · 12 shared auto-weapons covering 10/10 archetypes · 10 passives (10/10 map to STATS.md rows) ·
+  4 evolutions (1 new: Junk Tornado) · 6 pets (6/6 use STATS.md pet stats) · reference-name collisions found 3
+  (Engineer, Essence → renamed; Gauntlet → deferred) · collisions remaining in the bible 0.
+RESTORE POINT: backups/P0.4_passed_20261016-1321/ — 6 × .rbxm (rule: D-010). Place unchanged since P0.3 (docs-only
+  substage): a fresh SerializationService export of each service matched the P0.3 files on length, FNV-1a and two
+  extra hashes (Adler-32, reverse FNV-1a), so the verified P0.3 bytes were copied and re-checked locally (all 6 OK).
+  Lighting 3445 B 866e3754 · ServerStorage 48583 B e36937fc · Workspace 7831 B 68417a0c · RS/SSS/SPS 577 B each.
+MIRROR COMMIT: see the commit line below (mirror/src empty: 0 scripts to export)
+OWNER APPROVAL: yes, 2026-10-16 ("I do approve, rename approved for both", project chat 13:19 UTC)
+NOTES / DEBT:
+  - D-011: Engineer → Mechanic, Essence → Serum (schema v1 field renamed before any profile exists; no migration).
+    Applied in architecture.md (§6.1, §7.5, §21.1, §25), ART_BIBLE, ROADMAP (A4.4, B1.4), SYSTEM_REGISTRY (renamed, not removed).
+  - Burrower added to architecture §8.3/§8.4 and the ART_BIBLE silhouette table.
+  - Mode "Gauntlet" (§17, post-L3) shares the reference mode name; rename when designed.
+  - Protocol multipliers (×1.0–×3.0) and enemy earliest-protocol values are starting points for A3 tuning.
+NEXT: P0.5
+```

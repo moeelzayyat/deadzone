@@ -28,7 +28,7 @@ Both scenes are built from primitives only (no assets, no IDs) and are kept in `
 - Edges: bevels only where they catch light (roof caps, car cabins, crystal facets).
 - Lighting: technology is picked in A1 against the mobile FPS budget (Future if it holds 30 FPS on the low-end device, else ShadowMap); one strong colored sun/sky per zone plus warm or cold local lights; Atmosphere haze carries the zone mood.
 
-## Silhouette rules (roster, architecture §8.4)
+## Silhouette rules (roster, architecture §8.4; Burrower added by the content bible, D-011)
 | Archetype | Tier | Silhouette cue | Color cue |
 |---|---|---|---|
 | Walker | Fodder | hunched, both arms straight forward | gray-green skin, dull cloth, green eyes |
@@ -38,6 +38,7 @@ Both scenes are built from primitives only (no assets, no IDs) and are kept in `
 | Screamer | Elite | tall, thin, head thrown back, jaw open | pale skin, one cyan throat glow |
 | Armored | Elite | squared plates on shoulders and chest | gunmetal plates `#6B6F75` |
 | Exploder | Fodder | round body, short legs | amber pustules `#FFB020` |
+| Burrower | Fodder | low wide body, spine ridge on the back | dirt-crusted gray-green skin, no accent; telegraph = ring of cracking ground |
 | Bosses | Boss | unique outline, 2× elite scale, readable telegraph pose ≥ 0.6 s | two accents + zone accent |
 
 | Class | Hue | Silhouette cue |
@@ -46,7 +47,7 @@ Both scenes are built from primitives only (no assets, no IDs) and are kept in `
 | Juggernaut | steel blue `#4A7FB5` | ×1.35 bulk, shoulder plates, shotgun |
 | Stalker | crimson `#D0263A` | two blades, coat tail |
 | Incinerator | orange `#F07A1A` | fuel tank on back, flame jet |
-| Engineer | yellow `#E8C21A` | tool pack with antenna, nail launcher |
+| Mechanic | yellow `#E8C21A` | tool pack with antenna, nail launcher |
 | Combat Medic | white-green `#7FD8A0` on white | cross-shaped backpack, sidearm |
 
 ## Zone palettes and lighting presets

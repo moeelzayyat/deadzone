@@ -368,7 +368,7 @@ export type PlayerProfile = {
 
     Wallet: {
         Gold: number,
-        Essence: number,
+        Serum: number,
         Samples: number,
         Event: {[string]: number},
     },
@@ -523,10 +523,10 @@ Targeting strategies: `Nearest`, `Random`, `LowestHealth`, `HighestHealth`, `Eli
 |---|---|---|---|---|---|
 | Sharpshooter | Ranged precision | Tactical Rifle | Combat roll | Piercing Round | Free (default) |
 | Juggernaut | Tank | Combat Shotgun | Shoulder charge | Unbreakable (damage immunity + taunt) | Free at player level 5 |
-| Stalker | Melee mobility | Dual Machetes | Blink step (short) | Frenzy (attack speed) | Essence |
-| Incinerator | Area denial | Flame Projector | Backstep + fire trail | Firestorm | Essence |
-| Engineer | Summons | Nail Launcher | Grapple hop | Defense Turret | Essence |
-| Combat Medic | Support | Medical Sidearm | Slide | Healing Pulse | Essence |
+| Stalker | Melee mobility | Dual Machetes | Blink step (short) | Frenzy (attack speed) | Serum |
+| Incinerator | Area denial | Flame Projector | Backstep + fire trail | Firestorm | Serum |
+| Mechanic | Summons | Nail Launcher | Grapple hop | Defense Turret | Serum |
+| Combat Medic | Support | Medical Sidearm | Slide | Healing Pulse | Serum |
 
 Two classes free early so the "which class" decision exists before any currency is earned. Classes are definitions; nothing is hardcoded to a class.
 
@@ -573,7 +573,7 @@ export type Enemy = {
 
 ## 8.3 Navigation
 
-- Walkers, Runners, Spitters, Screamers, Exploders: **steering** toward target + separation from neighbors + wall slide against a precomputed arena navmesh/collision grid. No per-enemy `PathfindingService`.
+- Walkers, Runners, Spitters, Screamers, Exploders, Burrowers: **steering** toward target + separation from neighbors + wall slide against a precomputed arena navmesh/collision grid. No per-enemy `PathfindingService`.
 - Brutes, Armored, bosses: `PathfindingService` path recomputed at most every 1.5 s, steering between waypoints.
 - Arenas are authored so that steering rarely gets stuck; stuck detection teleports an unseen enemy to a valid spawn edge (logged).
 
@@ -590,7 +590,7 @@ export type EnemyDefinition = {
 }
 ```
 
-Roster: Walker, Runner, Brute, Spitter, Screamer, Armored, Exploder; bosses Mutant Alpha (A4), then one per zone. Bosses have telegraphed attacks (≥ 0.6 s wind-up), 2–3 phases, and a readable counter. Difficulty never comes from health alone.
+Roster: Walker, Runner, Brute, Spitter, Screamer, Armored, Exploder, Burrower; bosses Mutant Alpha (A4), then one per zone (names in `docs/CONTENT_BIBLE.md`). Bosses have telegraphed attacks (≥ 0.6 s wind-up), 2–3 phases, and a readable counter. Difficulty never comes from health alone.
 
 ---
 
@@ -769,7 +769,7 @@ Every request validates: identity, payload types (`t` or hand-written guards), s
 # 21. ECONOMY AND MONETIZATION
 
 ## 21.1 Currencies
-Gold (general), Essence (classes, respec, advanced), Samples (Forge rerolls, crafting), Event currency (time-boxed). All earned from play. None purchasable directly with Robux.
+Gold (general), Serum (classes, respec, advanced), Samples (Forge rerolls, crafting), Event currency (time-boxed). All earned from play. None purchasable directly with Robux.
 
 ## 21.2 What Robux buys
 - Cosmetics: skins for classes, weapon VFX colors, extraction flares, emotes, name tags.
@@ -900,7 +900,7 @@ Status values: `Planned` / `In Development` / `Implemented` / `Tested` / `Releas
 
 **Progression:** six classes · class unlocks · inventory · armor · trinkets · skill tree · slots · enhancement · salvage · crafting · affix reroll · codex · leaderboards
 
-**Economy:** Gold · Essence · Samples · event currency · gameplay chests · odds display · pity · transactions · shop (cosmetic)
+**Economy:** Gold · Serum · Samples · event currency · gameplay chests · odds display · pity · transactions · shop (cosmetic)
 
 **Pets:** pet inventory · eggs · odds · hatching · rarity · leveling · equipping · bonuses · companion visuals
 

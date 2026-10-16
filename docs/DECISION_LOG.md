@@ -91,3 +91,13 @@ Approved by: owner (2026-10-16, "Yes, approved" in the project chat)
 ## CP — P0.2 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16
 
 ## CP — P0.3 passed · 2026-10-16 · approved by owner ("Yes Approved" in the P0.3 thread, art direction + two mood references)
+
+## D-011 — Content bible v0; rename Engineer → Mechanic and Essence → Serum
+2026-10-16 · P0.4 · Accepted
+Context: The P0.4 originality check against the reference game (*Survive The Swarm [CLASS COMBAT]*: Roblox listing + fan wikis) found two exact collisions: its "Engineer" class (similar deployables role) and its "Essence" currency (same use: buying classes and eggs).
+Decision: Adopt `docs/CONTENT_BIBLE.md` v0 (classes, 8 enemies incl. new Burrower, zone boss names, zones, protocol level names Contact → Deadzone, 12 shared auto-weapons, 10 passives, 4 evolutions incl. new Junk Tornado, 6 pets). Rename class Engineer → **Mechanic** (architecture §7.5, ART_BIBLE, ROADMAP A4.4) and currency Essence → **Serum** (schema v1 field `Serum`, §6.1; §21.1; §25; ROADMAP B1.4; SYSTEM_REGISTRY rows renamed, not removed). Burrower added to the §8.3/§8.4 roster and the ART_BIBLE silhouette table.
+Alternatives: keep both names (rejected: violates §1.3 "all names original"). Gauntlet mode also collides; deferred to its design (post-L3).
+Consequences: schema change before any profile exists, so there is no migration and no data risk. Every later doc and definition uses Mechanic / Serum.
+Approved by: owner (2026-10-16, "I do approve, rename approved for both", project chat 13:19 UTC)
+
+## CP — P0.4 passed · 2026-10-16 · approved by owner ("I do approve, rename approved for both", project chat 13:19 UTC; content bible + D-011)

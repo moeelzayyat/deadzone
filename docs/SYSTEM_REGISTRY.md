@@ -32,7 +32,7 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | System | Target | Status | Notes |
 |---|---|---|---|
 | Six classes | A4 | Planned | Sharpshooter A2 |
-| Class unlocks (free/level/Essence) | A4.7 / B1.4 | Planned | |
+| Class unlocks (free/level/Serum) | A4.7 / B1.4 | Planned | |
 | Inventory + ItemInstance | B1.1 | Planned | |
 | Armor + trinkets + affixes | B1.2 | Planned | |
 | Skill tree (incl. Squad branch) | B1.3 | Planned | |
@@ -45,7 +45,7 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 ## Economy
 | System | Target | Status | Notes |
 |---|---|---|---|
-| Gold / Essence / Samples | B1.4 | Planned | |
+| Gold / Serum / Samples | B1.4 | Planned | |
 | Event currency | L3.3 | Planned | |
 | Gameplay chests + odds + pity | B1.5 | Planned | gameplay currency only |
 | TransactionService (idempotent) | B1.1 | Planned | interface in A1 |

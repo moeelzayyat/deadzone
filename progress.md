@@ -3,8 +3,8 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** P0.4 — Content bible v0 (⬜ not started). Needs the owner's written review; auto-approval does not cover it.
-- **Last passed:** P0.3 Art bible v0 (owner-approved 2026-10-16 13:01 UTC).
+- **Substage:** P0.5 — Compliance basics (⬜ not started). Next thread opens it.
+- **Last passed:** P0.4 Content bible v0 (owner-approved 2026-10-16 13:19 UTC, with D-011 renames Engineer → Mechanic, Essence → Serum).
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
 - **Studio:** place 72812275891657 / universe 10771233280. The Studio MCP lists several open places; always target "Deadzone (placeId: 72812275891657)".
 - **Place contents:** 0 scripts. Root folders exist (`ReplicatedStorage/Shared`, `ServerScriptService/Server`, `StarterPlayerScripts/Client`, `ServerStorage/Tests`) plus `ServerStorage/ArtReference` (P0.3 mood scenes).
@@ -35,3 +35,16 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - An earlier "Yes, approved" (11:46 UTC) predated the review and was not counted. The owner then approved in the P0.3 thread ("Yes Approved", 13:01 UTC).
 - Checkpoint: TestRunner n/a (A1), 0 scripts, play test with 0 errors (5 known UIBlox warnings). Backup `backups/P0.3_passed_20261016-1303` verified by hash. Commits `877f58b` and `410fd7e`. Phase advanced to P0.4.
 - Owner added the PROGRESS LOG rule (13:04 UTC), and this file was created.
+
+### 2026-10-16 · P0.4 — Content bible v0 · 🟨 in progress
+- 13:10 UTC: started. Read CLAUDE.md, progress.md, CURRENT_PHASE, ROADMAP P0.4 row, architecture §2.3/§7.5/§8.4/§10/§13/§16/§21, last DECISION_LOG entries.
+- Checked the reference game (Roblox listing + 3 fan wikis; one wiki looks partly AI-written and was discounted). Collisions: class "Engineer" (exact name, similar role), currency "Essence" (same use: classes and eggs), mode "Gauntlet" (post-L3, noted only).
+- Wrote `docs/CONTENT_BIBLE.md` v0: 6 classes, 8 enemies (new: Burrower) + 6 zone bosses (5 new names), 6 zones, 7 protocol levels (Contact, Spread, Breach, Mutation, Surge, Overrun, Deadzone), 12 shared auto-weapons covering all 10 archetypes, 10 passives mapped to STATS.md, 4 evolutions (new: Junk Tornado), 6 pets mapped to the STATS.md pet stats.
+- Waiting on the owner: approval of the names, plus decision 1 (Engineer → Mechanic, touches §7.5) and decision 2 (Essence → Serum, schema v1 field). Both are STOP-AND-ASK items and were not changed.
+- 13:19 UTC: owner approved in the project chat: "I do approve, rename approved for both". Recorded as D-011.
+- Renames applied: Engineer → Mechanic, Essence → Serum in architecture.md (§6.1 schema field, §7.5, §21.1, §25), ART_BIBLE, ROADMAP A4.4/B1.4, SYSTEM_REGISTRY (rows renamed, not removed), CONTENT_BIBLE. Burrower added to architecture §8.3/§8.4 and the ART_BIBLE silhouette table.
+- Checkpoint: TestRunner n/a (A1), 0 scripts, play test 0 errors (5 known UIBlox warnings). Backup `backups/P0.4_passed_20261016-1321`: the place is unchanged since P0.3, so a fresh export matched the P0.3 files on length, FNV-1a, Adler-32 and reverse FNV. The P0.3 bytes were copied and re-verified (all 6 OK).
+- Gotcha: inline execute_luau base64 output (under 64K) is not saved to a file, so writing it to disk means re-emitting it. When the place hasn't changed, comparing hashes against the previous backup is cheaper.
+
+### 2026-10-16 · P0.4 — Content bible v0 · ✅ passed (owner-approved)
+- Handoff record appended, CP line in DECISION_LOG, CURRENT_PHASE advanced to P0.5.

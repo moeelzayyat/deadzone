@@ -159,7 +159,7 @@ Purpose: real players decide whether the loop and the signature mechanic work be
 | A4.1 | Ability framework | `AbilityService` with cooldown/resource/state validation; signature slot; class definitions wired | Sharpshooter signature works through the generic path; no class-specific code outside definitions | Code review, TestRunner |
 | A4.2 | Juggernaut | Shotgun, shoulder charge, Unbreakable (immunity + taunt); unlock at level 5 | Juggernaut extracts on Normal; taunt redirects 90 enemies in a test | Play test |
 | A4.3 | Stalker and Incinerator | Dual Machetes (melee arc), blink; Flame Projector (`Zone`), backstep + fire trail, Firestorm | Both extract on Normal; melee hit arc validated server-side with lag compensation | Play test, TestRunner |
-| A4.4 | Engineer and Combat Medic | Nail Launcher, grapple hop, `Deployable` turret; Medical Sidearm, slide, Healing Pulse (self-heal solo) | Both extract on Normal; turret obeys `MaxTargets`; heal capped by `STATS.md` | Play test, TestRunner |
+| A4.4 | Mechanic and Combat Medic | Nail Launcher, grapple hop, `Deployable` turret; Medical Sidearm, slide, Healing Pulse (self-heal solo) | Both extract on Normal; turret obeys `MaxTargets`; heal capped by `STATS.md` | Play test, TestRunner |
 | A4.5 | Fodder roster complete | Spitter (ranged), Screamer (summons), Armored (resistances), Exploder (death AOE) with telegraphs | Each enemy's behavior is identifiable by a tester who has not read the spec; resistances apply via `DamageCalculator` | Blind test, TestRunner |
 | A4.6 | Mutant Alpha boss | Server-side boss logic, 3 phases, telegraphs ≥ 0.6 s, counters; boss at P5 | Boss killable by every class on Normal; each phase transition is readable on a phone; health is not the only difficulty lever | Play test ×6 classes |
 | A4.7 | Mission flow | Objectives, victory/defeat screens, class select in hub (unlocks shown), A2 budgets re-measured with all archetypes | Budgets within A2 numbers ±10%; every class has a results screen path | Profiler, play test |
@@ -192,7 +192,7 @@ Purpose: real players decide whether the loop and the signature mechanic work be
 | B1.1 | Inventory and items | `ItemInstance`, slots, add/remove/equip/lock, loadouts per class, `TransactionService` | Equip reflects in `StatPipeline`; spamming equip 50× yields one state change | TestRunner |
 | B1.2 | Armor and trinkets | Helmet/chest/legs/trinket definitions, rarity, affixes | 30 items validate; previews equal in-run values (test compares both paths) | TestRunner |
 | B1.3 | Skill tree | Node graph, prerequisites, ranks, slot unlocks, Squad branch, respec (Gold) | Buying without prerequisites is rejected; respec refunds exactly; slot unlock changes offers | TestRunner, play test |
-| B1.4 | Currencies | Gold/Essence/Samples earn and spend paths; class unlocks with Essence | No path produces a negative balance under randomized transaction tests (1000 ops) | TestRunner fuzz |
+| B1.4 | Currencies | Gold/Serum/Samples earn and spend paths; class unlocks with Serum | No path produces a negative balance under randomized transaction tests (1000 ops) | TestRunner fuzz |
 | B1.5 | Gameplay chests | Reward tables, normalization check at boot, odds UI, batch open, pity | 10,000-roll test matches displayed odds within tolerance; chests cost gameplay currency only | TestRunner |
 | B1.6 | Codex | Discovery from events; protocol requirements shown; category rewards | Evolving a weapon unlocks its codex entry once; rewards claim once | TestRunner |
 | B1.7 | Forge core | Enhance, salvage, previews via `StatPipeline`, locked-item protection, atomic transaction | Interrupted enhance (simulated failure mid-commit) leaves materials and item unchanged; preview equals result | TestRunner |
@@ -344,5 +344,5 @@ NEXT: <next ID>
 
 ---
 
-**Current substage:** P0.4
-**Last checkpoint passed:** P0.3 (2026-10-16)
+**Current substage:** P0.5
+**Last checkpoint passed:** P0.4 (2026-10-16)
