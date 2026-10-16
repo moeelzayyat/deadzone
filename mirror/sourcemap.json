@@ -294,11 +294,64 @@
       },
       {
        "name": "Stats",
-       "className": "Folder"
+       "className": "Folder",
+       "children": [
+        {
+         "name": "DamageCalculator",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Stats/DamageCalculator.luau"
+         ]
+        },
+        {
+         "name": "StatPipeline",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Stats/StatPipeline.luau"
+         ]
+        },
+        {
+         "name": "StatRegistry",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Stats/StatRegistry.luau"
+         ]
+        }
+       ]
       },
       {
        "name": "Types",
-       "className": "Folder"
+       "className": "Folder",
+       "children": [
+        {
+         "name": "Common",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Types/Common.luau"
+         ]
+        },
+        {
+         "name": "Match",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Types/Match.luau"
+         ]
+        },
+        {
+         "name": "Profile",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Types/Profile.luau"
+         ]
+        },
+        {
+         "name": "Run",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Types/Run.luau"
+         ]
+        }
+       ]
       },
       {
        "name": "Util",
@@ -525,6 +578,13 @@
        "className": "Folder",
        "children": [
         {
+         "name": "DamageCalculator.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/DamageCalculator.spec.luau"
+         ]
+        },
+        {
          "name": "EventBus.spec",
          "className": "ModuleScript",
          "filePaths": [
@@ -546,10 +606,24 @@
          ]
         },
         {
+         "name": "StatPipeline.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/StatPipeline.spec.luau"
+         ]
+        },
+        {
          "name": "TestRunner.spec",
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/TestRunner.spec.luau"
+         ]
+        },
+        {
+         "name": "Types.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Types.spec.luau"
          ]
         }
        ]

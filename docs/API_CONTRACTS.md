@@ -109,3 +109,15 @@ Server and client. One ModuleScript per definition, directly inside its folder, 
 | `registry.count` | Bootstrap | Number of definitions; published as `DefinitionsValidated { Count }` after the Start pass. |
 | `Registry.load(folder)` / `collect(folder)` / `validate(entries, earlier?)` | tests | `load` = `collect` (folder layout, requires) + `validate` (fields, Ids, references, folder rules). Tests run them on clones. |
 | `Registry.KINDS` / `Registry.SCHEMAS` | tests | The 18 folder names in §4.3 order and their frozen schemas. |
+
+### Stat pipeline (`ReplicatedStorage/Shared/Stats`, A1.7, D-020)
+Server and client (prediction uses the same code). Rows in `StatRegistry` mirror `docs/STATS.md` (`tools/check_stats.py`). Modifiers are `{ Stat, Layer, Value, Source }`; percentages are fractions.
+
+| Call | Caller | Contract |
+|---|---|---|
+| `StatPipeline.compute(bases, modifiers) → StatBlock` | Combat, Progression, Forge/pet/codex previews | Frozen block with all 25 stats. `bases` holds exactly the Class/Weapon-sourced stats; fixed bases cannot be passed. Throws `[Stats] ...` on unknown stats, disallowed layers, NaN/inf, fractional whole-number values. Never returns NaN. |
+| `StatPipeline.stat(id, base?, modifiers) → number` | consumers needing one stat | Same rules, reads only that stat's modifiers. |
+| `StatPipeline.preview(bases, modifiers, { Add?, RemoveSources? }) → { Before, After, Delta }` | Forge, equip and pet UI (server-computed or predicted) | Both blocks through `compute`; `Delta` lists only changed stats. |
+| `StatPipeline.check(modifier)` / `StatPipeline.get(block, id)` | definitions, tests | Validate one modifier; read a block by id. |
+| `DamageCalculator.damage(attackerStats, { WeaponDamage, Crit, Tag, Resistances?, DifficultyMult }) → number` | CombatService (truth), client prediction | §7.3 damage formula; `Crit` is rolled by the server; never negative. Unknown tag throws. |
+| `DamageCalculator.mitigate(incoming, armor)` / `armorReduction(armor)` / `resistance(map?, tag)` | Combat | Armor reduction `Armor / (Armor + 100)`, at most 75%; resistance clamps to 0–1, missing = 1. |

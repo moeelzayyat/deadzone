@@ -384,5 +384,5 @@ NEXT: <next ID>
 
 ---
 
-**Current substage:** A1.7
-**Last checkpoint passed:** A1.6 (2026-10-16)
+**Current substage:** A1.8
+**Last checkpoint passed:** A1.7 (2026-10-16)

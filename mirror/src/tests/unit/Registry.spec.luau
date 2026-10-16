@@ -1,5 +1,5 @@
 --!strict
--- Definitions/_Registry (A1.6): folder layout, schemas, duplicate Ids, references and folder rules.
+-- Definitions/_Registry (A1.6, A1.7): folder layout, schemas, duplicate Ids, references and folder rules.
 -- Runs on a clone of Shared, so edits to _Registry or the samples are picked up in Edit mode too (Studio caches require
 -- per ModuleScript) and the real folders are never touched. Bad definitions are built by mutating copies of the samples.
 
@@ -352,6 +352,18 @@ return function(t: TestRunner.Spec)
 			expect(change("Shop", "SampleCosmetic", function(def)
 				def.Price = { Currency = "Robux", Amount = 99 }
 			end)).toThrow("ProductId: a Robux price needs the developer product or pass id")
+		end)
+
+		it("Passives, Skills and Pets: the stat must take the layer (STATS.md allowed layers)", function()
+			expect(change("Passives", "VoltageCore", function(def)
+				def.Layer = "Flat"
+			end)).toThrow("Layer: AttackSpeedPct does not take layer Flat (allowed: AdditivePct)")
+			expect(change("Skills", "SampleSkill", function(def)
+				def.Effect = { Stat = "WeaponSlots", Layer = "AdditivePct", PerRank = 0.1 }
+			end)).toThrow("Effect.Layer: WeaponSlots does not take layer AdditivePct (allowed: Flat)")
+			expect(change("Pets", "MedicalDrone", function(def)
+				def.Layer = "Flat"
+			end)).toThrow("Layer: HealingPct does not take layer Flat (allowed: AdditivePct)")
 		end)
 
 		it("Quests: the event must be in the event catalog", function()

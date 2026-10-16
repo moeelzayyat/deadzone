@@ -597,3 +597,83 @@ NOTES / DEBT:
   - D-012 is still open for the owner; the shop schema has no random-item kind, so nothing here decides it.
 NEXT: A1.7
 ```
+
+## A1.7 — Types and StatPipeline — 2026-10-16
+
+```text
+CHECKPOINT: A1.7 Types and StatPipeline
+DATE: 2026-10-16 (started 16:35 UTC, passed 16:56 UTC)
+DELIVERED:
+  - ReplicatedStorage/Shared/Types (ModuleScripts, --!strict, no `any`): Common (Rarity, Archetype, Targeting, DamageTag,
+    Currency, Slot + their lists, the only copies), Profile (§6.1 PlayerProfile field for field, §11 ItemInstance, provisional
+    Affix/Loadout/PetInstance/StageRecord/QuestState/RaidRecord/PlayerSettings, each tagged with its settling substage),
+    Run (§6.2 RunPlayerState, ComputedStats: StatBlock), Match (§6.3 MatchState).
+  - ReplicatedStorage/Shared/Stats: StatRegistry (the 25 STATS.md rows: unit, base source, layers, Form, Min, Max, whole-number
+    flag; StatId, Layer and StatBlock types), StatPipeline (compute / stat / preview / check / get), DamageCalculator (damage,
+    resistance, armorReduction, mitigate). Contracts in API_CONTRACTS.md, details in D-020.
+  - Shared/Definitions/_Registry: vocabularies now come from Types/Common and Stats/StatRegistry (same tables, not copies);
+    new folder rule: a passive, skill node or pet must use a layer its stat takes.
+  - docs/STATS.md: Form column, Armor Max 300 (= 75% reduction), §10.2 passive table (stat, layer, cap), code pointers.
+    tools/check_stats.py: STATS.md vs StatRegistry row for row → "rows: STATS.md 25 · StatRegistry 25 · MATCH".
+  - ServerStorage/Tests/unit: StatPipeline.spec (106), DamageCalculator.spec (18), Types.spec (4); Registry.spec +1 (27).
+TESTRUNNER: 196 passed / 0 failed. Edit mode, on a clone of ServerStorage.Tests:
+    local tests = game:GetService("ServerStorage").Tests:Clone()
+    return require(tests.TestRunner).run({ tests.unit, tests.integration }).summary
+  →
+    file                                     passed failed        ms
+    unit.DamageCalculator.spec                   18      0      3.16
+    unit.EventBus.spec                           24      0    179.58
+    unit.Lifecycle.spec                          14      0      2.31
+    unit.Registry.spec                           27      0     27.86
+    unit.StatPipeline.spec                      106      0     10.08
+    unit.TestRunner.spec                          3      0    126.57
+    unit.Types.spec                               4      0      6.80
+    196 passed, 0 failed (7 files, 356.43 ms)
+  Passes-when coverage: each layer alone ("each stat, each layer alone", every allowed layer of all 25 rows, through compute and
+  stat); all layers combined (MaxHealth 351, DamagePct 2.6, additive applied once, order-independent); every cap ("caps", Min
+  and Max of all 25 rows + the §7.3 examples); zero/negative inputs (bases, multipliers, AdditivePct below -100%, zero
+  modifiers, overflow never NaN; damage, difficulty, armor, incoming damage); 100% of STATS.md rows ("STATS.md coverage": an
+  expected-value row per stat, failing when one is missing or extra, and every allowed layer tested). Also: input checks,
+  preview = compute parity, each damage tag against a resistance table, armor 75% cap.
+SCRIPT ANALYSIS: `bash tools/analyze.sh` → "files: 50 / diagnostics: 0" (luau-lsp 1.70.1, D-014). Drafts were checked first with
+  a temporary sourcemap (array invariance and literal-inference errors fixed before Studio). `grep any` over Shared/Types and
+  Shared/Stats: no `any` (one hit is the word "anywhere" in a comment).
+PLAY TEST:
+    [Boot] phase 3 Definitions: 19 definitions in 18 folders validated in 1.01 ms
+    [Boot] phases 0–8 complete in 1.15 ms (Init 1.10 ms, Start 0.00 ms) · services (10): Platform/RemoteConfigService → ...
+    [Boot] DefinitionsValidated (19) and BootCompleted published · 0 and 0 subscribers · bus strict
+    [TestRunner] 196 passed, 0 failed (7 files, 356.62 ms)
+  Sample through the real registry: Sharpshooter → MaxHealth 100, MoveSpeed 16, DamagePct 0; TacticalRifle L1 vs Walker = 10.
+  Client datamodel requires StatPipeline and DamageCalculator (DamagePct 0.5 → crit Fire hit 22.5).
+  Console errors: 0 (Server LogService: 0 errors, 1 warning; Client: 0 errors, 5 warnings). Warnings: 5 × "[UIBlox - Warning]
+  FoundationProvider not found" (Roblox CorePackages, known since P0.1) and 1 × "[Events] error handler failed (... reporter
+  down) ..." written on purpose by an EventBus.spec test.
+NUMBERS:
+  - StatPipeline.compute: 4.20 µs with 0 modifiers, 7.01 µs with 20; preview (20 modifiers) 16.80 µs; DamageCalculator.damage
+    0.37 µs (Server play test, best of 3 × 10,000).
+  - Boot 1.15 ms (A1.6: 1.05 ms); phase 3 1.01 ms (A1.6: 0.94 ms, now also loads Types/Common and Stats/StatRegistry).
+  - Mutation controls (patched Stats modules in a temporary Shared clone, removed afterwards; StatPipeline + DamageCalculator
+    specs): AdditivePct compounded → 3 failed · Bonus form off → 28 · clamp removed → 32 · NaN guard off → 1 · layer check off
+    → 1 · armor 75% cap off → 1 · crit always on → 8 · resistance ignored → 5 · Armor Max 300→299 → 3.
+  - check_stats.py control: CritMult Max changed to 5.0 in STATS.md → "row 9 CritMult: Max ... DIFFER" (exit 1); restored → MATCH.
+  - Scripts: DataModel 51 · under roots 51 · mirror 51 · StringValues 1/1 · MATCH (mirror_write.py ALL OK, three export calls of
+    94,129 + 94,434 + 65,972 characters). The export equals the local drafts (diff -r clean).
+  - Sizes: StatPipeline 7,611 B, StatRegistry 5,233 B, DamageCalculator 3,205 B, Profile 3,749 B, Common 2,455 B,
+    _Registry 32,172 B, StatPipeline.spec 18,185 B.
+RESTORE POINT: backups/A1.7_passed_20261016-1652/ — 6 × .rbxm (D-010), each verified by length + FNV-1a against a fresh Studio
+  serialization: ReplicatedStorage 40913 B 7c82d76a · ServerStorage 79784 B 4c487073 (exported; ServerStorage base64 in three
+  calls) · Lighting 3445 B 866e3754 · ServerScriptService 42408 B 0287e81a · StarterPlayerScripts 1961 B 1fc169ff ·
+  Workspace 12147 B 5ac584ad (equal A1.6, copied).
+MIRROR COMMIT: (recorded in the next commit)
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Details D-020.
+NOTES / DEBT:
+  - D-020 readings for the owner to overrule if wanted: Bonus form for percent stats, class DamageMult as a DamagePct
+    Multiplier (entering once), Armor Max 300, provisional §6.1 sub-types. PlayerProfile's §6.1 fields are unchanged.
+  - Class definitions have no CritChance, DodgeDistance or DodgeIFrames field, although STATS.md sources them from the class;
+    StatPipeline requires the caller to pass them. A4.1 (classes) settles where they come from.
+  - ProjectileCount and Pierce are weapon-sourced; a player-level block needs the weapon's base. A2.7 (weapons framework)
+    decides whether weapons get their own block.
+  - Luau arrays are invariant: vocabularies are built through typed varargs and handed out as frozen { string }.
+  - D-012 is still open for the owner; nothing here touches monetization.
+NEXT: A1.8
+```

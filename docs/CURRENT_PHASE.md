@@ -1,32 +1,32 @@
 # CURRENT PHASE
 
 **Stage:** A1 — Foundation
-**Substage:** A1.7 — Types and StatPipeline
+**Substage:** A1.8 — Clock, network, platform wrappers
 **Status:** ⬜ Not started
-**Last checkpoint passed:** A1.6 (2026-10-16, auto-approved)
+**Last checkpoint passed:** A1.7 (2026-10-16, auto-approved)
 **Started:** —
 **Planned stage start:** A1 2026-10-19 (D-013)
 
 ## Deliverables (from ROADMAP.md)
-- All §6 types with no `any`; `StatPipeline` + `DamageCalculator`; `STATS.md` seeded with every §10.2 stat, layer and cap.
+- `SimulationClock` (pause/resume/tick tests); contract registry + token buckets + `buffer` codec helpers; remotes created in phase 8 only; `MetricsService`, `ErrorReportService`, `RemoteConfigService`, `FeatureFlagService` wrappers.
 
 ## Checkpoint — passes when
-Tests cover: each layer alone, all layers combined, every cap, zero/negative inputs; 100% of `STATS.md` rows have a test.
+Tests: paused clock does not advance; bucket rejects the N+1th request; codec round-trips all field types; a remote does not exist before phase 8.
 
 ## Verify via
-TestRunner.
+TestRunner, `search_game_tree`.
 
 ## Notes for this substage
-- Types go in `ReplicatedStorage/Shared/Types`, `StatPipeline` and `DamageCalculator` in `Shared/Stats` (§4.3). Formula and layer order: architecture §7.3 and `docs/STATS.md`. No formula in UI code; every stat value comes from `StatPipeline` (CLAUDE.md rule 7).
-- `_Registry` (A1.6, D-019) keeps its own copies of the stat ids, layers, damage tags, rarity, archetypes, targeting and wallet currencies. Once `Shared/Stats` (and the §6 types) exist, point `_Registry` at them so each list exists once, and keep `Registry.spec` green.
-- Definition Luau types (ClassDefinition §7.5, WeaponDefinition §10.1, EnemyDefinition §8.4) are not in `_Registry`; the registry returns `{ [string]: unknown }`. §6 types are this substage's scope; add definition types only where A1.7 code needs them.
-- §6.1 profile types are schema v1: do not change a field (STOP AND ASK). Write them exactly as §6.1 says, with `Serum` (D-011).
-- Mirror export: `docs/MIRROR.md` (D-015). The last export took two calls (92K + 77K characters, `START = 37`); expect two or three. Then `bash tools/analyze.sh` → `diagnostics: 0` (D-014). The place has 41 scripts: the export's DataModel count is the reference.
-- `multi_edit` splits dotted script names; create `*.spec` modules with `execute_luau` (`Instance.new` + `Source` + `Name`).
-- Tests: run on a clone of `ServerStorage.Tests` in Edit mode. Modules outside `Tests` hit the Edit-mode require cache (a load error stays cached too): have the spec require a clone of `Shared` (as `Registry.spec` does) and take types with `typeof(require(...))` in a type alias.
-- Backups: `SerializationService:SerializeInstancesAsync(service:GetChildren())` → `EncodingService:Base64Encode` → JSON padded past 66K so the harness saves it to a file; decode locally and verify length + FNV-1a. ServerStorage is now 69 KB (92 KB base64): send it in two calls (`string.sub` at 48,000). Copy unchanged services from the previous backup after a hash match.
+- Architecture: §9.1 (SimulationClock: one pausable clock per match; run code reads `match.Clock`, never `os.clock()`), §7.2 (transport, per-player token bucket per remote), §19 (validation order), §5.1/§5.2 (Platform and Telemetry domains, phase 8 network), `docs/API_CONTRACTS.md` Rules (rows, rates, guards; remotes under `ReplicatedStorage/Net/<Name>`). D-017: the Telemetry wrapper is `MetricsService` (it wraps Roblox AnalyticsService); `ErrorReportService` and `RemoteConfigService` exist as A1.4 placeholders; `FeatureFlagService` is new (Platform). The Lifecycle boot rejects Roblox built-in service names (`game:FindService`); check new names the same way.
+- Exit check for A1: 0 boot errors, 0 analysis warnings, TestRunner ≥ 40 tests / 0 failures (196 now), broken-definition boot failure demonstrated (A1.6). After A1.8 passes, `CURRENT_PHASE.md` = A2.1.
+- A1.7 (D-020): stats come from `Shared/Stats/StatPipeline`; vocabularies from `Shared/Types/Common` (lists are frozen `{ string }`; Luau arrays are invariant, so build typed lists through typed varargs). Guards for numbers can reuse the "finite" checks (NaN/inf rejected). `tools/check_stats.py` must print MATCH whenever STATS.md or StatRegistry changes.
+- No remote exists yet (phase 8 prints `0 remotes`). A remote needs its API_CONTRACTS row, guard and rate before it is created, in phase 8 only (CLAUDE.md rule 6).
+- Mirror export: `docs/MIRROR.md` (D-015). The A1.7 export took three calls (94K + 94K + 66K, `START = 37`, then `49`); expect three or four. Then `bash tools/analyze.sh` → `diagnostics: 0` (D-014). The place has 51 scripts: the export's DataModel count is the reference.
+- `multi_edit` splits dotted script names; create `*.spec` modules with `execute_luau` (`Instance.new` + `Source` + `Name`). Long sources go in one execute_luau call per file or two, inside `[==[ ... ]==]`, and are hash-checked against the local draft.
+- Tests: run on a clone of `ServerStorage.Tests` in Edit mode. Modules outside `Tests` hit the Edit-mode require cache: specs require a clone of `Shared` and take types with `typeof(require(...))`.
+- Backups: `SerializationService:SerializeInstancesAsync(service:GetChildren())` → `EncodingService:Base64Encode` → JSON padded past 66K so the harness saves it to a file; decode locally and verify length + FNV-1a. ServerStorage is now 79.8 KB (106K base64): three calls at 48,000 characters. Copy unchanged services from the previous backup after a hash match.
 - Every module `--!strict`. Vendor code (`*/Vendor/*`) is out of the zero-warning rule.
-- Open owner item: D-012 (paid random items; before B1).
+- Open owner item: D-012 (paid random items; before B1). D-020 lists A1.7 readings the owner may overrule.
 
 ## On pass
-Set this file to **A1.8**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.
+Set this file to **A2.1**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.

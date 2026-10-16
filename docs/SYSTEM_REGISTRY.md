@@ -100,7 +100,7 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | Domain lifecycle + init order | A1.4 | Tested | `Server/Lifecycle` + one placeholder service per domain; 14 tests in `Tests/unit/Lifecycle.spec` (D-016) |
 | Event bus | A1.5 | Tested | `Shared/Events/EventBus` + `Catalog` (37 events typed); 24 tests in `Tests/unit/EventBus.spec`; Bootstrap publishes `BootCompleted` (D-018) |
 | Definitions registry + validation | A1.6 | Tested | `Shared/Definitions/_Registry`, 18 folder schemas (4 fixed, 14 provisional), 19 samples; 26 tests in `Tests/unit/Registry.spec`; a bad definition stops the boot in phase 3 (D-019) |
-| StatPipeline + DamageCalculator | A1.7 | Planned | |
+| StatPipeline + DamageCalculator | A1.7 | Tested | `Shared/Stats/{StatRegistry,StatPipeline,DamageCalculator}`; §6 types in `Shared/Types/{Common,Profile,Run,Match}`; 106 + 18 + 4 tests (StatPipeline, DamageCalculator, Types specs); D-020 |
 | SimulationClock | A1.8 | Planned | |
 | Net layer (contracts, buckets, codecs) | A1.8 | Planned | |
 | TestRunner | A1.2 | Planned | |

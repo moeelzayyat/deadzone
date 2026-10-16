@@ -15,6 +15,8 @@
 -- others are provisional: the substage in their `settles` entry settles them here and in the decision log (D-019).
 
 local Catalog = require(script.Parent.Parent.Events.Catalog)
+local StatRegistry = require(script.Parent.Parent.Stats.StatRegistry)
+local Common = require(script.Parent.Parent.Types.Common)
 
 export type Kind =
 	"Classes"
@@ -78,40 +80,15 @@ type RefUse = { path: string, target: string, id: string }
 local PREFIX = "[Definitions] "
 local MAX_LISTED = 40
 
--- Shared vocabularies. STATS and the stat layers mirror docs/STATS.md until A1.7 adds Shared/Stats.
-local RARITY = { "Common", "Uncommon", "Rare", "Epic", "Legendary" } -- ART_BIBLE rarity tokens
-local DAMAGE_TAGS = { "Ballistic", "Blade", "Fire", "Shock", "Explosive", "Toxic" } -- STATS.md
-local ARCHETYPES = { "Projectile", "Spread", "Pierce", "Explosive", "Zone", "Orbit", "Chain", "Boomerang", "Deployable", "Aura" } -- §7.4
-local TARGETING = { "Nearest", "Random", "LowestHealth", "HighestHealth", "Elite", "Cursor" } -- §7.4
-local WALLET = { "Gold", "Serum", "Samples" } -- §6.1 Wallet: gameplay currencies
-local STATS = {
-	"MaxHealth",
-	"HealthRegen",
-	"Armor",
-	"MoveSpeed",
-	"DamagePct",
-	"AttackSpeedPct",
-	"CooldownReduction",
-	"CritChance",
-	"CritMult",
-	"ProjectileCount",
-	"Pierce",
-	"AreaSize",
-	"Range",
-	"PickupRadius",
-	"XPGainPct",
-	"Luck",
-	"GoldFindPct",
-	"DodgeDistance",
-	"DodgeIFrames",
-	"SignatureDurationPct",
-	"HealingPct",
-	"WeaponSlots",
-	"PassiveSlots",
-	"Rerolls",
-	"Banishes",
-}
-local PET_STATS = { "MaxHealth", "PickupRadius", "DamagePct", "HealingPct", "CritChance", "XPGainPct" } -- STATS.md pets row
+-- Shared vocabularies, each defined once in Types/Common and Stats/StatRegistry (A1.7).
+local RARITY: { string } = Common.RARITY -- ART_BIBLE rarity tokens
+local DAMAGE_TAGS: { string } = Common.DAMAGE_TAGS -- STATS.md
+local ARCHETYPES: { string } = Common.ARCHETYPES -- §7.4
+local TARGETING: { string } = Common.TARGETING -- §7.4
+local WALLET: { string } = Common.CURRENCIES -- §6.1 Wallet: gameplay currencies
+local SLOTS: { string } = Common.SLOTS -- §11
+local STATS: { string } = StatRegistry.IDS -- docs/STATS.md
+local PET_STATS: { string } = StatRegistry.PET_STATS -- STATS.md pets row
 local MAX_PROTOCOL = 7 -- §2.3
 local BOSS_MIN_TELEGRAPH = 0.6 -- §8.4
 
@@ -198,6 +175,14 @@ local function checkLevels(def: any, fields: { string }, maxField: string, repor
 		if values ~= nil and #values ~= def[maxField] then
 			report(`{field}: has {#values} levels, {maxField} is {def[maxField]}`)
 		end
+	end
+end
+
+-- docs/STATS.md "Allowed layers": a definition may only change a stat through a layer that stat takes.
+local function checkLayer(stat: string, layer: string, path: string, report: Report)
+	local statRow = StatRegistry.BY_ID[stat]
+	if statRow ~= nil and table.find(statRow.Layers, layer :: StatRegistry.Layer) == nil then
+		report(`{path}: {stat} does not take layer {layer} (allowed: {table.concat(statRow.Layers, ", ")})`)
 	end
 end
 
@@ -292,6 +277,7 @@ local SCHEMAS: { [string]: Schema } = {
 		},
 		check = function(def: any, report: Report)
 			checkLevels(def, { "Values" }, "MaxLevel", report)
+			checkLayer(def.Stat, def.Layer, "Layer", report)
 		end,
 	},
 	Evolutions = {
@@ -432,7 +418,7 @@ local SCHEMAS: { [string]: Schema } = {
 		fields = {
 			Id = T.id,
 			DisplayName = T.string,
-			Slot = enum({ "Weapon", "Helmet", "Chest", "Legs", "Trinket" }),
+			Slot = enum(SLOTS),
 			Rarity = enum(RARITY),
 			ClassTags = optional(array(T.string)),
 			Icon = T.asset,
@@ -451,6 +437,7 @@ local SCHEMAS: { [string]: Schema } = {
 		},
 		check = function(def: any, report: Report)
 			checkLevels(def, { "Cost" }, "MaxRank", report)
+			checkLayer(def.Effect.Stat, def.Effect.Layer, "Effect.Layer", report)
 		end,
 		checkAll = function(defs: { any }, report: (id: string, message: string) -> ())
 			-- §14: the skill tree is a directed acyclic graph.
@@ -499,6 +486,9 @@ local SCHEMAS: { [string]: Schema } = {
 			Icon = T.asset,
 			Model = T.asset,
 		},
+		check = function(def: any, report: Report)
+			checkLayer(def.Stat, def.Layer, "Layer", report)
+		end,
 	},
 	Eggs = {
 		settles = "B3.1",
