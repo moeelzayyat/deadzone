@@ -197,3 +197,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 
 ### 2026-10-16 · A1.6 — Definitions registry · ✅ passed (auto-approved, D-010)
 - Steps 1–7 met with real results (TestRunner 67/0, analysis 0, play test ×2: broken boot stopped with a clear message, fixed boot clean with 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.7.
+- Commit `0b7f4e3` (build, mirror, docs, pass), then a commit recording the hash.

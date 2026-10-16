@@ -582,7 +582,7 @@ RESTORE POINT: backups/A1.6_passed_20261016-1627/ — 6 × .rbxm (D-010), each v
   serialization: ReplicatedStorage 29930 B 2c9357c9 · ServerScriptService 42408 B 0287e81a · ServerStorage 69313 B 33be9d88
   (exported; ServerStorage base64 in two calls) · Lighting 3445 B 866e3754 · StarterPlayerScripts 1961 B 1fc169ff ·
   Workspace 12147 B 5ac584ad (equal A1.5, copied).
-MIRROR COMMIT: see the A1.6 commit on main — mirror/src (Definitions/_Registry + 19 samples, Registry.spec, Bootstrap),
+MIRROR COMMIT: 0b7f4e3 "A1.6: definitions registry ..." — mirror/src (Definitions/_Registry + 19 samples, Registry.spec, Bootstrap),
   mirror/sourcemap.json, docs.
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Details D-019.
 NOTES / DEBT:
