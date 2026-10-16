@@ -19,6 +19,7 @@ Co-op zombie horde survival action RPG for Roblox. Survivor-like loop (auto-weap
 | `docs/LIVEOPS_PLAYBOOK.md` | Update cadence and release procedure. |
 | `docs/ART_BIBLE.md` | Visual direction and UI theme tokens. |
 | `docs/HANDOFF_REPORT.md` | Append-only checkpoint records. |
+| `docs/MIRROR.md` | How scripts are exported from Studio into `mirror/src/`. |
 | `assets/ART_SOURCES.md` | Every asset ID, origin, license, owner. |
 | `mirror/src/` | Read-only export of Studio scripts, per checkpoint. |
 
@@ -55,7 +56,7 @@ Play tests run through `start_stop_play` and are read back with `get_console_out
 ### Backups
 - **Restore points (D-010):** at every checkpoint Claude exports each service to `backups/<ID>_passed_<YYYYMMDD-HHMM>/` as one `.rbxm` per service (`SerializationService`). Terrain, Camera and service-level properties are not captured. `backups/` is git-ignored and stays on this machine.
 - **Studio version history:** a named `<ID> passed` version is optional; the MCP cannot create one.
-- **Git mirror:** after each checkpoint Claude exports every script into `mirror/src/` (same tree as Studio) and commits with the substage ID.
+- **Git mirror:** after each checkpoint Claude exports every script into `mirror/src/` (same tree as Studio) and commits with the substage ID. Procedure: `docs/MIRROR.md` (`tools/mirror_export.luau` in Studio, then `python tools/mirror_write.py <result files>`).
 
 ### What is not committed
 `backups/`, every `.rbxl/.rbxlx/.rbxm/.rbxmx` outside `assets/`, and `.claude/settings.local.json` (per-machine permissions). See `.gitignore`.

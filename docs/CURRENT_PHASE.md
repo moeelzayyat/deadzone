@@ -1,28 +1,27 @@
 # CURRENT PHASE
 
 **Stage:** A1 — Foundation
-**Substage:** A1.3 — Git mirror
+**Substage:** A1.4 — Domains and lifecycle
 **Status:** ⬜ Not started
-**Last checkpoint passed:** A1.2 (2026-10-16, auto-approved)
+**Last checkpoint passed:** A1.3 (2026-10-16, auto-approved)
 **Started:** —
 **Planned stage start:** A1 2026-10-19 (D-013)
 
 ## Deliverables (from ROADMAP.md)
-- Export procedure (Claude reads every script and writes `mirror/src/...`); first export committed.
+- 10 domain folders, `Init`/`Start` contract, bootstrap asserts order, one placeholder service per domain.
 
 ## Checkpoint — passes when
-Mirror tree matches the Studio tree one-to-one (script count equal).
+Deliberately swapping two services' phases triggers the assertion in a test.
 
 ## Verify via
-`script_search` count vs mirror file count.
+TestRunner.
 
 ## Notes for this substage
-- Mirror mapping in use since A1.1: `Shared`→`mirror/src/shared`, `Server`→`src/server`, `Client`→`src/client`, `Tests`→`src/tests`; Script→`.server.luau`, LocalScript→`.client.luau`, ModuleScript→`.luau`, StringValue (license text)→`.txt`. Names keep dots (`TestRunner.spec.luau`).
-- A1.2 exported with one `execute_luau` call that returns the tree of the 4 roots plus every non-vendor source with length + FNV-1a (padded past 64K so the harness saves it to a file), then a local Python script wrote the files, verified every hash (vendor files hash-checked in place) and regenerated `mirror/sourcemap.json`. That script lived in the session scratchpad; A1.3 should put the procedure in the repo and document it.
-- Tests: run on a clone of `ServerStorage.Tests` in Edit mode (Studio caches `require` per ModuleScript across `execute_luau` calls); in a play test plain `require` is fresh. See the TestRunner header comment.
-- Step 2 uses `tools/analyze.sh` (luau-lsp, D-014) after the export; it must print `diagnostics: 0`.
+- The 10 domain folders already exist under `Server/Domains` (A1.1). `Server/Bootstrap` walks phases 0–8 in §5.2 order and lists ModuleScripts directly inside each domain folder as services; `Vendor` subfolders are not services.
+- Mirror export: `docs/MIRROR.md` (D-015). Paste `tools/mirror_export.luau` into `execute_luau` (Edit), then `python tools/mirror_write.py <result files>`; it must print `ALL OK` with `MATCH`. Then `bash tools/analyze.sh` → `diagnostics: 0` (D-014).
+- Tests: run on a clone of `ServerStorage.Tests` in Edit mode (Studio caches `require` per ModuleScript across `execute_luau` calls); in a play test plain `require` is fresh. Modules under test outside `Tests` hit the same cache: run them in a play test or clone what you require.
 - Every module `--!strict`. Vendor code (`*/Vendor/*`) is out of the zero-warning rule.
 - Open owner item: D-012 (paid random items). Doesn't block A1; must be decided before B1.
 
 ## On pass
-Set this file to **A1.4**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.
+Set this file to **A1.5**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.

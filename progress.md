@@ -3,9 +3,10 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** A1.3 — Git mirror (⬜ not started). A1.2 TestRunner ✅ passed 2026-10-16 (auto-approved). P0 complete.
+- **Substage:** A1.4 — Domains and lifecycle (⬜ not started). A1.3 Git mirror ✅ passed 2026-10-16 (auto-approved). P0 complete.
 - **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency). Must be decided before B1.
-- **Last passed:** A1.2 TestRunner (auto-approved, D-010). Before that, A1.1 Studio layout (auto-approved).
+- **Last passed:** A1.3 Git mirror (auto-approved, D-010). Before that, A1.2 TestRunner and A1.1 Studio layout (auto-approved).
+- **Mirror (D-015):** `docs/MIRROR.md`. Paste `tools/mirror_export.luau` into execute_luau (Edit), then `python tools/mirror_write.py <result files>` → `ALL OK` + `MATCH`. Chunks at 95K (`START = next`); vendor re-sent only with `INCLUDE_VENDOR = true`.
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
 - **Studio:** place 72812275891657 / universe 10771233280. The Studio MCP lists several open places; always target "Deadzone (placeId: 72812275891657)".
 - **Place contents:** §4.3 layout (50 folders under the 4 roots), `Server/Bootstrap` (Script), `Client/Bootstrap` (LocalScript), ProfileStore in `Server/Domains/Data/Vendor` with `ProfileStore_LICENSE`. `ServerStorage/Tests/TestRunner` + `Tests/unit/TestRunner.spec` (A1.2). Plus `ServerStorage/ArtReference` (P0.3 mood scenes).
@@ -120,3 +121,20 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 ### 2026-10-16 · A1.2 — TestRunner · ✅ passed (auto-approved, D-010)
 - Handoff record appended, CP line in DECISION_LOG, CURRENT_PHASE advanced to A1.3, ROADMAP footer updated (A1 stays 🟨).
 - Commit `4905af7` (build, mirror, pass), then a commit recording the hash.
+
+### 2026-10-16 · A1.3 — Git mirror · 🟨 in progress
+- 15:22 UTC: started. Read CLAUDE.md, progress.md, CURRENT_PHASE, ROADMAP A1.3 row, architecture §4.2/§4.3, DECISION_LOG D-012…D-014 + CP lines, A1.2 handoff.
+- Studio connected (Deadzone 72812275891657). Whole-DataModel scan: 5 LuaSourceContainers, all under the 4 roots (Server/Bootstrap, Client/Bootstrap, Data/Vendor/ProfileStore, Tests/TestRunner, Tests/unit/TestRunner.spec).
+- Plan: put the A1.2 one-off procedure in the repo as `tools/mirror_export.luau` (run through execute_luau, returns manifest + tree + sources, chunked under 100K) and `tools/mirror_write.py` (writes files, verifies length + FNV-1a, deletes stale mirror files, regenerates the sourcemap, prints the script count check), documented in `docs/MIRROR.md`.
+- 15:30 UTC: wrote `tools/mirror_export.luau` (Studio side, read-only; manifest + tree + chunked sources, padded to 66K, errors for scripts outside the roots / nested scripts / case-insensitive duplicate names / non-file-safe names) and `tools/mirror_write.py` (writes, verifies length + FNV-1a, deletes stale files, regenerates sourcemap, count check). luau-lsp on the export script: 0 diagnostics.
+- Export run: 1 call (66K padded, saved by the harness) → `ALL OK`, written 4, `scripts: DataModel 5 · under roots 5 · mirror 5 · StringValues 1/1 · MATCH`. Sourcemap now sorted by name; equivalent to the A1.2 one ignoring child order.
+- Full rebuild test: deleted mirror/src/{client,server,tests}, exported with INCLUDE_VENDOR = true → 2 chunks (91,850 chars, next = 5; then 66K) → written 6, all OK, `git status` shows no source changes. One chunk alone → `INCOMPLETE: run the export again with START = 5`.
+- Negative controls: local — stale file deleted (DEL), hand-edited vendor file BAD, hand-edited non-vendor file overwritten, injected error → "nothing written", parts with different manifests → MISMATCH. Studio — 6 temporary instances (script in ServerStorage root, Dup/dup, nested module, `bad:name`) → all 4 error kinds reported (DataModel 11 / under roots 10); then destroyed, back to 5 scripts.
+- `script_search` ("Bootstrap, TestRunner, ProfileStore, spec") lists 5 scripts = 5 `.luau` mirror files. It caps at 10 results, so past 10 scripts the export's DataModel count is the reference (documented in `docs/MIRROR.md`).
+- Checkpoint so far: TestRunner (Edit clone) `3 passed, 0 failed (1 file, 132.96 ms)`; analyze.sh files 4 / diagnostics 0; play test Server `3 passed, 0 failed (132.82 ms)`, boot 0.35 ms, 0 errors, 5 known UIBlox warnings.
+- Timestamp correction: the "15:30 UTC" line above was ~15:26 UTC (backup clock read 15:27).
+- 15:27 UTC: backup `backups/A1.3_passed_20261016-1527`: 5 services equal A1.2 (copied), Workspace exported fresh (7831 B eaa94454); all 6 verified against Studio.
+- Docs: `docs/MIRROR.md` (procedure), D-015 (export method), README pointer, handoff record, CP line, CURRENT_PHASE → A1.4, ROADMAP footer.
+
+### 2026-10-16 · A1.3 — Git mirror · ✅ passed (auto-approved, D-010)
+- Steps 1–7 met with real results (TestRunner 3/0, analysis 0, play test 0 errors, counts MATCH 5 = 5, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.4.

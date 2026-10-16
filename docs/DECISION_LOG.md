@@ -133,3 +133,13 @@ Approved by: owner (2026-10-16, "ok download luau-lsp and install it", A1.1 thre
 ## CP — A1.1 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16
 
 ## CP — A1.2 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16
+
+## D-015 — Mirror export through one execute_luau bundle
+2026-10-16 · A1.3 · Accepted
+Context: architecture §4.2 describes the Git mirror as Claude exporting every script "via `script_read`". `script_read` returns numbered lines one script at a time, so byte-exact copies need reassembly and give no way to prove the copy equals Studio or that no script was missed.
+Decision: The export runs `tools/mirror_export.luau` through `execute_luau` (read-only). It returns a manifest of every script and StringValue under the four roots (byte length + FNV-1a), the tree, a DataModel-wide script count and the sources in chunks under 100K characters. `tools/mirror_write.py` writes the files, checks every hash, deletes stale files, regenerates `mirror/sourcemap.json` and checks the counts. Scripts outside the four roots, nested scripts, case-insensitive duplicate names and names that can't be file names stop the export. Procedure in `docs/MIRROR.md`. `script_read` stays for reading single scripts and `script_search` for the count cross-check.
+Alternatives: `script_read` per script (rejected: no byte-exact proof, one call per script); Rojo-style sync (rejected: §4.2 rules out Rojo).
+Consequences: same purpose and output as §4.2 (backup, diff and review; never imported back); only the read method differs, so §4.2 is not edited. Vendor code is hash-checked in place and re-sent only with `INCLUDE_VENDOR = true`.
+Approved by: implementation detail within §4.2, recorded under the standing owner approval of 2026-10-16 (D-010)
+
+## CP — A1.3 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16

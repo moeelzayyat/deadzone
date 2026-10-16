@@ -11,7 +11,7 @@
      "className": "Folder",
      "children": [
       {
-       "name": "Types",
+       "name": "Config",
        "className": "Folder"
       },
       {
@@ -23,15 +23,7 @@
          "className": "Folder"
         },
         {
-         "name": "Weapons",
-         "className": "Folder"
-        },
-        {
-         "name": "Passives",
-         "className": "Folder"
-        },
-        {
-         "name": "Evolutions",
+         "name": "Eggs",
          "className": "Folder"
         },
         {
@@ -39,19 +31,11 @@
          "className": "Folder"
         },
         {
-         "name": "Protocol",
+         "name": "Evolutions",
          "className": "Folder"
         },
         {
-         "name": "Missions",
-         "className": "Folder"
-        },
-        {
-         "name": "Zones",
-         "className": "Folder"
-        },
-        {
-         "name": "Loot",
+         "name": "Forge",
          "className": "Folder"
         },
         {
@@ -59,7 +43,15 @@
          "className": "Folder"
         },
         {
-         "name": "Skills",
+         "name": "Loot",
+         "className": "Folder"
+        },
+        {
+         "name": "Missions",
+         "className": "Folder"
+        },
+        {
+         "name": "Passives",
          "className": "Folder"
         },
         {
@@ -67,11 +59,7 @@
          "className": "Folder"
         },
         {
-         "name": "Eggs",
-         "className": "Folder"
-        },
-        {
-         "name": "Forge",
+         "name": "Protocol",
          "className": "Folder"
         },
         {
@@ -89,11 +77,23 @@
         {
          "name": "Shop",
          "className": "Folder"
+        },
+        {
+         "name": "Skills",
+         "className": "Folder"
+        },
+        {
+         "name": "Weapons",
+         "className": "Folder"
+        },
+        {
+         "name": "Zones",
+         "className": "Folder"
         }
        ]
       },
       {
-       "name": "Stats",
+       "name": "Events",
        "className": "Folder"
       },
       {
@@ -101,11 +101,11 @@
        "className": "Folder"
       },
       {
-       "name": "Events",
+       "name": "Stats",
        "className": "Folder"
       },
       {
-       "name": "Config",
+       "name": "Types",
        "className": "Folder"
       },
       {
@@ -125,6 +125,10 @@
      "className": "Folder",
      "children": [
       {
+       "name": "Admin",
+       "className": "Folder"
+      },
+      {
        "name": "Bootstrap",
        "className": "Script",
        "filePaths": [
@@ -136,11 +140,7 @@
        "className": "Folder",
        "children": [
         {
-         "name": "Platform",
-         "className": "Folder"
-        },
-        {
-         "name": "Telemetry",
+         "name": "Combat",
          "className": "Folder"
         },
         {
@@ -171,11 +171,19 @@
          "className": "Folder"
         },
         {
-         "name": "Combat",
+         "name": "Encounter",
          "className": "Folder"
         },
         {
-         "name": "Encounter",
+         "name": "Facilities",
+         "className": "Folder"
+        },
+        {
+         "name": "LiveOps",
+         "className": "Folder"
+        },
+        {
+         "name": "Platform",
          "className": "Folder"
         },
         {
@@ -187,18 +195,10 @@
          "className": "Folder"
         },
         {
-         "name": "Facilities",
-         "className": "Folder"
-        },
-        {
-         "name": "LiveOps",
+         "name": "Telemetry",
          "className": "Folder"
         }
        ]
-      },
-      {
-       "name": "Admin",
-       "className": "Folder"
       }
      ]
     }
@@ -220,6 +220,20 @@
        ]
       },
       {
+       "name": "fixtures",
+       "className": "Folder",
+       "children": [
+        {
+         "name": "profiles",
+         "className": "Folder"
+        }
+       ]
+      },
+      {
+       "name": "integration",
+       "className": "Folder"
+      },
+      {
        "name": "unit",
        "className": "Folder",
        "children": [
@@ -229,20 +243,6 @@
          "filePaths": [
           "mirror/src/tests/unit/TestRunner.spec.luau"
          ]
-        }
-       ]
-      },
-      {
-       "name": "integration",
-       "className": "Folder"
-      },
-      {
-       "name": "fixtures",
-       "className": "Folder",
-       "children": [
-        {
-         "name": "profiles",
-         "className": "Folder"
         }
        ]
       }
@@ -274,15 +274,15 @@
          "className": "Folder"
         },
         {
-         "name": "UI",
-         "className": "Folder"
-        },
-        {
          "name": "Effects",
          "className": "Folder"
         },
         {
          "name": "Render",
+         "className": "Folder"
+        },
+        {
+         "name": "UI",
          "className": "Folder"
         }
        ]
