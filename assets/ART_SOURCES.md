@@ -6,7 +6,7 @@ Columns: **Asset** · **Type** (Model / Mesh / Texture / Audio / Package / Font 
 
 | Asset | Type | Asset ID | Origin | License | Owner / creator | Pinned | Used in | Status |
 |---|---|---|---|---|---|---|---|---|
-| ProfileStore | Package (ModuleScript) | 109379033046155 | Creator Store | per listing (MIT-style; confirm on insert) | loleris | version: asset updated 2025-03-25T15:59:32Z (GetProductInfo, read 2026-10-16) | `ServerScriptService/Server/Domains/Data` | Chosen, insert in A1 |
+| ProfileStore | Package (ModuleScript) | 109379033046155 (official library model, linked from the README and the docs tutorial) | Creator Store; source github.com/MadStudioRoblox/ProfileStore | **Apache-2.0** (LICENSE in the repo, checked 2026-10-16; no NOTICE file). Obligations: keep the `MAD STUDIO (by loleris)` header; mark any file we modify; keep a copy of the license with it (a `LICENSE` StringValue beside the module at insert). | loleris (Mad Studio) | asset updated 2025-03-25T15:59:32Z (GetProductInfo, read 2026-10-16). GitHub: wally.toml 1.0.3, last commit 45c9847 on 2025-07-31, no release tags. At insert, compare the source against GitHub and record which one is used. | `ServerScriptService/Server/Domains/Data` | Chosen, insert in A1 |
 | Place | Experience | place: 72812275891657 / universe: 10771233280 | owner | — | owner (user 11752219158) | created: 2026-10-16T11:35:33Z | — | Active |
 
 ## Placeholders (A1–A3)
@@ -31,6 +31,14 @@ Generated meshes/textures and primitives are recorded here too, marked `Placehol
 | Thumbnail 1 — P7 extraction | — | `thumbnails/t1_extraction.png` | | not made |
 | Thumbnail 2 — card choice | — | `thumbnails/t2_cards.png` | | not made |
 | Thumbnail 3 — four classes | — | `thumbnails/t3_classes.png` | | not made |
+
+## Licenses — how to fill the License column
+- **Creator Store packages with a source repo** (ProfileStore, type guards, UI libraries): record the repo's license (SPDX name) and its obligations, read from the LICENSE file, not from the listing text. The listing page alone is not enough.
+- **Creator Store assets without a stated license** (models, meshes, images): record "Roblox Terms of Use (Creator Store), no separate license". Note the creator and the listing date. Never use such an asset where the listing or description forbids it.
+- **Audio**: Creator Store audio only, uploaded by Roblox or by a licensed partner, or audio the owner holds a written license for. Record the uploader.
+- **Generated in Studio** (`generate_mesh`, `generate_texture`, primitives): "generated in Studio, owner-made". Mark them `Placeholder`.
+- **Commissioned**: contract date and the right to use and modify.
+- Every asset also passes the no-gore rule (`docs/ART_BIBLE.md` rule 7, `docs/COMPLIANCE.md` §2). Uploaded assets are moderated whatever the experience's maturity label is.
 
 ## Rules
 - Reference-game assets, UI art, names or code: never.

@@ -3,8 +3,9 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** P0.5 — Compliance basics (⬜ not started). Next thread opens it.
-- **Last passed:** P0.4 Content bible v0 (owner-approved 2026-10-16 13:19 UTC, with D-011 renames Engineer → Mechanic, Essence → Serum).
+- **Substage:** P0.6 — Budget and cadence (⬜ not started). Next thread opens it. Needs the owner's own planned stage dates to pass.
+- **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency). Must be decided before B1.
+- **Last passed:** P0.5 Compliance basics (auto-approved 2026-10-16, D-010). Before that, P0.4 Content bible v0 (owner-approved, D-011 renames).
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
 - **Studio:** place 72812275891657 / universe 10771233280. The Studio MCP lists several open places; always target "Deadzone (placeId: 72812275891657)".
 - **Place contents:** 0 scripts. Root folders exist (`ReplicatedStorage/Shared`, `ServerScriptService/Server`, `StarterPlayerScripts/Client`, `ServerStorage/Tests`) plus `ServerStorage/ArtReference` (P0.3 mood scenes).
@@ -49,3 +50,15 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 ### 2026-10-16 · P0.4 — Content bible v0 · ✅ passed (owner-approved)
 - Handoff record appended, CP line in DECISION_LOG, CURRENT_PHASE advanced to P0.5.
 - Commit `d4d4a46`.
+
+### 2026-10-16 · P0.5 — Compliance basics · 🟨 in progress
+- 13:25 UTC: started. Read CLAUDE.md, progress.md, CURRENT_PHASE, ROADMAP P0.5 row, architecture §0/§4.2/§21/§22, DECISION_LOG D-005…D-011 + CP lines.
+- Read Roblox Creator Hub "Content maturity and compliance" (questionnaire: violence, blood, fear, crude humor, gambling, language, romance, alcohol, social hangout, free-form creation, sensitive issues, paid random items, paid trading, media, AI) and "Paid random items policy guidelines". en.help.roblox.com returned 403, so the Help Center articles were not read.
+- ProfileStore license checked on GitHub (MadStudioRoblox/ProfileStore): Apache-2.0, no NOTICE file, wally.toml 1.0.3, last commit 2025-07-31. The docs and README link asset 109379033046155 as the official library model. ART_SOURCES previously said "MIT-style"; that was wrong and is being corrected.
+- 13:28 UTC: wrote `docs/COMPLIANCE.md` v0. It answers all 15 questionnaire sections (expected label Mild: violence and fear Mild/Repeated, no blood), sets 8 guardrails that force a resubmission, acknowledges §21 unchanged, and lists the review points (PT.3 submit, B1, L1.3, each season).
+- Finding for the owner (D-012, proposed): the §0 "Cosmetic-only Robux chests" row and the premium-track "bonus currency" (§21.2) would make eggs, chests and rerolls paid random items under Roblox policy. Recommended: fixed-price cosmetics, and premium bonus currency limited to fixed-price sinks. Nothing was changed; answer 12 is "No, pending".
+- `assets/ART_SOURCES.md`: ProfileStore row corrected to Apache-2.0 with its obligations and the GitHub version. Added a section on how to fill the License column.
+- Checkpoint: TestRunner n/a (A1), 0 scripts, play test 0 errors (5 known UIBlox warnings). Fresh service exports matched P0.4 exactly, so the P0.4 bytes were copied to `backups/P0.5_passed_20261016-1330` (all 6 verified).
+
+### 2026-10-16 · P0.5 — Compliance basics · ✅ passed (auto-approved, D-010)
+- Handoff record appended, CP line in DECISION_LOG (D-012 left open for the owner), CURRENT_PHASE advanced to P0.6.

@@ -101,3 +101,13 @@ Consequences: schema change before any profile exists, so there is no migration 
 Approved by: owner (2026-10-16, "I do approve, rename approved for both", project chat 13:19 UTC)
 
 ## CP — P0.4 passed · 2026-10-16 · approved by owner ("I do approve, rename approved for both", project chat 13:19 UTC; content bible + D-011)
+
+## D-012 — Paid random items: Robux cosmetic chests (O-1) and premium-track bonus currency (O-2)
+2026-10-16 · P0.5 · **Proposed, awaiting owner**
+Context: Roblox's paid random items policy covers random items bought directly or indirectly with Robux, including with paid in-game currency, and counts pity systems as probability modifiers. Two lines in the docs would make DEADZONE have paid random items: the §0 table says "Cosmetic-only Robux chests" (this contradicts §21.2 and §21.4 answer 3, "no chance purchases"), and §21.2 gives the premium battle pass "bonus currency". If that currency is Gold, Serum or Samples, eggs, gameplay chests and Forge rerolls become indirect paid random items.
+Proposal (see `docs/COMPLIANCE.md` §3): O-1, sell cosmetics at fixed prices and correct the §0 row. O-2, premium-track bonus currency only buys fixed-price items (e.g. the season's event currency), never Gold, Serum or Samples.
+Alternatives: keep both and treat eggs, chests and rerolls as paid random items (percent odds summing to 100% before spend, `ArePaidRandomItemsRestricted` handling per player).
+Consequences: monetization and §0/§21 wording are owner decisions, so nothing has changed. The questionnaire answer 12 stays "No, pending O-1/O-2". This blocks nothing before B1 (the §21.5 re-check point).
+Approved by: — (pending)
+
+## CP — P0.5 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16 (D-012 remains open for the owner; not covered by this approval)

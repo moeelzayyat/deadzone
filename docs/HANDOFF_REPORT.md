@@ -153,3 +153,33 @@ NOTES / DEBT:
   - Protocol multipliers (×1.0–×3.0) and enemy earliest-protocol values are starting points for A3 tuning.
 NEXT: P0.5
 ```
+
+```text
+CHECKPOINT: P0.5 Compliance basics
+DATE: 2026-10-16
+TESTRUNNER: n/a — TestRunner is an A1 deliverable (D-002); no tests exist yet.
+SCRIPT ANALYSIS: 0 scripts in the place (execute_luau scan of LuaSourceContainer in 8 services → scripts=0), nothing to analyse.
+PLAY TEST: start_stop_play(start) → execute_luau(Server): printed "[P0.5] play test ok players=1 character=true ArtReference=true"
+  → get_console_output → start_stop_play(stop).
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, same as P0.1–P0.4).
+NUMBERS: docs/COMPLIANCE.md = 1915 words · questionnaire sections answered 15/15 (Violence, Blood, Fear, Crude humor,
+  Unplayable gambling, Strong language, Romance/private/adult, Alcohol, Social hangout, Free-form creation, Sensitive issues,
+  Paid random items, Paid item trading, Media, AI) · expected label Mild (Violence Mild/Repeated, Fear Mild/Repeated, Blood none) ·
+  guardrail rows 8 · open owner decisions 2 (D-012: O-1 Robux cosmetic chests, O-2 premium bonus currency) ·
+  ART_SOURCES.md: 9 columns, first row ProfileStore (asset 109379033046155, Apache-2.0, GitHub wally.toml 1.0.3).
+RESTORE POINT: backups/P0.5_passed_20261016-1330/ — 6 × .rbxm (rule: D-010). Place unchanged since P0.4 (docs-only substage):
+  a fresh SerializationService export of each service matched P0.4 on length and FNV-1a, so the P0.4 bytes were copied
+  and re-checked locally (all 6 OK). Lighting 3445 B 866e3754 · ServerStorage 48583 B e36937fc · Workspace 7831 B 68417a0c ·
+  ReplicatedStorage 577 B 866a0dbe · ServerScriptService 577 B f1d87fa0 · StarterPlayerScripts 577 B 29f33cc4.
+MIRROR COMMIT: see the P0.5 commit on main (mirror/src empty: 0 scripts to export)
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). D-012 is open and waits for the owner.
+NOTES / DEBT:
+  - Sources: Creator Hub "Content maturity and compliance" and "Paid random items policy guidelines" (read 2026-10-16).
+    en.help.roblox.com returned 403, so the Help Center age-restricted policy, the Community Standards and the Kids and Select
+    requirements are still to read, at PT.3 before submitting.
+  - ART_SOURCES previously said ProfileStore was "MIT-style"; corrected to Apache-2.0 with obligations (keep header, mark
+    modifications, keep a LICENSE copy beside the module). Compare the store asset (updated 2025-03-25) against GitHub
+    (last commit 2025-07-31) at the A1 insert.
+  - The questionnaire is submitted at PT.3. An unrated experience is restricted for all players.
+NEXT: P0.6
+```
