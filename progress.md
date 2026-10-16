@@ -100,3 +100,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 
 ### 2026-10-16 · A1.1 — Studio layout · ✅ passed (auto-approved, D-010)
 - Handoff record appended, D-014 + CP line in DECISION_LOG, CURRENT_PHASE advanced to A1.2, ROADMAP footer updated (A1 stays 🟨 in the master tracker).
+- Commits `f1b0599` (build + mirror) and `2bd5cfd` (analysis + pass).

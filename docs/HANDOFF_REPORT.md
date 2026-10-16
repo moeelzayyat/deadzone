@@ -251,7 +251,7 @@ RESTORE POINT: backups/A1.1_passed_20261016-1357/ — 6 × .rbxm (rule: D-010), 
 MIRROR COMMIT: f1b0599 "A1.1: Studio layout (§4.3 folders), Server/Client Bootstrap, ProfileStore inserted and pinned; mirror
   export ..." — mirror/src/server/Bootstrap.server.luau (3860 B 0df2e9a3), mirror/src/client/Bootstrap.client.luau
   (976 B 4186be90), mirror/src/server/Domains/Data/Vendor/ProfileStore.luau (64517 B 1e3a6f3f) + ProfileStore_LICENSE.txt
-  (11357 B dc4aedc0); hashes equal the Studio sources. Sourcemap and tools/analyze.sh are in the pass commit.
+  (11357 B dc4aedc0); hashes equal the Studio sources. Pass commit 2bd5cfd adds mirror/sourcemap.json and tools/analyze.sh.
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). luau-lsp download approved by the owner
   ("ok download luau-lsp and install it", A1.1 thread 14:40 UTC), recorded as D-014.
 NOTES / DEBT:
