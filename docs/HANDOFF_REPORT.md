@@ -906,7 +906,7 @@ RESTORE POINT: backups/A2.2_passed_20261016-2018/ — ReplicatedStorage 73770 B 
   ServerStorage 125982 B 07a44239 · StarterPlayer 8456 B 2475d2fe (new file: StarterCharacter + StarterCharacterScripts)
   exported; Lighting 3445 B 866e3754, StarterPlayerScripts 18156 B 058c2cac, Workspace 7831 B eaa94454 equal A2.1 (copied);
   all 7 verified by length + FNV-1a.
-MIRROR COMMIT: <hash> "A2.2: test arena ..."
+MIRROR COMMIT: c537411 "A2.2: test arena ..." — mirror/src (ArenaGrid, ArenaRaster, Arenas/TestArena, _Registry, Flags, ArenaService, ArenaFixture, 4 new specs, Registry.spec, Lifecycle.spec), mirror/sourcemap.json, tools/arena_export.luau, docs.
 OWNER APPROVAL: auto-approved under standing owner approval of 2026-10-16 (D-022); CP line in DECISION_LOG.
 NOTES / DEBT:
   - Re-run tools/arena_export.luau after any template change; the boot names the first differing cell.

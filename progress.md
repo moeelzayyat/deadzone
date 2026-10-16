@@ -296,5 +296,6 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - Docs: D-024 + CP line, HANDOFF record, SYSTEM_REGISTRY (test arena + grid, placeholder survivor → Tested; steering note; instanced arenas → In Development), API_CONTRACTS arena table, ART_BIBLE camera line, ART_SOURCES placeholders, ROADMAP footer, CURRENT_PHASE → A2.3.
 
 ### 2026-10-16 · A2.2 — Test arena · ✅ passed (auto-approved, D-022)
+- Commit `c537411` (build, mirror, docs, pass), then a commit recording the hash.
 - Steps 1–7 met with real results (TestRunner 370/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A2.3.
 - Decided under owner delegation (revisable, D-024): Arenas definition folder, slot layout, Animate folder for the placeholder survivor, camera kept at 55°/44.
