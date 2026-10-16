@@ -154,4 +154,5 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - Docs: D-016 (lifecycle details), D-017 (proposed renames, owner), SYSTEM_REGISTRY row → Tested, API_CONTRACTS boot lifecycle table, handoff record, CP line, CURRENT_PHASE → A1.5, ROADMAP footer.
 
 ### 2026-10-16 · A1.4 — Domains and lifecycle · ✅ passed (auto-approved, D-010)
+- Commit `c708c1e` (build, mirror, docs, pass), then a commit recording the hash.
 - Steps 1–7 met with real results (TestRunner 17/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.5. D-017 waits on the owner (not blocking A1.5).

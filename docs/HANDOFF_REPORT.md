@@ -434,7 +434,7 @@ RESTORE POINT: backups/A1.4_passed_20261016-1542/ — 6 × .rbxm (D-010), each v
   serialization: ServerScriptService 41821 B f7c13864 · ServerStorage 57616 B 2b661855 (exported, base64 via EncodingService) ·
   Lighting 3445 B 866e3754 · ReplicatedStorage 872 B 24e5e75c · StarterPlayerScripts 1961 B 1fc169ff · Workspace 7831 B eaa94454
   (these 4 equal A1.3, bytes copied).
-MIRROR COMMIT: see the commit "A1.4: ..." (hash recorded in the follow-up commit).
+MIRROR COMMIT: c708c1e "A1.4: domain lifecycle ..." — mirror/src (Lifecycle, 10 placeholders, Bootstrap, Lifecycle.spec), mirror/sourcemap.json, docs.
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Contract details D-016.
 NOTES / DEBT:
   - D-017 (proposed, owner): AnalyticsService, PlayerDataService and MatchmakingService in §5.1 are Roblox built-in names; the
