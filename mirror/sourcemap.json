@@ -20,75 +20,251 @@
        "children": [
         {
          "name": "Classes",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "Sharpshooter",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Classes/Sharpshooter.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Eggs",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SampleEgg",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Eggs/SampleEgg.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Enemies",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "MutantAlpha",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Enemies/MutantAlpha.luau"
+           ]
+          },
+          {
+           "name": "Walker",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Enemies/Walker.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Evolutions",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "StormRifle",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Evolutions/StormRifle.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Forge",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SampleRecipe",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Forge/SampleRecipe.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Items",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SampleHelmet",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Items/SampleHelmet.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Loot",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "Zone1_Normal",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Loot/Zone1_Normal.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Missions",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "EvacStreets_01",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Missions/EvacStreets_01.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Passives",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "VoltageCore",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Passives/VoltageCore.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Pets",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "MedicalDrone",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Pets/MedicalDrone.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Protocol",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "Contact",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Protocol/Contact.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Quests",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SampleDailyQuest",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Quests/SampleDailyQuest.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Raids",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SampleRaid",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Raids/SampleRaid.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Seasons",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SampleSeason",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Seasons/SampleSeason.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Shop",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SampleCosmetic",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Shop/SampleCosmetic.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Skills",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "SampleSkill",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Skills/SampleSkill.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Weapons",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "TacticalRifle",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Weapons/TacticalRifle.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Zones",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "EvacuationStreets",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Zones/EvacuationStreets.luau"
+           ]
+          }
+         ]
+        },
+        {
+         "name": "_Registry",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Definitions/_Registry.luau"
+         ]
         }
        ]
       },
@@ -360,6 +536,13 @@
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/Lifecycle.spec.luau"
+         ]
+        },
+        {
+         "name": "Registry.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Registry.spec.luau"
          ]
         },
         {

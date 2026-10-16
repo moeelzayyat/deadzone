@@ -518,3 +518,82 @@ NOTES / DEBT:
 NEXT: A1.6
 ```
 
+## A1.6 — Definitions registry — 2026-10-16
+
+```text
+CHECKPOINT: A1.6 Definitions registry
+DATE: 2026-10-16 (started 16:12 UTC, passed 16:30 UTC)
+DELIVERED:
+  - ReplicatedStorage/Shared/Definitions/_Registry (ModuleScript, --!strict): one schema per §4.3 folder (18), field types with
+    bounds, references between folders, folder rules; Registry.collect(folder) / validate(entries) / load(folder) / shared();
+    get(kind, id) and all(kind) return frozen deep copies. All problems are collected into one "[Definitions] ..." error.
+    Contract in API_CONTRACTS.md, details in D-019.
+  - 19 sample definitions, one per folder (Enemies has two): Classes/Sharpshooter, Weapons/TacticalRifle, Passives/VoltageCore,
+    Evolutions/StormRifle, Enemies/Walker + MutantAlpha, Protocol/Contact, Missions/EvacStreets_01 (the §9.2 example cut to the
+    sample enemies), Zones/EvacuationStreets, Loot/Zone1_Normal, Items/SampleHelmet, Skills/SampleSkill, Pets/MedicalDrone,
+    Eggs/SampleEgg, Forge/SampleRecipe, Quests/SampleDailyQuest, Raids/SampleRaid, Seasons/SampleSeason, Shop/SampleCosmetic.
+    Names from CONTENT_BIBLE (Sample* where it has none); every number is a placeholder.
+  - Server/Bootstrap: phase 3 runs _Registry.shared() (a bad definition stops the boot); after the Start pass it publishes
+    DefinitionsValidated { Count } and then BootCompleted.
+  - ServerStorage/Tests/unit/Registry.spec: 26 tests, run on a clone of Shared.
+TESTRUNNER: 67 passed / 0 failed. Edit mode, on a clone of ServerStorage.Tests:
+    local tests = game:GetService("ServerStorage").Tests:Clone()
+    return require(tests.TestRunner).run({ tests.unit, tests.integration }).summary
+  →
+    file                                     passed failed        ms
+    unit.EventBus.spec                           24      0    182.92
+    unit.Lifecycle.spec                          14      0      2.25
+    unit.Registry.spec                           26      0     26.71
+    unit.TestRunner.spec                          3      0    119.53
+    67 passed, 0 failed (4 files, 331.44 ms)
+  Passes-when tests: "folder layout › fails on a duplicated module", "fields › names a missing field with its path and type",
+  "Ids and references › rejects the same Id in two folders", "shipped definitions › load clean with at least one sample per
+  folder". Also: missing folder, stray instances, wrong types, NaN, non-integers, ranges, unknown fields, enums, arrays, maps,
+  asset ids, Id = module name, non-table modules, unresolved references, every problem in one error, and the folder rules.
+SCRIPT ANALYSIS: `bash tools/analyze.sh` → "files: 40 / diagnostics: 0" (luau-lsp 1.70.1, D-014). The drafts were checked first
+  with a temporary sourcemap (12 diagnostics fixed before Studio). A planted type error in Registry.spec was reported, so the
+  typeof(require(...)) type alias is really type-checked.
+PLAY TEST ×2:
+  1 (broken: Walker without Attack.TelegraphTime, SampleHelmet duplicated) → server console:
+    [Definitions] 2 problems in Shared/Definitions; the boot stops until they are fixed:
+      - Enemies/Walker: missing field Attack.TelegraphTime (number ≥ 0)
+      - Items/SampleHelmet: duplicate Id "SampleHelmet": two modules named SampleHelmet in Items
+    Stack: Lifecycle.run → Lifecycle.boot → Bootstrap line 43. No phase lines printed, no Start ran, nothing published.
+  Fix: Walker restored and the clone destroyed (both hashes equal the originals again).
+  2 (fixed) →
+    [Boot] phase 3 Definitions: 19 definitions in 18 folders validated in 0.94 ms
+    [Boot] phases 0–8 complete in 1.05 ms (Init 1.02 ms, Start 0.00 ms) · services (10): Platform/RemoteConfigService → ...
+    [Boot] DefinitionsValidated (19) and BootCompleted published · 0 and 0 subscribers · bus strict
+    [TestRunner] 67 passed, 0 failed (4 files, 348.41 ms)
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, known since P0.1) and
+  1 × "[Events] error handler failed (... reporter down) ..." written on purpose by an EventBus.spec test.
+NUMBERS:
+  - Registry validation at boot: 0.94 ms for 19 definitions in 18 folders (first require of every module included).
+    Registry.load on the real folder, warm: 0.193 ms average over 20 runs (play test).
+  - Boot total 1.05 ms (A1.5: 0.11 ms); the difference is phase 3.
+  - Registry.spec 26 tests in 26.71 ms (Edit) / 30.80 ms (play test).
+  - Mutation controls (patched _Registry in a temporary Shared clone, removed afterwards): duplicate check off → 1 failed (the
+    duplicate test); unknown-field check off → 1 failed (typo test); reference check off → 1 failed (missing reference test);
+    per-definition rules off → 5 failed (the 5 rule tests that use them).
+  - Scripts: DataModel 41 · under roots 41 · mirror 41 · StringValues 1/1 · MATCH (mirror_write.py ALL OK, two export calls of
+    92,236 + 76,566 characters). The 22 new or changed files equal the local drafts.
+  - Sizes: _Registry 31,969 B, Registry.spec 13,601 B, Bootstrap 3,020 B, samples 156–601 B.
+RESTORE POINT: backups/A1.6_passed_20261016-1627/ — 6 × .rbxm (D-010), each verified by length + FNV-1a against a fresh Studio
+  serialization: ReplicatedStorage 29930 B 2c9357c9 · ServerScriptService 42408 B 0287e81a · ServerStorage 69313 B 33be9d88
+  (exported; ServerStorage base64 in two calls) · Lighting 3445 B 866e3754 · StarterPlayerScripts 1961 B 1fc169ff ·
+  Workspace 12147 B 5ac584ad (equal A1.5, copied).
+MIRROR COMMIT: see the A1.6 commit on main — mirror/src (Definitions/_Registry + 19 samples, Registry.spec, Bootstrap),
+  mirror/sourcemap.json, docs.
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Details D-019.
+NOTES / DEBT:
+  - 14 of the 18 schemas are provisional (D-019 lists the settling substage for each). Changing one is a registry edit plus a
+    decision entry, in the substage that builds that content.
+  - The stat, damage-tag, rarity, archetype, targeting and currency lists are copies until A1.7 adds Shared/Stats; A1.7 should
+    point _Registry at it so the lists exist once.
+  - First run caught a real bug: enum(RARITY) froze the shared list twice (table.freeze on a frozen table errors). Fixed.
+  - A spec that requires a real Shared module at runtime keeps the Edit-mode require cache, and a load error stays cached.
+    Registry.spec takes the module type with typeof(require(...)) in a type alias (never executed) and runs on Shared:Clone().
+  - Sample numbers and ability ids (TacticalRifleShot, CombatRoll, Leap, GroundSlam) are placeholders for A2–A4.
+  - D-012 is still open for the owner; the shop schema has no random-item kind, so nothing here decides it.
+NEXT: A1.7
+```

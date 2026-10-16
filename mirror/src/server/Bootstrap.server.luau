@@ -1,8 +1,10 @@
 --!strict
 -- Server Bootstrap (architecture §5.2).
 -- Checks the §4.3 layout, then boots every domain service through Lifecycle (A1.4: Init/Start contract and order
--- assertions; any violation stops the boot), then publishes BootCompleted on the event bus (A1.5).
--- _Registry arrives in A1.6 (phase 3), remotes in A1.8 (phase 8).
+-- assertions; any violation stops the boot). Phase 3 loads and validates every definition through _Registry (A1.6); a bad
+-- definition stops the boot with a "[Definitions] ..." error listing every problem. After the Start pass it publishes
+-- DefinitionsValidated and BootCompleted on the event bus (A1.5), so subscribers connected in Start receive both.
+-- Remotes arrive in A1.8 (phase 8).
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -33,11 +35,22 @@ local domainsFolder = requireChild(serverRoot, "Domains")
 requireChild(serverRoot, "Admin")
 local shared = requireChild(ReplicatedStorage, "Shared")
 local definitions = requireChild(shared, "Definitions")
+requireChild(definitions, "_Registry")
+local Registry = require(ReplicatedStorage.Shared.Definitions._Registry)
+
+local definitionCount = 0
 
 local report = Lifecycle.boot(domainsFolder, {
 	definitions = function(): string
-		local registry = definitions:FindFirstChild("_Registry")
-		return string.format("%d definition folders, _Registry %s", #definitions:GetChildren(), if registry then "present" else "not yet built")
+		local startedAt = os.clock()
+		local registry = Registry.shared()
+		definitionCount = registry.count
+		return string.format(
+			"%d definitions in %d folders validated in %.2f ms",
+			registry.count,
+			#Registry.KINDS,
+			(os.clock() - startedAt) * 1000
+		)
 	end,
 	network = function(): string
 		return string.format("%d remotes", countRemotes())
@@ -56,11 +69,14 @@ print(string.format(
 	if #report.order > 0 then table.concat(report.order, " → ") else "none yet"
 ))
 
--- Subscribers (Telemetry, A1.7+) connect in Start, so they are in place before this publish.
+-- Subscribers (Telemetry, A1.8+) connect in Start, so they are in place before these publishes.
 local bus = EventBus.server()
+bus:publisher("Definitions"):publish("DefinitionsValidated", { Count = definitionCount })
 bus:publisher("Bootstrap"):publish("BootCompleted", { Phases = #Lifecycle.PHASES, Services = report.order })
 print(string.format(
-	"[Boot] BootCompleted published · %d subscribers · bus %s",
+	"[Boot] DefinitionsValidated (%d) and BootCompleted published · %d and %d subscribers · bus %s",
+	definitionCount,
+	bus:subscriberCount("DefinitionsValidated"),
 	bus:subscriberCount("BootCompleted"),
 	if bus.strict then "strict" else "lenient"
 ))

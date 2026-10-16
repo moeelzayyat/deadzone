@@ -97,3 +97,15 @@ Server only. Catalog and payload rules in `docs/EVENTS.md`; `Events/Catalog` hol
 | `bus:subscriberCount(name)` | Bootstrap, tests | Number of live subscriptions. |
 | `bus:setErrorHandler(fn)` | Telemetry/ErrorReportService (when built) | Receives `(kind, message)` for `unknown_event`, `domain`, `payload` (non-strict) and `handler` errors. Default: `warn`. A failing handler falls back to `warn`. |
 | `EventBus.new(options?) → Bus` | tests | A private bus: `strict` (default true), `catalog` (checked; a malformed one throws), `onError`. |
+
+### Definitions registry (`ReplicatedStorage/Shared/Definitions/_Registry`, A1.6, D-019)
+Server and client. One ModuleScript per definition, directly inside its folder, returning a table whose `Id` equals the module name; Ids are unique across all 18 folders. Schemas and folder rules live in `_Registry` (CLAUDE.md rule 8).
+
+| Function | Who calls it | Contract |
+|---|---|---|
+| `Registry.shared() → Registry` | Bootstrap (phase 3), then any module | Loads and validates `Shared/Definitions` once and caches the result. Any problem throws one `[Definitions] N problems ...` error listing all of them; a failed load is not cached. On the server phase 3 runs it, so every later service gets the cached registry. |
+| `registry:get(kind, id) → Definition?` | consumers | The frozen definition, or nil for an unknown Id. An unknown folder name throws. |
+| `registry:all(kind) → { Definition }` | consumers | Frozen array of the folder's definitions, sorted by Id. |
+| `registry.count` | Bootstrap | Number of definitions; published as `DefinitionsValidated { Count }` after the Start pass. |
+| `Registry.load(folder)` / `collect(folder)` / `validate(entries, earlier?)` | tests | `load` = `collect` (folder layout, requires) + `validate` (fields, Ids, references, folder rules). Tests run them on clones. |
+| `Registry.KINDS` / `Registry.SCHEMAS` | tests | The 18 folder names in §4.3 order and their frozen schemas. |
