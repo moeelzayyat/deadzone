@@ -85,16 +85,19 @@ return function(t: TestRunner.Spec)
 	end)
 
 	describe("real domains", function()
-		it("plans one placeholder service per domain in §5.2 order", function()
+		it("plans every service in §5.2 order (name order inside a domain)", function()
 			local plan = Lifecycle.plan(Domains)
 			expect(ids(plan)).toEqual({
+				"Platform/FeatureFlagService",
 				"Platform/RemoteConfigService",
 				"Telemetry/ErrorReportService",
+				"Telemetry/MetricsService",
 				"Data/MigrationService",
 				"Economy/TransactionService",
 				"Progression/ClassService",
 				"Combat/CombatService",
 				"Encounter/MissionSessionService",
+				"Encounter/SimulationClock",
 				"Social/PartyService",
 				"Facilities/ShopService",
 				"LiveOps/SeasonService",

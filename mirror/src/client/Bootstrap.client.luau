@@ -1,6 +1,8 @@
 --!strict
 -- Client Bootstrap (architecture §4.3).
--- A1.1: checks the client layout and logs the controller list. Controllers arrive from A2 on.
+-- Checks the client layout (A1.1), then requires every controller in Controllers (name order) and runs its start() in its
+-- own thread, so a controller waiting for the server's phase 8 remotes blocks no one (A1.8). A controller is a
+-- ModuleScript returning { Name = <module name>, start = function }.
 
 local Players = game:GetService("Players")
 
@@ -15,13 +17,25 @@ for _, name in FOLDERS do
 	end
 end
 
-local controllers: { string } = {}
+local modules: { ModuleScript } = {}
 for _, child in (clientRoot:FindFirstChild("Controllers") :: Instance):GetChildren() do
 	if child:IsA("ModuleScript") then
-		table.insert(controllers, child.Name)
+		table.insert(modules, child)
 	end
 end
-table.sort(controllers)
+table.sort(modules, function(a: ModuleScript, b: ModuleScript): boolean
+	return a.Name < b.Name
+end)
+
+local controllers: { string } = {}
+for _, module in modules do
+	local controller = require(module) :: any
+	if typeof(controller) ~= "table" or controller.Name ~= module.Name or typeof(controller.start) ~= "function" then
+		error(string.format("[Boot][Client] %s must return { Name = %q, start = function }", module.Name, module.Name), 0)
+	end
+	task.spawn(controller.start)
+	table.insert(controllers, module.Name)
+end
 
 print(string.format(
 	"[Boot][Client] ready for %s in %.2f ms · controllers (%d): %s",

@@ -1,11 +1,14 @@
 # API CONTRACTS — remotes and domain APIs
 
 ## Rules
-- A remote exists only if it has a row here, a type guard, and a token-bucket rate.
-- Remotes are created in boot phase 8, under `ReplicatedStorage/Net/<Name>`.
+- A remote exists only if it has a row here, a type guard, and a token-bucket rate, and an entry in `Shared/Net/Contracts` (`python tools/check_contracts.py` compares the two → `MATCH`).
+- Remotes are created in boot phase 8, under `ReplicatedStorage/Net/<Name>`, by `Server/Gateway` only; it refuses outside phase 8 (`Lifecycle.currentPhase() == 8`). Before phase 8 `ReplicatedStorage/Net` does not exist (A1.8, D-021).
 - Channels: `R` = RemoteEvent (reliable), `F` = RemoteFunction, `U` = UnreliableRemoteEvent.
 - Direction: `C→S` client request, `S→C` server push.
-- Rate = sustained per second / burst. Exceeding drops the request and increments `Telemetry.RateLimited`. Three bursts per minute flag the session.
+- Rate = sustained per second / burst. Exceeding drops the request and increments `Telemetry.RateLimited`. Three bursts per minute flag the session: a burst is one run of drops on one remote, ended when that remote's bucket next accepts a request; the third burst start inside 60 s marks the session (`SessionFlagged`, `Gateway:isFlagged`). Flagging only marks (D-021).
+- Server→client rows have no client rate: their inbound bucket is empty, so every client fire on them is dropped and counted as `RateLimited` (reason `direction`).
+- Inbound order (§7.1, §19): identity (a Player in this server, exactly one payload argument) → token bucket → payload guard → handler. The handler does the domain checks (state, cooldown, ownership, resources, transaction uniqueness). A rejected `F` request returns nil. Rejections count `Net.Rejected.<reason>` (`unknown`, `identity`, `arity`, `rate`, `direction`, `payload`, `unhandled`); a handler error counts `Net.HandlerError` and is reported.
+- Outgoing pushes are checked against the same guard: in Studio a bad push throws; live it is reported, counted (`Net.OutgoingRejected`) and dropped.
 - Payloads are plain tables (or `buffer` where noted). The guard rejects wrong types, NaN, inf, out-of-range and oversized payloads before any logic runs.
 - The server never trusts: damage, hit lists, enemy health, item IDs chosen by the client, rarity rolls, rewards, timestamps as truth (they are hints for lag compensation, clamped to ≤ 250 ms).
 
@@ -58,19 +61,19 @@
 | `ProfileReplica` | R | profile diff | sensitive fields never replicated (`Transactions`) | A5.5 |
 | `Notification` | R | `{ Kind, Text, Icon? }` | | A3.7 |
 | `LeaderboardUpdate` | R | `{ BoardId, Rows }` | every 60 s | A5.7 |
-| `FlagsUpdate` | R | `{ [Flag]: Value }` | on change | A1.8 |
+| `FlagsUpdate` | R | `{ [Flag]: boolean \| number \| string }` (≤ 64 flags, names ≤ 64 B, strings ≤ 200 B) | every Client flag after phase 8 and on join, then only changed Client flags | A1.8 |
 
 ## Domain APIs (server-internal)
 Documented per domain in `init.luau` headers; this table lists the cross-domain surface only.
 
 | Domain | Public functions (server) |
 |---|---|
-| Platform | `Flags.Get(name)`, `Config.Get(key)`, `Time.Now()` |
-| Telemetry | `Analytics.Funnel(step, userId)`, `Analytics.Economy(...)`, `Errors.Report(err, ctx)` |
+| Platform | `FeatureFlagService:get(name)`, `RemoteConfigService:get(key)` (A1.8); `Time.Now()` (TimeService, later) |
+| Telemetry | `MetricsService:funnel/economy/custom(player, ...)`, `MetricsService:increment(name, amount?)`, `ErrorReportService:report(kind, message, context?)` (A1.8) |
 | Data | `Profiles.Get(userId) → Profile?`, `Profiles.OnLoaded`, `Admin.Inspect/Grant/Rollback` |
 | Economy | `Wallet.Add/Spend(userId, currency, amt, claimId)`, `Inventory.*`, `Loot.Roll(tableId, luck)`, `Transaction.Run(claimId, fn)` |
 | Combat | `Combat.ResolveAttack(req)`, `Weapons.Tick(match, dt)`, `Abilities.Activate(...)`, `Hits.Query(match, shape, atTime)` |
-| Encounter | `Missions.Start/End`, `Enemies.Spawn/Damage/Kill`, `Protocol.GetMultiplier(match)`, `Upgrades.Offer/Choose`, `Extraction.OpenWindow/Vote`, `Clock.Pause/Resume` |
+| Encounter | `Missions.Start/End`, `Enemies.Spawn/Damage/Kill`, `Protocol.GetMultiplier(match)`, `Upgrades.Offer/Choose`, `Extraction.OpenWindow/Vote`, `SimulationClock.new()` → `match.Clock:Pause/Resume/Tick/Now` (A1.8) |
 | Progression | `Rewards.Grant(userId, claimId, rewards)`, `Skills.*`, `Codex.Discover`, `Quests.*`, `Campaign.Record` |
 | Social | `Parties.*`, `Matchmaking.*`, `Leaderboards.Submit/Read` |
 | Facilities | `Forge.*`, `Pets.*`, `Eggs.Hatch`, `Shop.*` |
@@ -121,3 +124,22 @@ Server and client (prediction uses the same code). Rows in `StatRegistry` mirror
 | `StatPipeline.check(modifier)` / `StatPipeline.get(block, id)` | definitions, tests | Validate one modifier; read a block by id. |
 | `DamageCalculator.damage(attackerStats, { WeaponDamage, Crit, Tag, Resistances?, DifficultyMult }) → number` | CombatService (truth), client prediction | §7.3 damage formula; `Crit` is rolled by the server; never negative. Unknown tag throws. |
 | `DamageCalculator.mitigate(incoming, armor)` / `armorReduction(armor)` / `resistance(map?, tag)` | Combat | Armor reduction `Armor / (Armor + 100)`, at most 75%; resistance clamps to 0–1, missing = 1. |
+
+### Network layer (`ReplicatedStorage/Shared/Net`, `ServerScriptService/Server/Gateway`, A1.8, D-021)
+| Call | Caller | Contract |
+|---|---|---|
+| `Contracts.list` / `Contracts.get(name)` | Gateway, client controllers | Frozen registry, one entry per existing remote: `{ Name, Channel, Direction, Payload, Rate?, Since }`; a malformed entry fails at require. `get` throws for an unknown name. |
+| `Guard.number/integer/boolean/string/literal/vector3/buffer/optional/oneOf/record/empty/array/map` | contracts | Guards `(value) -> (ok, reason?)`; never throw; reject wrong types, NaN/inf, out-of-range, oversized, unknown record fields, sparse arrays, tables with metatables. |
+| `TokenBucket.new(sustained, burst, now)` → `bucket:take(now)` | Gateway | Starts full; refills at `sustained`/s up to `burst`; a clock stepping back adds nothing; burst 0 rejects all. |
+| `Codec.struct(fields, { maxString? })` / `Codec.list(struct, countType?, maxCount?)` → `encode` / `decode` | high-rate remotes (A2.3 snapshots, A2.5 heartbeat, A2.8 FX) | Types `u8 u16 u32 i8 i16 i32 f32 f64 bool vector3 string`. Encoding a bad value throws `[Codec]`; decoding untrusted bytes never throws and returns nil + reason. |
+| `Gateway.server()` | services, Bootstrap | The server's one gateway. `:handle(name, fn)` (client→server, before phase 8, one per remote), `:expose()` (Bootstrap phase 8 only), `:onExposed(fn)`, `:fire(name, player, payload)` / `:fireAll(name, payload)` (server→client, after phase 8), `:isFlagged(userId)`, `:setCounter` (MetricsService), `:setReporter` (ErrorReportService). `Gateway.new(options)` makes private gateways for tests. |
+
+### Clock and platform wrappers (A1.8, D-021)
+| Call | Caller | Contract |
+|---|---|---|
+| `SimulationClock.new({ maxStep? })` → `clock:Tick(dt) / Now() / Pause() / Resume()`, field `Paused` | Encounter match loop (A2/A3) | One clock per match; run code reads `match.Clock`, never `os.clock()`. `Tick` adds `min(dt, MaxStep)` (0.25 s) unless paused; bad dt throws `[Clock]`. |
+| `FeatureFlagService:get(name)` / `:all()` / `:clientFlags()` / `:apply(map)` | any server code (from Start on); RemoteConfigService | Defaults in `Shared/Config/Flags`; `apply` sets the override set (unlisted flags return to default; bad values reported and ignored); each change publishes `FeatureFlagChanged` and pushes changed Client flags through `FlagsUpdate`. |
+| `RemoteConfigService:get(key)` / `:all()` / `:refresh()` | any server code (from Start on) | Defaults in `Shared/Config/Tunables`; the `Config` DataStore key `Current` = `{ Flags?, Tunables? }` is read in Start (phase 0) and every 300 s; a failed read keeps the current values and is reported. Read-only. |
+| `MetricsService:increment/counter/counters` · `:funnel/economy/custom` | Gateway (counters), Telemetry consumers (A3.9) | Server counters; the three calls validate and forward to Roblox AnalyticsService (`LogFunnelStepEvent`, `LogEconomyEvent`, `LogCustomEvent`). |
+| `ErrorReportService:report(kind, message, context?)` · `:counts()` · `:recent()` | Platform services, Gateway, event bus (error handler) | One `[Error] kind: message · k=v` warning; the same report within 60 s is counted, not reprinted; last 50 kept; counts uncaught script errors (`script`). |
+| `FlagsController.get(name)` / `.Changed` | client UI (A2+) | Client copy of Client flags from `FlagsUpdate`, checked with the contract guard. |

@@ -8,13 +8,13 @@ Rules:
 - `MatchId` is present on every in-run event (Combat and Encounter publishers; a test enforces it).
 - Publisher identities: the ten §5.1 domains plus `Bootstrap` and `Definitions` (the `_Registry`, phase 3). Bootstrap publishes `DefinitionsValidated` under the `Definitions` identity after the Start pass, so subscribers that connect in `Start` receive it (D-019). A service publishes through `EventBus.server():publisher("<Domain>")`; the name in parentheses below is the service inside that domain.
 - Misuse — an unknown event, a publish from any domain other than the one listed, or a payload that fails its type — throws `[Events] ...` at the publisher in strict mode (Studio and tests). On live servers the bus reports it to the error handler and drops the event; a bad payload is never delivered.
-- Events are fire-and-forget. Each handler runs in its own thread with a frozen copy of the payload: a handler error is reported (warn until `ErrorReportService` takes the error handler) and never reaches the publisher or other handlers; a yielding handler blocks no one. Subscribe in `Start`.
+- Events are fire-and-forget. Each handler runs in its own thread with a frozen copy of the payload: a handler error is reported (`ErrorReportService` takes the error handler in its Start, A1.8) and never reaches the publisher or other handlers; a yielding handler blocks no one. Subscribe in `Start`.
 - "Since" is the substage that first publishes the event. Payload shapes for events whose substage is not built yet are provisional; that substage confirms or changes them here and in `Catalog`.
 
 | Event | Payload | Publisher (domain) | Known consumers | Since |
 |---|---|---|---|---|
-| `BootCompleted` | `{ Phases: integer, Services: {string} }` | Bootstrap | Telemetry | A1.5 |
-| `DefinitionsValidated` | `{ Count: integer }` | Definitions registry | Telemetry | A1.6 |
+| `BootCompleted` | `{ Phases: integer, Services: {string} }` | Bootstrap | Telemetry (MetricsService counts it, A1.8) | A1.5 |
+| `DefinitionsValidated` | `{ Count: integer }` | Definitions registry | Telemetry (MetricsService counts it, A1.8) | A1.6 |
 | `PlayerProfileLoaded` | `{ UserId: integer, SchemaVersion: integer, IsNew: boolean }` | Data | Telemetry, Progression | A5.5 |
 | `PlayerProfileReleased` | `{ UserId: integer }` | Data | Telemetry | A5.5 |
 | `MatchStarted` | `{ MatchId: string, MissionId: string, DifficultyId: string, Participants: {integer} }` | Encounter | Telemetry | A3.1 |
@@ -49,7 +49,7 @@ Rules:
 | `RaidCompleted` | `{ RaidId: string, Participants: {integer}, Contributions: {[integer]: number} }` | LiveOps (Raid) | Reward, Quests, Telemetry | B3.7 |
 | `PurchaseGranted` | `{ UserId: integer, ProductId: integer, ReceiptId: string }` | LiveOps (Purchase) | Telemetry | L1.3 |
 | `CodeRedeemed` | `{ UserId: integer, Code: string }` | LiveOps | Telemetry | L1.4 |
-| `FeatureFlagChanged` | `{ Flag: string, Value: boolean \| number \| string }` | Platform | all | A1.8 |
+| `FeatureFlagChanged` | `{ Flag: string, Value: boolean \| number \| string }` | Platform (FeatureFlagService, one per changed flag) | all | A1.8 |
 
 `Reward` = `{ Kind: string, Id: string, Amount: integer }` (provisional until A5.6).
 

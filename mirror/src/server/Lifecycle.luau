@@ -6,7 +6,8 @@
 --   · a service module returns { Name = <module name>, Init, Start }; names are unique and never a Roblox built-in service name;
 --   · Init only resolves dependencies (Lifecycle.get) and must not yield; every Init completes before any Start;
 --   · Lifecycle.get(name) only returns a service whose Init already ran, so a dependency booting later is an order error;
---   · the network step (phase 8) runs after every Start.
+--   · the network step (phase 8) runs after every Start; Lifecycle.currentPhase() is 8 only while it runs, which is
+--     how Server/Gateway refuses to create remotes anywhere else (A1.8).
 -- Services inside a domain boot in name order. The domain API module (§5.1 "init") arrives with the first domain that needs one.
 
 export type Service = {
@@ -71,6 +72,7 @@ local Lifecycle = {
 local initialized: { [string]: Service }? = nil
 local pending: { [string]: string } = {} -- service name -> "Domain/Name" for every service in the running plan
 local currentId = "?"
+local phaseNow: number? = nil -- the §5.2 phase being booted (Init pass, Start pass or network step); nil outside a boot
 
 local function fail(message: string): never
 	error("[Boot] " .. message, 0)
@@ -181,6 +183,11 @@ function Lifecycle.validate(plan: Plan)
 	end
 end
 
+-- The §5.2 phase index the running boot is in, or nil when no boot is running. Phase 8 means the network step.
+function Lifecycle.currentPhase(): number?
+	return phaseNow
+end
+
 -- Resolves a dependency during Init. The target's Init must already have run (an earlier phase, or earlier in name order
 -- inside the same domain). Keep the returned reference; get is not available after Init.
 function Lifecycle.get(name: string): Service
@@ -254,6 +261,7 @@ function Lifecycle.run(plan: Plan, hooks: Hooks?): Report
 	local initCount = 0
 	local ok, err = pcall(function()
 		for _, phase in plan do
+			phaseNow = phase.index
 			if phase.index == DEFINITIONS_PHASE and hooks and hooks.definitions then
 				notes[phase.index] = hooks.definitions()
 			end
@@ -270,29 +278,40 @@ function Lifecycle.run(plan: Plan, hooks: Hooks?): Report
 	pending = {}
 	currentId = "?"
 	if not ok then
+		phaseNow = nil
 		error(err, 0)
 	end
 	local initEndedAt = os.clock()
 
 	-- No Start before every Init has completed.
 	if initCount ~= #order then
+		phaseNow = nil
 		fail(`order: {initCount} of {#order} services initialized before the Start pass`)
 	end
-	for _, phase in plan do
-		for _, entry in phase.entries do
-			local service = entry.service
-			local started, startErr = pcall(function()
-				service:Start()
-			end)
-			if not started then
-				fail(`{entry.domain}/{entry.service.Name}:Start failed: {tostring(startErr)}`)
+	local startEndedAt = os.clock()
+	local finished, finishErr = pcall(function()
+		for _, phase in plan do
+			phaseNow = phase.index
+			for _, entry in phase.entries do
+				local service = entry.service
+				local started, startErr = pcall(function()
+					service:Start()
+				end)
+				if not started then
+					fail(`{entry.domain}/{entry.service.Name}:Start failed: {tostring(startErr)}`)
+				end
 			end
 		end
-	end
-	local startEndedAt = os.clock()
+		startEndedAt = os.clock()
 
-	if hooks and hooks.network then
-		notes[#PHASES - 1] = hooks.network()
+		phaseNow = #PHASES - 1
+		if hooks and hooks.network then
+			notes[#PHASES - 1] = hooks.network()
+		end
+	end)
+	phaseNow = nil
+	if not finished then
+		error(finishErr, 0)
 	end
 
 	local phaseLines: { string } = {}

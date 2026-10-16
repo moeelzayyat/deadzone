@@ -12,7 +12,30 @@
      "children": [
       {
        "name": "Config",
-       "className": "Folder"
+       "className": "Folder",
+       "children": [
+        {
+         "name": "Flags",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Config/Flags.luau"
+         ]
+        },
+        {
+         "name": "Schema",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Config/Schema.luau"
+         ]
+        },
+        {
+         "name": "Tunables",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Config/Tunables.luau"
+         ]
+        }
+       ]
       },
       {
        "name": "Definitions",
@@ -290,7 +313,37 @@
       },
       {
        "name": "Net",
-       "className": "Folder"
+       "className": "Folder",
+       "children": [
+        {
+         "name": "Codec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Net/Codec.luau"
+         ]
+        },
+        {
+         "name": "Contracts",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Net/Contracts.luau"
+         ]
+        },
+        {
+         "name": "Guard",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Net/Guard.luau"
+         ]
+        },
+        {
+         "name": "TokenBucket",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Net/TokenBucket.luau"
+         ]
+        }
+       ]
       },
       {
        "name": "Stats",
@@ -450,6 +503,13 @@
            "filePaths": [
             "mirror/src/server/Domains/Encounter/MissionSessionService.luau"
            ]
+          },
+          {
+           "name": "SimulationClock",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Encounter/SimulationClock.luau"
+           ]
           }
          ]
         },
@@ -483,6 +543,13 @@
          "name": "Platform",
          "className": "Folder",
          "children": [
+          {
+           "name": "FeatureFlagService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Platform/FeatureFlagService.luau"
+           ]
+          },
           {
            "name": "RemoteConfigService",
            "className": "ModuleScript",
@@ -528,9 +595,23 @@
            "filePaths": [
             "mirror/src/server/Domains/Telemetry/ErrorReportService.luau"
            ]
+          },
+          {
+           "name": "MetricsService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Telemetry/MetricsService.luau"
+           ]
           }
          ]
         }
+       ]
+      },
+      {
+       "name": "Gateway",
+       "className": "ModuleScript",
+       "filePaths": [
+        "mirror/src/server/Gateway.luau"
        ]
       },
       {
@@ -578,6 +659,20 @@
        "className": "Folder",
        "children": [
         {
+         "name": "Codec.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Codec.spec.luau"
+         ]
+        },
+        {
+         "name": "Contracts.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Contracts.spec.luau"
+         ]
+        },
+        {
          "name": "DamageCalculator.spec",
          "className": "ModuleScript",
          "filePaths": [
@@ -592,10 +687,31 @@
          ]
         },
         {
+         "name": "Gateway.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Gateway.spec.luau"
+         ]
+        },
+        {
+         "name": "Guard.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Guard.spec.luau"
+         ]
+        },
+        {
          "name": "Lifecycle.spec",
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/Lifecycle.spec.luau"
+         ]
+        },
+        {
+         "name": "Platform.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Platform.spec.luau"
          ]
         },
         {
@@ -606,6 +722,13 @@
          ]
         },
         {
+         "name": "SimulationClock.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/SimulationClock.spec.luau"
+         ]
+        },
+        {
          "name": "StatPipeline.spec",
          "className": "ModuleScript",
          "filePaths": [
@@ -613,10 +736,24 @@
          ]
         },
         {
+         "name": "Telemetry.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Telemetry.spec.luau"
+         ]
+        },
+        {
          "name": "TestRunner.spec",
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/TestRunner.spec.luau"
+         ]
+        },
+        {
+         "name": "TokenBucket.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/TokenBucket.spec.luau"
          ]
         },
         {
@@ -653,7 +790,16 @@
         },
         {
          "name": "Controllers",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "FlagsController",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/client/Controllers/FlagsController.luau"
+           ]
+          }
+         ]
         },
         {
          "name": "Effects",

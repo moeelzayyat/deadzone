@@ -86,9 +86,9 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | Free / premium battle pass | L1.3 | Planned | |
 | Events + event chests | L1.4 / L3.3 | Planned | |
 | Redeemable codes | L1.4 | Planned | |
-| Analytics funnel | A1.8 / A3.9 | Planned | |
+| Analytics funnel | A1.8 / A3.9 | In Development | A1.8: `Telemetry/MetricsService` wrapper (funnel/economy/custom → AnalyticsService, server counters), 4 tests in `Telemetry.spec`; funnel events in A3.9 (D-021) |
 | Purchase verification (`ProcessReceipt`) | L1.3 | Planned | |
-| Remote config + feature flags | A1.8 | Planned | |
+| Remote config + feature flags | A1.8 | Tested | `Platform/RemoteConfigService` (`Config` DataStore, key `Current`, read at boot + every 300 s) and `Platform/FeatureFlagService` (+ `FlagsUpdate` remote, `Client/Controllers/FlagsController`); defaults in `Shared/Config/{Flags,Tunables}`; 14 tests in `Platform.spec` (D-021) |
 | Admin tools (inspect/grant/rollback) | L1.2 | Planned | interface in A5.5 |
 | Profile migration | A5.5 | Planned | |
 | Mobile support | A2.1 onward | Planned | verified every checkpoint |
@@ -101,7 +101,8 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | Event bus | A1.5 | Tested | `Shared/Events/EventBus` + `Catalog` (37 events typed); 24 tests in `Tests/unit/EventBus.spec`; Bootstrap publishes `BootCompleted` (D-018) |
 | Definitions registry + validation | A1.6 | Tested | `Shared/Definitions/_Registry`, 18 folder schemas (4 fixed, 14 provisional), 19 samples; 26 tests in `Tests/unit/Registry.spec`; a bad definition stops the boot in phase 3 (D-019) |
 | StatPipeline + DamageCalculator | A1.7 | Tested | `Shared/Stats/{StatRegistry,StatPipeline,DamageCalculator}`; §6 types in `Shared/Types/{Common,Profile,Run,Match}`; 106 + 18 + 4 tests (StatPipeline, DamageCalculator, Types specs); D-020 |
-| SimulationClock | A1.8 | Planned | |
-| Net layer (contracts, buckets, codecs) | A1.8 | Planned | |
+| SimulationClock | A1.8 | Tested | `Server/Domains/Encounter/SimulationClock` (`new()` per match, Pause/Resume/Tick, MaxStep 0.25 s); 11 tests in `SimulationClock.spec` (D-021) |
+| Net layer (contracts, buckets, codecs) | A1.8 | Tested | `Shared/Net/{Contracts,Guard,TokenBucket,Codec}` + `Server/Gateway` (remotes in phase 8 only, identity → bucket → guard → handler, session flag); first remote `FlagsUpdate`; 7 + 11 + 7 + 21 + 22 tests; `tools/check_contracts.py` (D-021) |
+| Structured error reports (ErrorReportService) | A1.8 | Tested | `Telemetry/ErrorReportService`: `[Error] kind: message` lines, 60 s repeat window, last 50 kept; reporter for Platform, Gateway and the event bus; 4 tests in `Telemetry.spec`. Added by D-021 (an A1.8 deliverable with no registry row) |
 | TestRunner | A1.2 | Planned | |
 | Git mirror procedure | A1.3 | Planned | |

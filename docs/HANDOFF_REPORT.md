@@ -677,3 +677,111 @@ NOTES / DEBT:
   - D-012 is still open for the owner; nothing here touches monetization.
 NEXT: A1.8
 ```
+
+## A1.8 — Clock, network, platform wrappers — 2026-10-16
+
+```text
+CHECKPOINT: A1.8 Clock, network, platform wrappers
+DATE: 2026-10-16 (started 17:05 UTC, passed 17:40 UTC)
+DELIVERED:
+  - ReplicatedStorage/Shared/Net: Contracts (registry; first entry FlagsUpdate R S2C since A1.8; malformed entries fail at
+    require), Guard (13 guard builders, never throw), TokenBucket (per-player per-remote bucket), Codec (struct/list buffer
+    packing, 11 field types; decode never throws).
+  - ServerScriptService/Server/Gateway: the only remote creator; expose() only while Lifecycle.currentPhase() == 8; inbound
+    identity → bucket → guard → handler; S2C remotes have an empty inbound bucket; session flag on 3 bursts in 60 s; outgoing
+    payloads checked. Lifecycle.currentPhase() added. Bootstrap phase 8 exposes the gateway and logs the remote counts, then
+    prints the live config.
+  - Domains: Platform/FeatureFlagService (new), Platform/RemoteConfigService (was a placeholder; Config DataStore key Current,
+    boot read + 300 s poll), Telemetry/MetricsService (new; AnalyticsService wrapper + counters), Telemetry/ErrorReportService
+    (was a placeholder; structured reports, reporter for Platform, Gateway and the bus), Encounter/SimulationClock (new).
+  - Shared/Config: Schema, Flags (SampleFlag, Client), Tunables (SampleTunable). Client/Controllers/FlagsController; client
+    Bootstrap starts controllers.
+  - Tests/unit: Codec.spec (21), Guard.spec (11), TokenBucket.spec (7), Contracts.spec (7), Gateway.spec (22),
+    SimulationClock.spec (11), Platform.spec (14), Telemetry.spec (8); Lifecycle.spec list updated (14).
+  - Docs: API_CONTRACTS (rules, FlagsUpdate row, network/clock/wrapper tables), EVENTS (consumers), SYSTEM_REGISTRY (4 rows
+    updated, ErrorReportService row added), D-021, D-022, D-020 owner response. tools/check_contracts.py.
+TESTRUNNER: 297 passed / 0 failed. Edit mode, on a clone of ServerStorage.Tests:
+    local tests = game:GetService("ServerStorage").Tests:Clone()
+    return require(tests.TestRunner).run({ tests.unit, tests.integration }).summary
+  →
+    file                                     passed failed        ms
+    unit.Codec.spec                              21      0    234.91
+    unit.Contracts.spec                           7      0      2.23
+    unit.DamageCalculator.spec                   18      0      3.44
+    unit.EventBus.spec                           24      0    174.55
+    unit.Gateway.spec                            22      0      6.70
+    unit.Guard.spec                              11      0      2.43
+    unit.Lifecycle.spec                          14      0      2.68
+    unit.Platform.spec                           14      0      4.19
+    unit.Registry.spec                           27      0     30.67
+    unit.SimulationClock.spec                    11      0     69.53
+    unit.StatPipeline.spec                      106      0      8.29
+    unit.Telemetry.spec                           8      0      3.80
+    unit.TestRunner.spec                          3      0    120.29
+    unit.TokenBucket.spec                         7      0      2.11
+    unit.Types.spec                               4      0      6.60
+    297 passed, 0 failed (15 files, 672.55 ms)
+  Play test (Server): 297 passed, 0 failed (15 files, 640.78 ms).
+  The first Edit run was 293/4; all four were test bugs (Tick(0.5) hit the 0.25 s MaxStep cap in two tests; Contracts gave a
+  Direction "Both" contract a second problem, now only S2C gets the "no Rate" message; Gateway.server() refuses in Edit, where
+  RunService:IsServer() is false).
+  Passes-when coverage: paused clock does not advance ("a paused clock does not advance": 600 ticks while paused add 0);
+  bucket rejects the N+1th request ("accepts N requests at once and rejects the N+1th" for all 7 API_CONTRACTS burst sizes,
+  and Gateway "the bucket rejects the N+1th request of a burst"); codec round-trips all field types (all 11 types at their
+  edges, one struct with every type, lists of 0/1/90 records and of string records); a remote does not exist before phase 8
+  (Gateway "a remote does not exist before phase 8 of a real boot": fake services in phases 0/4/7 see 0 remotes and no Net
+  folder in Init and Start, the network step sees 0, after it all 4 test remotes exist; expose refuses in phases 0–7 and from
+  inside an Init). Verified in the place with search_game_tree: Edit has no ReplicatedStorage.Net and no project remotes; the
+  play session (Server and Client) has ReplicatedStorage.Net.FlagsUpdate (RemoteEvent) and nothing else.
+  Mutation controls (real module source patched, the one spec run on a Tests clone, source restored and hash-checked in the same
+  call): bucket accepts at 0 tokens → TokenBucket 6 failed · pause ignored → SimulationClock 4 · trailing bytes accepted → Codec
+  1 · bool byte unchecked → Codec 1 · phase-8 check off → Gateway 2 · rate checked after payload → Gateway 2 · record allows
+  extra fields → Guard 1 · bad flag override accepted → Platform 1.
+SCRIPT ANALYSIS: `bash tools/analyze.sh` → "files: 70 / diagnostics: 0" (luau-lsp 1.70.1, D-014). Drafts checked first with a
+  temporary sourcemap (70 files, 0 diagnostics).
+PLAY TEST:
+    [Boot] phase 0 Platform: Platform [FeatureFlagService, RemoteConfigService]
+    [Boot] phase 1 Telemetry: Telemetry [ErrorReportService, MetricsService]
+    [Boot] phase 3 Definitions: 19 definitions in 18 folders validated in 1.04 ms
+    [Boot] phase 6 Combat → Encounter: Combat [CombatService]; Encounter [MissionSessionService, SimulationClock]
+    [Boot] phase 8 Network: 0 remotes before, 1 created in ReplicatedStorage.Net in 0.22 ms, 1 now
+    [Boot] phases 0–8 complete in 157.12 ms (Init 1.17 ms, Start 155.57 ms) · services (13): Platform/FeatureFlagService → ...
+    [Boot] DefinitionsValidated (19) and BootCompleted published · 1 and 1 subscribers · bus strict
+    [Boot] config: flags SampleFlag=false · tunables SampleTunable=1
+    [Boot][Client] ready for Lighthouse8282 in 1.22 ms · controllers (1): FlagsController
+    [Flags] update 1: SampleFlag=false
+  The 1 and 1 subscribers are MetricsService's (Telemetry Start). The client received FlagsUpdate after phase 8. From the
+  Client datamodel 51 events were fired at the server→client remote (50 with extra arguments, 1 NaN): dropped silently, no
+  console output. Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages,
+  known since P0.1). The first play session booted in 906 ms (cold DataStore read in RemoteConfigService Start).
+NUMBERS (Server play test, best of 3):
+  - Gateway.receive: accepted (RequestAttack-shaped payload) 1.77 µs; rate-dropped 0.52 µs; payload-rejected 1.88 µs.
+  - Spam at 600 req/s (50× RequestAttack's 12/s) for 10 s: 139 accepted (20 burst + 12/s), session flagged.
+  - TokenBucket take 0.118 µs; SimulationClock Tick 0.068 µs; FlagsUpdate guard (3 flags) 0.99 µs.
+  - Snapshot codec, 90 enemies (API_CONTRACTS EnemySnapshot layout): 1,532 B, encode 83.8 µs, decode 76.1 µs; 22.4 KB/s per
+    client at 15 Hz before remote overhead (§23 budget 25 KB/s; 15.0 KB/s at 10 Hz). Input for A2.3.
+  - Boot 157 ms warm / 906 ms cold; the Config DataStore read is ~155 ms of the warm boot; config refresh 116–124 ms (3 reads).
+    Phase 8: 0.22 ms. Phase 3: 1.04 ms.
+  - Scripts: DataModel 71 · under roots 71 · mirror 71 · StringValues 1/1 · MATCH (mirror_write.py ALL OK, five export calls of
+    94,789 + 85,488 + 93,571 + 94,797 + 76,341 characters). The export equals the local drafts (diff -r clean).
+  - check_contracts.py → "FlagsUpdate: S2C R since A1.8 rate None | row OK" / MATCH; control `--through A2.5` → 5 rows without
+    contracts, DIFFER (exit 1).
+  - A1 exit: boot 0 errors; analysis 0; TestRunner 297 tests / 0 failures (≥ 40); broken-definition boot failure shown in A1.6.
+RESTORE POINT: backups/A1.8_passed_20261016-1734/ — 6 × .rbxm (D-010), each verified by length + FNV-1a against a fresh Studio
+  serialization: ReplicatedStorage 55049 B 1e8fdd07 · ServerScriptService 60100 B 664d08cc · ServerStorage 104066 B f46a7030 ·
+  StarterPlayerScripts 4330 B b8b9a0a3 (exported, base64 calls of ≤ 90,000 characters) · Lighting 3445 B 866e3754 ·
+  Workspace 12147 B 5ac584ad (equal A1.7, copied).
+MIRROR COMMIT: (recorded in the next commit)
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Details D-021; the burst definition was
+  decided under owner delegation (D-022).
+NOTES / DEBT:
+  - execute_luau in a play session has its own require cache, so it cannot read live service state. The boot log prints the
+    live config and the client prints each flag update instead.
+  - Steady spam just above a remote's rate flags the session within seconds (each refill ends a burst). Clients must respect
+    the rates; A2.5's RequestAttack client sends at most 12/s.
+  - SampleFlag and SampleTunable are placeholders; A3.9 (flags) and A3.2 (XP curve tunable) replace them.
+  - Nothing writes the Config DataStore yet; admin tools (L1.2) or a manual Studio write set it.
+  - TimeService (§5.1 Platform) is not built; nothing needs server time yet.
+  - D-012 is still open for the owner; nothing here touches monetization.
+NEXT: A2.1
+```
