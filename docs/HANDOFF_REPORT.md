@@ -967,7 +967,7 @@ RESTORE POINT: backups/A2.3_passed_20261016-2114/ — ReplicatedStorage 85592 B 
   ServerStorage 144735 B 0e5f038e · StarterPlayerScripts 20427 B 62e118a5 · StarterPlayer 7664 B 0a853cf1 exported;
   Lighting 3445 B 866e3754, Workspace 7831 B eaa94454 equal A2.2 (copied); all 7 verified by length + FNV-1a. StarterPlayer
   serialized smaller than in A2.2 (8456 B) although A2.3 did not touch it; Survivor.spec passes on the live tree.
-MIRROR COMMIT: see the A2.3 commit in git log (hash recorded in the follow-up commit).
+MIRROR COMMIT: 8c72430 "A2.3: enemy simulation core ..." — mirror/src (EnemyService, EnemySnapshot, FlowField, EnemySteering, PositionRing, Runner, Walker, Flags, Tunables, Contracts, EnemyController, HeartbeatProbe, EnemyFixture, 4 new specs, Contracts/Registry/Lifecycle/Settings specs), mirror/sourcemap.json, docs, progress.md.
 OWNER APPROVAL: auto-approved under standing owner approval of 2026-10-16 (D-022); CP line in DECISION_LOG.
 NOTES / DEBT:
   - The 900 B unreliable limit is from Roblox's live behaviour; Studio delivered 1,533 B. A2.8 should confirm on a live

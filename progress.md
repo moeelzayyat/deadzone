@@ -314,5 +314,6 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - Docs: D-025 + CP line, HANDOFF record, API_CONTRACTS (EnemySnapshot row, RequestEnemySnapshots row, enemy simulation table), SYSTEM_REGISTRY (enemy simulation → Tested, steering → In Development, snapshot stream row added), PERFORMANCE_BUDGETS A2.3 column, ROADMAP footer, CURRENT_PHASE → A2.4.
 
 ### 2026-10-16 · A2.3 — Enemy simulation core · ✅ passed (auto-approved, D-022)
+- Commit `8c72430` (build, mirror, docs, pass), then a commit recording the hash.
 - Steps 1–7 met with real results (TestRunner 429/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A2.4.
 - Decided under owner delegation (revisable, D-025): flow-field steering, the stuck rule, the snapshot layout (def + time + ≤ 49 per packet), the RequestEnemySnapshots subscription, the heartbeat definition (server step work).
