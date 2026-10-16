@@ -240,5 +240,6 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - 17:40 UTC: docs: API_CONTRACTS (rules, FlagsUpdate row, network/clock/wrapper tables), EVENTS, SYSTEM_REGISTRY (SimulationClock, Net layer, Remote config + flags → Tested; Analytics funnel → In Development; ErrorReportService row added), DECISION_LOG (D-020 owner response, D-021 A1.8 details incl. the burst definition under delegation, D-022 widened delegation, CP line), handoff record, ROADMAP (A1 ✅, footer), CURRENT_PHASE → A2.1.
 
 ### 2026-10-16 · A1.8 — Clock, network, platform wrappers · ✅ passed (auto-approved, D-010)
+- Commit `210424c` (build, mirror, docs, pass), then a commit recording the hash.
 - Steps 1–7 met with real results (TestRunner 297/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A2.1. A1 Foundation is complete (exit numbers in the handoff).
 - The §7.2 burst definition (run of drops) was decided under the owner's delegation (D-022) and recorded in D-021 as revisable.

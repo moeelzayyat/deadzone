@@ -771,7 +771,7 @@ RESTORE POINT: backups/A1.8_passed_20261016-1734/ — 6 × .rbxm (D-010), each v
   serialization: ReplicatedStorage 55049 B 1e8fdd07 · ServerScriptService 60100 B 664d08cc · ServerStorage 104066 B f46a7030 ·
   StarterPlayerScripts 4330 B b8b9a0a3 (exported, base64 calls of ≤ 90,000 characters) · Lighting 3445 B 866e3754 ·
   Workspace 12147 B 5ac584ad (equal A1.7, copied).
-MIRROR COMMIT: (recorded in the next commit)
+MIRROR COMMIT: 210424c "A1.8: SimulationClock ..., network layer ..., platform wrappers ..." — mirror/src (Net, Config, Gateway, Lifecycle, 5 services, FlagsController, 9 specs), mirror/sourcemap.json, docs, tools/check_contracts.py.
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Details D-021; the burst definition was
   decided under owner delegation (D-022).
 NOTES / DEBT:
