@@ -76,3 +76,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 
 ### 2026-10-16 · P0.6 — Budget and cadence · ✅ passed (owner-approved, D-013)
 - Handoff record appended, CP line in DECISION_LOG, ROADMAP master tracker P0 → ✅, CURRENT_PHASE advanced to A1.1. P0 exit met.
+- Commit `5dedf15`.
