@@ -171,7 +171,7 @@ RESTORE POINT: backups/P0.5_passed_20261016-1330/ — 6 × .rbxm (rule: D-010). 
   a fresh SerializationService export of each service matched P0.4 on length and FNV-1a, so the P0.4 bytes were copied
   and re-checked locally (all 6 OK). Lighting 3445 B 866e3754 · ServerStorage 48583 B e36937fc · Workspace 7831 B 68417a0c ·
   ReplicatedStorage 577 B 866a0dbe · ServerScriptService 577 B f1d87fa0 · StarterPlayerScripts 577 B 29f33cc4.
-MIRROR COMMIT: see the P0.5 commit on main (mirror/src empty: 0 scripts to export)
+MIRROR COMMIT: fa73fd4 "P0.5: compliance basics ...; D-012 proposed; advance to P0.6" (mirror/src empty: 0 scripts to export)
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). D-012 is open and waits for the owner.
 NOTES / DEBT:
   - Sources: Creator Hub "Content maturity and compliance" and "Paid random items policy guidelines" (read 2026-10-16).

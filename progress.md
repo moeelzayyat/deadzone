@@ -62,3 +62,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 
 ### 2026-10-16 · P0.5 — Compliance basics · ✅ passed (auto-approved, D-010)
 - Handoff record appended, CP line in DECISION_LOG (D-012 left open for the owner), CURRENT_PHASE advanced to P0.6.
+- Commit `fa73fd4`.
