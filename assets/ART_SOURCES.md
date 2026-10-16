@@ -16,6 +16,13 @@ Generated meshes/textures and primitives are recorded here too, marked `Placehol
 |---|---|---|---|---|---|
 | | | | | | |
 
+## Reference art (not shipped)
+| Asset | File | Origin | License | Status |
+|---|---|---|---|---|
+| Mood A — Evacuation Streets, P3 | `mood/mood_A_evacuation_streets_P3.jpg` | Studio screen capture of an original primitive scene (`ServerStorage/ArtReference/MoodA_EvacuationStreets`), P0.3 | owner-made, no third-party assets | Reference |
+| Mood B — Epicenter, P7 | `mood/mood_B_epicenter_P7.jpg` | Studio screen capture of an original primitive scene (`ServerStorage/ArtReference/MoodB_EpicenterP7`), P0.3 | owner-made, no third-party assets | Reference |
+| Icon concept sketch A/B | `icons/icon_concept_sketch.svg` (+ `.png` preview) | hand-written SVG, P0.3 | owner-made | Concept |
+
 ## Store assets
 | Asset | Variant | File in `assets/` | Uploaded ID | Status |
 |---|---|---|---|---|

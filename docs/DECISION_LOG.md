@@ -89,3 +89,5 @@ Approved by: owner (2026-10-16, "Yes, approved" in the project chat)
 ## CP — P0.1 passed · 2026-10-16 · approved by owner
 
 ## CP — P0.2 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16
+
+## CP — P0.3 passed · 2026-10-16 · approved by owner ("Yes Approved" in the P0.3 thread, art direction + two mood references)

@@ -344,5 +344,5 @@ NEXT: <next ID>
 
 ---
 
-**Current substage:** P0.3
-**Last checkpoint passed:** P0.2 (2026-10-16)
+**Current substage:** P0.4
+**Last checkpoint passed:** P0.3 (2026-10-16)

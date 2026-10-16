@@ -91,3 +91,38 @@ NOTES / DEBT:
     that for checkpoints. Left unedited (doc owner's call), README follows D-010.
 NEXT: P0.3
 ```
+
+---
+
+## P0.3 — Art bible v0 — 2026-10-16
+
+```text
+CHECKPOINT: P0.3 Art bible v0
+DATE: 2026-10-16
+TESTRUNNER: n/a — TestRunner is an A1 deliverable (D-002); no tests exist yet.
+SCRIPT ANALYSIS: 0 scripts in the place (execute_luau scan of LuaSourceContainer in project services → 0), nothing to analyse.
+PLAY TEST: start_stop_play(start) → execute_luau(Server): players=1 character=true
+  ArtReferenceInServerStorage=true, printed "[P0.3] play test ok" → get_console_output → start_stop_play(stop).
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, same as P0.1/P0.2).
+NUMBERS: docs/ART_BIBLE.md = 1,384 words · mood A 214,556 B, mood B 217,146 B (1920×895 Studio captures) ·
+  icon sketch PNG 1064×652 · ServerStorage/ArtReference = 1,349 BaseParts (mood A 188 env + characters,
+  mood B 119 env + characters) · 50 zombies in scene A, 87 + 3 Brutes in scene B · third-party asset IDs used: 0.
+RESTORE POINT: backups/P0.3_passed_20261016-1303/ — 6 × .rbxm via SerializationService (rule: D-010)
+  Workspace 7831 B · Lighting 3445 B · ReplicatedStorage 577 B · ServerScriptService 577 B ·
+  ServerStorage 48583 B (new: ArtReference) · StarterPlayerScripts 577 B.
+  Transfer: base64 from execute_luau, decoded locally; every file's length and FNV-1a match the hash computed
+  in Studio (Lighting 866e3754, ServerStorage e36937fc). Every file starts with <roblox!.
+MIRROR COMMIT: see git log "P0.3: art bible v0 ..." (mirror/src empty: 0 scripts to export)
+OWNER APPROVAL: yes, 2026-10-16 ("Yes Approved" in the P0.3 thread, 13:01 UTC)
+NOTES / DEBT:
+  - Mood references are original Studio captures of primitive scenes, kept in ServerStorage/ArtReference
+    (reshoot by dragging into Workspace; lighting presets are in ART_BIBLE.md).
+  - Lighting was changed for the captures and restored; the first restore rounded Atmosphere Color/Decay
+    (~1e-6), caught by the byte diff against P0.2 and fixed with exact RGB values. Lighting now hashes
+    identical to P0.2 (866e3754).
+  - New art rule from the shoot: players always get their own light + white outline (Highlight, players only).
+  - Lighting technology (Future vs ShadowMap) left to A1 against the mobile FPS budget; not readable via MCP
+    (RobloxScript capability).
+  - An earlier "Yes, approved" (project chat, 11:46 UTC) predated the review and was not counted.
+NEXT: P0.4
+```
