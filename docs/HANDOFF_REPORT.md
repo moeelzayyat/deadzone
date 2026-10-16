@@ -55,3 +55,39 @@ RESULT: P0.1 ✅ Passed. NEXT: P0.2
 ```
 
 ---
+
+---
+
+## P0.2 — Repository — 2026-10-16
+
+```text
+CHECKPOINT: P0.2 Repository
+DATE: 2026-10-16
+TESTRUNNER: n/a — TestRunner is an A1 deliverable (D-002); no tests exist yet.
+SCRIPT ANALYSIS: 0 scripts in the place (search_game_tree, LuaSourceContainer → none), so nothing to analyse.
+PLAY TEST: start_stop_play(start) → execute_luau(Server): players=1 character=true, printed
+  "[P0.2] play test ok" → get_console_output → start_stop_play(stop).
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" from Roblox
+  CorePackages (engine UI, not project code; same as P0.1).
+NUMBERS: tracked files in first commit = 21 · working tree excluding .git and backups = 191 KB ·
+  README.md = 64 lines · remote refs/heads/main = a6b0546f0853d586c65cd343c3cb406feb7415a5
+  (git ls-remote, matches local HEAD).
+RESTORE POINT: backups/P0.2_passed_20261016-1209/ — 6 × .rbxm (rule: D-010)
+  Fresh SerializationService export of the six services: Workspace 7831 B · Lighting 3445 B ·
+  ReplicatedStorage 577 B · ServerScriptService 577 B · ServerStorage 576 B · StarterPlayerScripts 577 B.
+  Size and FNV-1a of every fresh export equal the P0.1 files byte for byte (place unchanged since P0.1),
+  so the folder was written from those verified-identical bytes. Every file starts with <roblox!.
+MIRROR COMMIT: a6b0546 "P0.2: initial repository" (mirror/src empty: 0 scripts to export)
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010)
+NOTES / DEBT:
+  - Repo: https://github.com/moeelzayyat/deadzone, branch main, first push 2026-10-16.
+  - Commit identity is repo-local: moeelzayyat <262207486+moeelzayyat@users.noreply.github.com>
+    (no global git identity was set on this machine).
+  - .gitignore now also ignores backups/ and .claude/settings.local.json (check-ignore verified);
+    .gitattributes added (text=auto eol=lf, .rbxm/.rbxl/.png/.jpg binary).
+  - README rewritten around: open the place (IDs, Team Create, API access), connect the Studio
+    MCP (list_roblox_studios check), run tests (TestRunner from A1, play tests), backups per D-010.
+  - architecture.md §4.2 still says Studio Version History named restore points; D-010 supersedes
+    that for checkpoints. Left unedited (doc owner's call), README follows D-010.
+NEXT: P0.3
+```

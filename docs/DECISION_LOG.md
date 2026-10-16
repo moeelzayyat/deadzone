@@ -87,3 +87,5 @@ Consequences: checkpoints advance without the owner present; gates and owner dec
 Approved by: owner (2026-10-16, "Yes, approved" in the project chat)
 
 ## CP — P0.1 passed · 2026-10-16 · approved by owner
+
+## CP — P0.2 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16
