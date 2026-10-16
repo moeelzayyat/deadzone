@@ -845,7 +845,7 @@ RESTORE POINT: backups/A2.1_passed_20261016-1925/ — ReplicatedStorage 61336 B 
   ServerStorage 111274 B 3acdb04f · StarterPlayerScripts 18156 B 058c2cac · Workspace 7831 B eaa94454 (exported) · Lighting
   3445 B 866e3754 (equal A1.8, copied); all verified by length + FNV-1a. The StarterPlayer properties are not in a per-service
   .rbxm; they are listed above, in D-023, and checked by InputRules.spec.
-MIRROR COMMIT: the A2.1 commit ("A2.1: camera and input ...").
+MIRROR COMMIT: 57d1433 "A2.1: camera and input ..." — mirror/src (InputRules, Settings, Contracts, Flags, SettingsService, 3 controllers, InputTestPanel, Bootstrap, 5 specs), mirror/sourcemap.json, docs.
 OWNER APPROVAL: pending — the pass condition is the owner's play on PC and on a phone (Studio device emulator plus one real phone).
 NOTES / DEBT:
   - The touch button layout is a first guess inside Roblox's ContextButtonFrame; the phone check may move buttons.
