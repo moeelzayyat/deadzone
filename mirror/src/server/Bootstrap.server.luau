@@ -1,10 +1,12 @@
 --!strict
 -- Server Bootstrap (architecture §5.2).
 -- Checks the §4.3 layout, then boots every domain service through Lifecycle (A1.4: Init/Start contract and order
--- assertions; any violation stops the boot). _Registry arrives in A1.6 (phase 3), remotes in A1.8 (phase 8).
+-- assertions; any violation stops the boot), then publishes BootCompleted on the event bus (A1.5).
+-- _Registry arrives in A1.6 (phase 3), remotes in A1.8 (phase 8).
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local EventBus = require(ReplicatedStorage.Shared.Events.EventBus)
 local Lifecycle = require(script.Parent.Lifecycle)
 
 local function requireChild(parent: Instance, name: string): Instance
@@ -52,4 +54,13 @@ print(string.format(
 	report.startMs,
 	#report.order,
 	if #report.order > 0 then table.concat(report.order, " → ") else "none yet"
+))
+
+-- Subscribers (Telemetry, A1.7+) connect in Start, so they are in place before this publish.
+local bus = EventBus.server()
+bus:publisher("Bootstrap"):publish("BootCompleted", { Phases = #Lifecycle.PHASES, Services = report.order })
+print(string.format(
+	"[Boot] BootCompleted published · %d subscribers · bus %s",
+	bus:subscriberCount("BootCompleted"),
+	if bus.strict then "strict" else "lenient"
 ))

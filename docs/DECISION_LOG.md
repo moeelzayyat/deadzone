@@ -159,3 +159,13 @@ Decision: `AnalyticsService` → `MetricsService`, `PlayerDataService` → `Prof
 Approved by: owner (2026-10-16, "Approved", A1.4 thread 15:46 UTC)
 
 ## CP — A1.4 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16
+
+## D-018 — Event bus details (publisher identity, strict mode, payload rules)
+2026-10-16 · A1.5 · Accepted
+Context: architecture §5.3 fixes a typed bus in `shared/Events` with the authoritative domain as the only publisher, and A1.5 asks that a publish from the wrong domain asserts "in strict mode". It does not say how the bus knows the caller's domain, what strict mode is, or what "typed" means at runtime.
+Decision: `Events/Catalog` lists every EVENTS.md event with its publisher identity (the ten §5.1 domains plus `Bootstrap` and `Definitions`), its "since" substage and a field schema (string non-empty, finite number, whole integer, boolean, Vector3, enum, array, map, record, oneOf; all fields required, no extras), and exports one Luau payload type per event. A service publishes through `bus:publisher("<Domain>")`; a publish is rejected when the event is unknown, the publisher is not the catalog publisher, or the payload fails its schema. Strict mode (Studio, tests) throws at the publisher; live servers report to the error handler and drop the event. Handlers get a deep-frozen copy, each in its own thread, so a handler error or yield never reaches the publisher. `EventBus.server()` is the one shared bus; Bootstrap publishes `BootCompleted` after phase 8.
+Alternatives: deriving the domain from the calling script (`debug.info`; rejected: Luau inlining makes frames unreliable, as A1.2 found with `error` levels); throwing on live servers too (rejected: a consumer-facing bug would take down the publishing system mid-run); synchronous `pcall` delivery (rejected: a yielding handler would block the publisher).
+Consequences: the publisher identity is declared, not proven; it guards against mistakes, not hostile server code (there is none; clients never reach the bus). Payload shapes for events whose substage is not built yet are provisional and are settled by that substage in Catalog and EVENTS.md. Publish costs 1.4 µs with no subscriber and 2.8 µs with one (EnemyKilled, Edit).
+Approved by: implementation detail within §5.3, recorded under the standing owner approval of 2026-10-16 (D-010)
+
+## CP — A1.5 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16

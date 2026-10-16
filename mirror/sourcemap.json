@@ -94,7 +94,23 @@
       },
       {
        "name": "Events",
-       "className": "Folder"
+       "className": "Folder",
+       "children": [
+        {
+         "name": "Catalog",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Events/Catalog.luau"
+         ]
+        },
+        {
+         "name": "EventBus",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Events/EventBus.luau"
+         ]
+        }
+       ]
       },
       {
        "name": "Net",
@@ -332,6 +348,13 @@
        "name": "unit",
        "className": "Folder",
        "children": [
+        {
+         "name": "EventBus.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/EventBus.spec.luau"
+         ]
+        },
         {
          "name": "Lifecycle.spec",
          "className": "ModuleScript",

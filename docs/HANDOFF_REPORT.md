@@ -446,3 +446,75 @@ NOTES / DEBT:
   - The placeholder TransactionService has no Run yet (B1.1); nothing calls it.
 NEXT: A1.5
 ```
+
+## A1.5 — Event bus — 2026-10-16
+
+```text
+CHECKPOINT: A1.5 Event bus
+DATE: 2026-10-16 (started 15:50 UTC, passed 16:02 UTC)
+DELIVERED:
+  - ReplicatedStorage/Shared/Events/Catalog (ModuleScript, --!strict): all 37 EVENTS.md events with publisher identity, "since"
+    substage and field schema; one exported payload type per event (Catalog.EnemyKilled, ...); EventName / PublisherId unions;
+    Catalog.check (malformed catalog fails at require time, so it fails the boot).
+  - ReplicatedStorage/Shared/Events/EventBus (ModuleScript, --!strict): EventBus.server() (shared, strict in Studio),
+    EventBus.new(options), bus:publisher(domain):publish(name, payload), bus:subscribe(name, handler) → Connection:Disconnect(),
+    subscriberCount, setErrorHandler. Contract in API_CONTRACTS.md, details in D-018.
+  - Server/Bootstrap publishes BootCompleted { Phases = 9, Services = boot order } after phase 8.
+  - ServerStorage/Tests/unit/EventBus.spec: 24 tests.
+  - docs/EVENTS.md: typed payload column generated from Catalog (37 rows; names, publishers, since and fields match the code),
+    payload and misuse rules, Reward shape. BootCompleted "since" A1.4 → A1.5 (it was listed but never published before now).
+TESTRUNNER: 41 passed / 0 failed. Edit mode, on a clone of ServerStorage.Tests:
+    local tests = game:GetService("ServerStorage").Tests:Clone()
+    return require(tests.TestRunner).run({ tests.unit, tests.integration }).summary
+  →
+    file                                     passed failed        ms
+    unit.EventBus.spec                           24      0    182.43
+    unit.Lifecycle.spec                          14      0      2.96
+    unit.TestRunner.spec                          3      0    130.38
+    41 passed, 0 failed (3 files, 315.80 ms)
+  Passes-when tests: "subscribe → publish → receive › delivers the payload to a subscriber" (plus order, per-event routing,
+  Disconnect, disconnect during a publish, deep-frozen copy, all 37 events published from their own publisher);
+  "wrong-type payload › is rejected in strict mode and never delivered" (string for integer, 7.5 for integer, number for
+  Vector3, missing field, empty string, NaN, extra field, Instance, non-table) plus nested array/enum/map/record/oneOf cases and
+  the non-strict report-and-drop case. Misuse: "publish from the wrong domain › asserts in strict mode" and the same for all
+  37 events × 11 other identities (407 checks); non-strict reports "domain" and drops; unknown publisher identity throws.
+SCRIPT ANALYSIS: `bash tools/analyze.sh` → "files: 19 / diagnostics: 0" (luau-lsp 1.70.1, D-014). The local drafts were checked
+  first with a temporary sourcemap: 28 diagnostics (casts of frozen literals to FieldType, pcall over a no-return function,
+  test-only literal types), all fixed before the code went into Studio.
+PLAY TEST: start_stop_play(start) → execute_luau(Server) suite + shared-bus probe → get_console_output → start_stop_play(stop):
+    [Boot] phases 0–8 complete in 0.11 ms (Init 0.09 ms, Start 0.00 ms) · services (10): Platform/RemoteConfigService → ...
+    [Boot] BootCompleted published · 0 subscribers · bus strict
+    [Boot][Client] ready for Lighthouse8282 in 0.01 ms · controllers (0): none yet
+    [TestRunner] 41 passed, 0 failed (3 files, 314.87 ms)
+  Probe: EventBus.server() strict = true, same instance on a second call; Encounter publishing BootCompleted threw
+  "[Events] BootCompleted is published by Bootstrap only; Encounter tried to publish it" and nothing was delivered.
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, known since P0.1) and
+  1 × "[Events] error handler failed (... reporter down) ..." written on purpose by the "survives a failing error handler" test.
+NUMBERS:
+  - Publish cost (Edit, best of 3 × 10,000): EnemyKilled 0 subscribers 1.44 µs · 1 subscriber 2.78 µs · 4 subscribers 6.48 µs;
+    MissionEnded (array field) 4 subscribers 7.30 µs.
+  - EventBus.spec 24 tests in 182.43 ms (Edit) / 182.73 ms (play test); 175 ms of that is the yielding-handler test's waits.
+  - Mutation controls (EventBus copy, spec pointed at it): domain check off → 3 failed (the 3 wrong-domain tests); payload check
+    off → 3 failed (the 3 wrong-type tests); handlers called inline instead of task.spawn → 3 failed (the 3 isolation tests).
+  - Boot (play test): 0.11 ms, 10 services, 0 remotes. BootCompleted subscribers: 0 (Telemetry is still a placeholder).
+  - Scripts: DataModel 20 · under roots 20 · mirror 20 · StringValues 1/1 · MATCH (mirror_write.py, ALL OK, one export call of
+    94,519 characters, just under the 95K chunk limit; the next export will take two calls). Local drafts == Studio export.
+  - Sizes: Catalog 15,948 B, EventBus 10,265 B, EventBus.spec 16,290 B, Bootstrap 2,397 B.
+RESTORE POINT: backups/A1.5_passed_20261016-1559/ — 6 × .rbxm (D-010), each verified by length + FNV-1a against a fresh Studio
+  serialization: ReplicatedStorage 12640 B 9b94ec0b · ServerScriptService 42144 B e20dbab0 · ServerStorage 63880 B fa603de8 ·
+  Workspace 12147 B 5ac584ad (exported) · Lighting 3445 B 866e3754 · StarterPlayerScripts 1961 B 1fc169ff (equal A1.4, copied).
+  Workspace serializes to 12147 B again (7831 B at A1.3/A1.4, 12147 B at A1.2) with no Workspace edits; same behaviour seen in A1.2.
+MIRROR COMMIT: (recorded in the next commit)
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Details D-018.
+NOTES / DEBT:
+  - multi_edit treats dots in a path as separators: creating "Tests.unit.EventBus.spec" made Folder EventBus + Module "spec".
+    Fixed by renaming/moving in execute_luau. Create dotted names that way (or rename after) from now on.
+  - Event payload shapes after A1.5 are provisional (EVENTS.md rule); each "since" substage confirms them.
+  - The publisher identity is declared by the caller (D-018); it catches mistakes, not hostile code.
+  - EventBus is in ReplicatedStorage but server-only (EventBus.server errors on a client); clients get server events through
+    remotes from A1.8 on, never through the bus.
+  - Shared/Events modules hit the Edit-mode require cache like Lifecycle: after editing them, run the suite in a play test or point
+    a spec clone at a module clone (as the mutation controls did).
+NEXT: A1.6
+```
+

@@ -3,11 +3,12 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** A1.5 — Event bus (⬜ not started). A1.4 Domains and lifecycle ✅ passed 2026-10-16 (auto-approved). P0 complete.
+- **Substage:** A1.6 — Definitions registry (⬜ not started). A1.5 Event bus ✅ passed 2026-10-16 (auto-approved). P0 complete.
 - **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency), before B1. (D-017 service renames accepted 15:46 UTC.)
-- **Last passed:** A1.4 Domains and lifecycle (auto-approved, D-010; contract D-016). Before that A1.3, A1.2, A1.1.
+- **Last passed:** A1.5 Event bus (auto-approved, D-010; details D-018). Before that A1.4, A1.3, A1.2, A1.1.
+- **Event bus (D-018):** `Shared/Events/EventBus` + `Catalog` (37 typed events). `EventBus.server():publisher("<Domain>"):publish(name, payload)`; subscribe in Start. Wrong domain / unknown event / bad payload throw in Studio, are reported + dropped live. Bootstrap publishes `BootCompleted`.
 - **Lifecycle (D-016):** `Server/Lifecycle` boots the domain folders in §5.2 order. Init resolves dependencies with `Lifecycle.get` and must not yield; Start may yield. Built-in service names fail the boot.
-- **Mirror (D-015):** `docs/MIRROR.md`. Paste `tools/mirror_export.luau` into execute_luau (Edit), then `python tools/mirror_write.py <result files>` → `ALL OK` + `MATCH`. Chunks at 95K (`START = next`); vendor re-sent only with `INCLUDE_VENDOR = true`. 17 scripts now (past script_search's cap of 10).
+- **Mirror (D-015):** `docs/MIRROR.md`. Paste `tools/mirror_export.luau` into execute_luau (Edit), then `python tools/mirror_write.py <result files>` → `ALL OK` + `MATCH`. Chunks at 95K (`START = next`); vendor re-sent only with `INCLUDE_VENDOR = true`. 20 scripts now (past script_search's cap of 10); the last export was 94.5K in one call, so expect two calls next time.
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
 - **Studio:** place 72812275891657 / universe 10771233280. The Studio MCP lists several open places; always target "Deadzone (placeId: 72812275891657)".
 - **Place contents:** §4.3 layout (50 folders under the 4 roots), `Server/Bootstrap` (Script), `Server/Lifecycle` + one placeholder service per domain (A1.4), `Client/Bootstrap` (LocalScript), ProfileStore in `Server/Domains/Data/Vendor` with `ProfileStore_LICENSE`. `ServerStorage/Tests/TestRunner` + `Tests/unit/TestRunner.spec` (A1.2), `Tests/unit/Lifecycle.spec` (A1.4). Plus `ServerStorage/ArtReference` (P0.3 mood scenes).
@@ -157,3 +158,21 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - Commit `c708c1e` (build, mirror, docs, pass), then a commit recording the hash.
 - Steps 1–7 met with real results (TestRunner 17/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.5. D-017 waits on the owner (not blocking A1.5).
 - 15:46 UTC: owner approved D-017 in the A1.4 thread ("Approved"): `AnalyticsService` → `MetricsService`, `PlayerDataService` → `ProfileDataService`, `MatchmakingService` → `MatchmakerService`. Applied to architecture §5.1 + A1 deliverables list, ROADMAP A1.8, EVENTS.md. An earlier re-delivered message ("rename approved for both", 13:19 UTC) was the P0.4 approval (D-011) and was not counted. No Studio change (no service uses these names yet).
+
+### 2026-10-16 · A1.5 — Event bus · 🟨 in progress
+- 15:50 UTC: started. Read CLAUDE.md, progress.md, CURRENT_PHASE, ROADMAP A1.5 row, architecture §4.1/§4.3/§5.1–§5.3/§26, EVENTS.md, DECISION_LOG D-014…D-017 + CP lines. D-017 was accepted in the A1.4 thread meanwhile (commit cbcd0cc); not touched here.
+- Plan: `Shared/Events/Catalog` (every EVENTS.md event: publisher identity + typed field schema + exported payload types) and `Shared/Events/EventBus` (`new`/`server`, `publisher(domain):publish`, `subscribe`/`Disconnect`; payload validated and deep-frozen; wrong domain, unknown event or bad payload throw in strict mode and are reported + dropped otherwise; handlers run in their own thread so a consumer error or yield never reaches the publisher). Bootstrap publishes `BootCompleted`. `Tests/unit/EventBus.spec`. EVENTS.md gets the field types.
+- 16:08 UTC: added in Studio `Shared/Events/Catalog` (37 events, 12 publisher identities, typed schemas + exported payload types; the catalog is checked at require time), `Shared/Events/EventBus` (`new`/`server`, `publisher(domain):publish`, `subscribe`/`Disconnect`, `subscriberCount`, `setErrorHandler`), `Tests/unit/EventBus.spec` (24 tests). Bootstrap now publishes `BootCompleted` after phase 8. Drafts checked with luau-lsp first (temp sourcemap); Studio sources equal the drafts by length + FNV-1a.
+- Gotcha: `multi_edit` splits a dotted script name: `game.ServerStorage.Tests.unit.EventBus.spec` created Folder `EventBus` + Module `spec`. Renamed/moved with execute_luau and destroyed the folder.
+- Gotcha: files written by the Write tool here come out CRLF; normalize to LF before hashing or pasting into Studio.
+- Edit run (Tests clone): `41 passed, 0 failed (3 files, 315.80 ms)`; EventBus.spec 24/0 in 182.43 ms.
+- Mutation controls (EventBus copy, spec pointed at it): domain check off → 3 failed (the 3 wrong-domain tests); payload check off → 3 failed (the 3 wrong-type tests); handlers called inline instead of task.spawn → 3 failed (the 3 isolation tests).
+- Publish cost (best of 3 × 10,000, Edit): EnemyKilled 0 subs 1.44 µs, 1 sub 2.78 µs, 4 subs 6.48 µs; MissionEnded 4 subs 7.30 µs.
+- 16:10 UTC: play test: boot unchanged (0.11 ms, 10 services) + `[Boot] BootCompleted published · 0 subscribers · bus strict`; Server suite `41 passed, 0 failed (3 files, 314.87 ms)`; shared bus is strict in Studio, a singleton, and rejects a wrong-domain publish of BootCompleted (not delivered). 0 errors; 5 known UIBlox warnings + 1 expected `[Events] error handler failed (... reporter down)` warning from the "survives a failing error handler" test.
+- Timestamp correction: the "16:08" and "16:10 UTC" lines above were ~15:55 and ~15:57 UTC (clock read 15:58).
+- 15:59 UTC: mirror export 1 call (94,519 chars) → `ALL OK`, written 19, `scripts: DataModel 20 · under roots 20 · mirror 20 · StringValues 1/1 · MATCH`; local drafts equal the export (cmp). `tools/analyze.sh`: files 19, diagnostics 0.
+- 15:59 UTC: backup `backups/A1.5_passed_20261016-1559`: ReplicatedStorage 12640 B 9b94ec0b, SSS 42144 B e20dbab0, ServerStorage 63880 B fa603de8, Workspace 12147 B 5ac584ad exported (Workspace size flips 7831/12147 without edits, as in A1.2); Lighting and StarterPlayerScripts equal A1.4 (copied). All 6 verified. Method note: serialize `service:GetChildren()`; serializing the service itself fails except for StarterPlayerScripts.
+- Docs: EVENTS.md typed payload column generated from Catalog (37 rows) + rules; API_CONTRACTS event bus table; SYSTEM_REGISTRY Event bus → Tested; D-018; handoff record; CP line; CURRENT_PHASE → A1.6; ROADMAP footer.
+
+### 2026-10-16 · A1.5 — Event bus · ✅ passed (auto-approved, D-010)
+- Steps 1–7 met with real results (TestRunner 41/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.6.

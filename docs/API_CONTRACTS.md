@@ -84,3 +84,16 @@ A service is a ModuleScript directly inside its domain folder returning `{ Name 
 | `Lifecycle.get(name) → Service` | a service, inside its `Init` only | Returns a service whose `Init` already ran (earlier phase, or earlier in name order in the same domain). Anything else is a boot error. Keep the reference for `Start`. |
 | `Lifecycle.boot(domainsFolder, hooks?) → Report` | `Server/Bootstrap` only | Plans the domain folders, validates against §5.2, runs every `Init` (phase 3 hook inside), then every `Start`, then the phase 8 hook. |
 | `Lifecycle.plan` / `validate` / `run` | Bootstrap and tests | The three steps of `boot`, exposed so tests can build or mutate a plan. |
+
+### Event bus (`ReplicatedStorage/Shared/Events/EventBus`, A1.5, D-018)
+Server only. Catalog and payload rules in `docs/EVENTS.md`; `Events/Catalog` holds the schemas and exports one payload type per event.
+
+| Function | Who calls it | Contract |
+|---|---|---|
+| `EventBus.server() → Bus` | any server module | The one shared bus. Strict in Studio, lenient on live servers. Errors on a client. |
+| `bus:publisher(domain) → Publisher` | the publishing service, in `Init` or `Start` | `domain` is one of the ten §5.1 domains, `Bootstrap` or `Definitions`; anything else throws. |
+| `publisher:publish(name, payload)` | that service | Publishes only events whose catalog publisher is `domain`. Unknown event, wrong domain or a payload that fails its schema: throws in strict mode, reported and dropped otherwise. Valid payloads go to every subscriber as a deep-frozen copy, each handler in its own thread. |
+| `bus:subscribe(name, handler) → Connection` | consumers, in `Start` | Unknown event or non-function handler throws in any mode. `Connection:Disconnect()` is idempotent and takes effect for later publishes and later handlers of the current one. |
+| `bus:subscriberCount(name)` | Bootstrap, tests | Number of live subscriptions. |
+| `bus:setErrorHandler(fn)` | Telemetry/ErrorReportService (when built) | Receives `(kind, message)` for `unknown_event`, `domain`, `payload` (non-strict) and `handler` errors. Default: `warn`. A failing handler falls back to `warn`. |
+| `EventBus.new(options?) → Bus` | tests | A private bus: `strict` (default true), `catalog` (checked; a malformed one throws), `onError`. |

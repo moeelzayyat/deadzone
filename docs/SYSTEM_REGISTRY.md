@@ -98,7 +98,7 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | System | Target | Status | Notes |
 |---|---|---|---|
 | Domain lifecycle + init order | A1.4 | Tested | `Server/Lifecycle` + one placeholder service per domain; 14 tests in `Tests/unit/Lifecycle.spec` (D-016) |
-| Event bus | A1.5 | Planned | |
+| Event bus | A1.5 | Tested | `Shared/Events/EventBus` + `Catalog` (37 events typed); 24 tests in `Tests/unit/EventBus.spec`; Bootstrap publishes `BootCompleted` (D-018) |
 | Definitions registry + validation | A1.6 | Planned | |
 | StatPipeline + DamageCalculator | A1.7 | Planned | |
 | SimulationClock | A1.8 | Planned | |
