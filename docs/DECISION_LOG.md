@@ -131,3 +131,5 @@ Consequences: analysis runs on the mirror, so the mirror export happens before s
 Approved by: owner (2026-10-16, "ok download luau-lsp and install it", A1.1 thread 14:40 UTC)
 
 ## CP — A1.1 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16
+
+## CP — A1.2 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16

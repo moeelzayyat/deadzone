@@ -267,3 +267,58 @@ NOTES / DEBT:
     Studio's window wins (the owner can open View → Script Analysis).
 NEXT: A1.2
 ```
+
+## A1.2 — TestRunner — 2026-10-16
+
+```text
+CHECKPOINT: A1.2 TestRunner
+DATE: 2026-10-16
+TESTRUNNER: execute_luau (Edit), run on a clone of ServerStorage.Tests so edits are picked up:
+    local tests = game:GetService("ServerStorage").Tests:Clone()
+    return require(tests.TestRunner).run({ tests.unit, tests.integration }).summary
+  →
+    file                                     passed failed        ms
+    unit.TestRunner.spec                          3      0    131.82
+    3 passed, 0 failed (1 file, 131.84 ms)
+  Same suite in the play-test Server datamodel (require(ServerStorage.Tests.TestRunner).run()): 3 passed, 0 failed (1 file, 132.98 ms).
+  Negative control (3 throwaway specs outside the DataModel, run({ folder })): 1 passed, 7 failed. Reported: matcher fail
+  'expected "a" to be "b" (line 4)', runtime error with spec position, timeout 'timed out after 0.20 s', fail after a yield
+  (line 10), toThrow on a non-throwing function (line 12), spec returning a non-function, spec erroring at load. Line numbers
+  checked against the spec source.
+SCRIPT ANALYSIS: `bash tools/analyze.sh` → "files: 4 / diagnostics: 0" (luau-lsp 1.70.1, D-014; sourcemap regenerated from
+  the Studio tree). The first local draft reported 2 TypeErrors (pcall on a () -> () function), fixed before insertion, so the
+  checker covered the new files. Vendor excluded as before.
+PLAY TEST: start_stop_play(start) → execute_luau(Server) runs the suite → get_console_output → start_stop_play(stop). Console:
+    [Boot] phases 0–8 complete in 0.37 ms · services (0): none yet   (phase lines 0–8 as in A1.1)
+    [Boot][Client] ready for Lighthouse8282 in 0.01 ms · controllers (0): none yet
+    [TestRunner] PASS unit.TestRunner.spec › expect › passes matching values, tables and numbers (0.01 ms)
+    [TestRunner] PASS unit.TestRunner.spec › expect › raises with a readable message when a matcher fails (0.03 ms)
+    [TestRunner] PASS unit.TestRunner.spec › async › awaits a test that yields (132.51 ms)
+    [TestRunner] 3 passed, 0 failed (1 file, 132.98 ms)
+  Console errors: 0. Warnings: 5 × "[UIBlox - Warning] FoundationProvider not found" (Roblox CorePackages, known since P0.1).
+NUMBERS: suite 3 tests / 1 file / 131.84 ms (Edit) and 132.98 ms (Server); sync tests 0.01–0.03 ms each; async test 132.51 ms
+  for a 0.1 s task.wait (frame-polled); negative control 7/7 planted failures reported; TestRunner 8894 B (~250 lines incl.
+  types); server boot 0.37 ms; scripts 5 (4 project + 1 vendor); analysis diagnostics 0.
+RESTORE POINT: backups/A1.2_passed_20261016-1518/ — 6 × .rbxm (D-010), each verified by length + FNV-1a against Studio, all
+  exported fresh: Lighting 3445 B 866e3754 · ReplicatedStorage 872 B 24e5e75c (both equal A1.1) · ServerScriptService 36523 B
+  314d124c · StarterPlayerScripts 1961 B 1fc169ff (same lengths as A1.1, different hashes: child order changed after Studio
+  reopened) · ServerStorage 54253 B 658e5fb2 (TestRunner + spec added) · Workspace 12147 B 5ac584ad (A1.1: 7831 B; children
+  unchanged — Terrain, SpawnLocation, Baseplate, Camera — after a Studio update and reopen; not investigated further).
+MIRROR COMMIT: see git log "A1.2: ..." — mirror/src/tests/TestRunner.luau (8894 B b61ebc85),
+  mirror/src/tests/unit/TestRunner.spec.luau (1088 B a07a2957); the 4 existing mirror files re-verified unchanged; sourcemap
+  regenerated (adds Tests nodes; Bootstrap entries reordered to the current GetChildren order).
+OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010).
+NOTES / DEBT:
+  - Spec format: ModuleScript named "*.spec" under Tests/unit or Tests/integration returning function(t: TestRunner.Spec);
+    t.describe / t.it(name, body, timeoutSeconds?) / t.expect(v).toBe|toEqual|toBeNil|toBeTruthy|toBeCloseTo|
+    toBeGreaterThan|toBeLessThan|toThrow. Default timeout 5 s. run() returns a Report; .summary is the table.
+  - Require cache: in Edit mode Studio keeps require() results per ModuleScript across execute_luau calls, so an edited module
+    is stale until a clone is required. Modules under test in later substages (A1.4+) hit the same cache: run the suite in a
+    play test (fresh requires) or clone the roots under test.
+  - error(msg, level) positions are unreliable in Studio (inlining shifts frames); matchers throw at level 0 and the runner
+    appends "(line N)" from the spec's traceback frame.
+  - A spec that errors at load reports Roblox's generic "Requested module experienced an error while loading"; the original
+    error is printed separately in the Output window.
+  - Studio closed and reopened twice during this substage (installer update, then a dropped place). Scripts persisted.
+NEXT: A1.3
+```

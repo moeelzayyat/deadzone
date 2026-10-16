@@ -125,6 +125,13 @@
      "className": "Folder",
      "children": [
       {
+       "name": "Bootstrap",
+       "className": "Script",
+       "filePaths": [
+        "mirror/src/server/Bootstrap.server.luau"
+       ]
+      },
+      {
        "name": "Domains",
        "className": "Folder",
        "children": [
@@ -192,13 +199,6 @@
       {
        "name": "Admin",
        "className": "Folder"
-      },
-      {
-       "name": "Bootstrap",
-       "className": "Script",
-       "filePaths": [
-        "mirror/src/server/Bootstrap.server.luau"
-       ]
       }
      ]
     }
@@ -213,8 +213,24 @@
      "className": "Folder",
      "children": [
       {
+       "name": "TestRunner",
+       "className": "ModuleScript",
+       "filePaths": [
+        "mirror/src/tests/TestRunner.luau"
+       ]
+      },
+      {
        "name": "unit",
-       "className": "Folder"
+       "className": "Folder",
+       "children": [
+        {
+         "name": "TestRunner.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/TestRunner.spec.luau"
+         ]
+        }
+       ]
       },
       {
        "name": "integration",
@@ -247,6 +263,13 @@
        "className": "Folder",
        "children": [
         {
+         "name": "Bootstrap",
+         "className": "LocalScript",
+         "filePaths": [
+          "mirror/src/client/Bootstrap.client.luau"
+         ]
+        },
+        {
          "name": "Controllers",
          "className": "Folder"
         },
@@ -261,13 +284,6 @@
         {
          "name": "Render",
          "className": "Folder"
-        },
-        {
-         "name": "Bootstrap",
-         "className": "LocalScript",
-         "filePaths": [
-          "mirror/src/client/Bootstrap.client.luau"
-         ]
         }
        ]
       }

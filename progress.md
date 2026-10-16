@@ -3,17 +3,19 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** A1.2 — TestRunner (⬜ not started). A1.1 Studio layout ✅ passed 2026-10-16 (auto-approved). P0 complete.
+- **Substage:** A1.3 — Git mirror (⬜ not started). A1.2 TestRunner ✅ passed 2026-10-16 (auto-approved). P0 complete.
 - **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency). Must be decided before B1.
-- **Last passed:** A1.1 Studio layout (auto-approved, D-010). Before that, P0.6 Budget and cadence (owner-approved, D-013).
+- **Last passed:** A1.2 TestRunner (auto-approved, D-010). Before that, A1.1 Studio layout (auto-approved).
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
 - **Studio:** place 72812275891657 / universe 10771233280. The Studio MCP lists several open places; always target "Deadzone (placeId: 72812275891657)".
-- **Place contents:** §4.3 layout (50 folders under the 4 roots), `Server/Bootstrap` (Script), `Client/Bootstrap` (LocalScript), ProfileStore in `Server/Domains/Data/Vendor` with `ProfileStore_LICENSE`. Plus `ServerStorage/ArtReference` (P0.3 mood scenes).
+- **Place contents:** §4.3 layout (50 folders under the 4 roots), `Server/Bootstrap` (Script), `Client/Bootstrap` (LocalScript), ProfileStore in `Server/Domains/Data/Vendor` with `ProfileStore_LICENSE`. `ServerStorage/Tests/TestRunner` + `Tests/unit/TestRunner.spec` (A1.2). Plus `ServerStorage/ArtReference` (P0.3 mood scenes).
 - **Restore points (D-010):** `backups/<ID>_passed_<YYYYMMDD-HHMM UTC>/`, one `.rbxm` per service via `SerializationService`, git-ignored.
 - **Script Analysis (D-014):** `bash tools/analyze.sh` after the mirror export (luau-lsp 1.70.1 at `~/tools/luau-lsp/1.70.1`, Roblox None-security definitions, `mirror/sourcemap.json` regenerated from the Studio tree). Pass = `diagnostics: 0`. Vendor excluded.
 - **Working notes:**
   - Backup transfer: `execute_luau` returns base64 JSON. Outputs over ~64K characters are saved by the harness to a tool-results file, which is decoded locally; pad smaller outputs past 64K so they land in a file too. Outputs over 100K are truncated, so keep each call under that. Verify every file by length and FNV-1a against a hash computed in Studio. In Luau, multiply as `(bit32.lshift(h,24) + h*403) % 2^32`, because a plain `h*16777619` loses float precision.
   - `execute_luau` shows only the first return value; return one string.
+  - Tests in Edit mode: `local tests = ServerStorage.Tests:Clone(); require(tests.TestRunner).run({tests.unit, tests.integration})`. Studio caches `require` per ModuleScript across execute_luau calls, so a plain require serves stale code after edits.
+  - Studio can drop the place mid-session (updates, reopen). Re-run `list_roblox_studios`; the studio_id changes each time.
   - `insert_asset` sets `Sandboxed = true` on inserted scripts.
   - Long Python heredocs in the Bash tool can fail to parse; write the script to the scratchpad and run it.
   - HttpService is disabled in experience settings. Don't enable it to move files; that's an owner setting.
@@ -101,3 +103,19 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 ### 2026-10-16 · A1.1 — Studio layout · ✅ passed (auto-approved, D-010)
 - Handoff record appended, D-014 + CP line in DECISION_LOG, CURRENT_PHASE advanced to A1.2, ROADMAP footer updated (A1 stays 🟨 in the master tracker).
 - Commits `f1b0599` (build + mirror) and `2bd5cfd` (analysis + pass).
+
+### 2026-10-16 · A1.2 — TestRunner · 🟨 in progress
+- 14:47 UTC: started. Read CLAUDE.md, progress.md, CURRENT_PHASE, ROADMAP A1.2 row and §0, architecture §4.3/§20 (TestRunner row, ~150-line harness)/§26, DECISION_LOG D-012…D-014 + CP lines, A1.1 handoff.
+- Blocker: `list_roblox_studios` returns no Studio (twice). Only `RobloxStudioInstaller` is running (Studio likely updating). Asked the owner to reopen the Deadzone place. Drafting TestRunner + 3 sample tests locally meanwhile, checked with luau-lsp before they go into Studio.
+- 14:58 UTC: Studio back (Deadzone 72812275891657). Created `ServerStorage/Tests/TestRunner` (ModuleScript, `--!strict`) and `Tests/unit/TestRunner.spec` (3 tests: matchers, failing-matcher message, async yield). Edit-mode run: `3 passed, 0 failed (1 file, 131.67 ms)`.
+- Gotcha: execute_luau (Edit) caches `require` per ModuleScript across calls, so edits to a module are not seen until a clone is required. Checkpoint runs use `Tests:Clone()` (usage comment in TestRunner). Play-test (Server) requires are fresh. Modules under test in later substages hit the same cache.
+- Gotcha: `error(msg, level)` positions are unreliable in Studio (Luau inlining shifts frames). Matchers throw with level 0 and the runner appends "(line N)" from the first traceback frame inside the spec.
+- Negative control (3 throwaway specs outside the DataModel): `1 passed, 7 failed`: matcher fail (line 4), runtime error, timeout 0.20 s, fail after yield (line 10), toThrow on non-throwing fn (line 12), spec returning a non-function, spec erroring at load. All line numbers correct.
+- Play test: Server datamodel `3 passed, 0 failed (1 file, 132.98 ms)`; boot log unchanged (0.37 ms); 0 errors, 5 known UIBlox warnings.
+- 15:05 UTC: MCP lost Studio right after the play test stopped; Studio is running again but on its start page ("Place is not open"). Asked the owner to reopen Deadzone. Remaining: mirror export + sourcemap, luau-lsp, backup, handoff, approval, phase advance.
+- 15:17 UTC: owner reopened Deadzone (new studio_id). Scripts persisted; suite re-run on a clone: `3 passed, 0 failed (1 file, 131.84 ms)`.
+- Mirror: `mirror/src/tests/TestRunner.luau` (8894 B b61ebc85), `mirror/src/tests/unit/TestRunner.spec.luau` (1088 B a07a2957); 4 existing files re-verified; sourcemap regenerated. `tools/analyze.sh`: files 4, diagnostics 0.
+- Backup `backups/A1.2_passed_20261016-1518`: 6 fresh exports, all verified by length + FNV-1a. Workspace grew 7831 → 12147 B with unchanged children after the Studio update; SSS and StarterPlayerScripts same length, new hash (child order). Noted, not investigated.
+
+### 2026-10-16 · A1.2 — TestRunner · ✅ passed (auto-approved, D-010)
+- Handoff record appended, CP line in DECISION_LOG, CURRENT_PHASE advanced to A1.3, ROADMAP footer updated (A1 stays 🟨).
