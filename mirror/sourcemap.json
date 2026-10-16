@@ -49,6 +49,19 @@
        "className": "Folder",
        "children": [
         {
+         "name": "Arenas",
+         "className": "Folder",
+         "children": [
+          {
+           "name": "TestArena",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Arenas/TestArena.luau"
+           ]
+          }
+         ]
+        },
+        {
          "name": "Classes",
          "className": "Folder",
          "children": [
@@ -418,6 +431,20 @@
        "className": "Folder",
        "children": [
         {
+         "name": "ArenaGrid",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Util/ArenaGrid.luau"
+         ]
+        },
+        {
+         "name": "ArenaRaster",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Util/ArenaRaster.luau"
+         ]
+        },
+        {
          "name": "InputRules",
          "className": "ModuleScript",
          "filePaths": [
@@ -520,6 +547,13 @@
          "name": "Encounter",
          "className": "Folder",
          "children": [
+          {
+           "name": "ArenaService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Encounter/ArenaService.luau"
+           ]
+          },
           {
            "name": "MissionSessionService",
            "className": "ModuleScript",
@@ -668,6 +702,13 @@
        "className": "Folder",
        "children": [
         {
+         "name": "ArenaFixture",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/fixtures/ArenaFixture.luau"
+         ]
+        },
+        {
          "name": "profiles",
          "className": "Folder"
         }
@@ -681,6 +722,27 @@
        "name": "unit",
        "className": "Folder",
        "children": [
+        {
+         "name": "ArenaGrid.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/ArenaGrid.spec.luau"
+         ]
+        },
+        {
+         "name": "ArenaRaster.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/ArenaRaster.spec.luau"
+         ]
+        },
+        {
+         "name": "ArenaService.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/ArenaService.spec.luau"
+         ]
+        },
         {
          "name": "Codec.spec",
          "className": "ModuleScript",
@@ -770,6 +832,13 @@
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/StatPipeline.spec.luau"
+         ]
+        },
+        {
+         "name": "Survivor.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Survivor.spec.luau"
          ]
         },
         {

@@ -73,7 +73,7 @@ Documented per domain in `init.luau` headers; this table lists the cross-domain 
 | Data | `Profiles.Get(userId) → Profile?`, `Profiles.OnLoaded`, `Admin.Inspect/Grant/Rollback` |
 | Economy | `Wallet.Add/Spend(userId, currency, amt, claimId)`, `Inventory.*`, `Loot.Roll(tableId, luck)`, `Transaction.Run(claimId, fn)` |
 | Combat | `Combat.ResolveAttack(req)`, `Weapons.Tick(match, dt)`, `Abilities.Activate(...)`, `Hits.Query(match, shape, atTime)` |
-| Encounter | `Missions.Start/End`, `Enemies.Spawn/Damage/Kill`, `Protocol.GetMultiplier(match)`, `Upgrades.Offer/Choose`, `Extraction.OpenWindow/Vote`, `SimulationClock.new()` → `match.Clock:Pause/Resume/Tick/Now` (A1.8) |
+| Encounter | `Missions.Start/End`, `Enemies.Spawn/Damage/Kill`, `ArenaService:grid/place/release` (A2.2), `Protocol.GetMultiplier(match)`, `Upgrades.Offer/Choose`, `Extraction.OpenWindow/Vote`, `SimulationClock.new()` → `match.Clock:Pause/Resume/Tick/Now` (A1.8) |
 | Progression | `Rewards.Grant(userId, claimId, rewards)`, `Skills.*`, `Codex.Discover`, `Quests.*`, `Campaign.Record` |
 | Social | `Parties.*`, `Matchmaking.*`, `Leaderboards.Submit/Read` |
 | Facilities | `Forge.*`, `Pets.*`, `Eggs.Hatch`, `Shop.*` |
@@ -141,6 +141,14 @@ Server and client (prediction uses the same code). Rows in `StatRegistry` mirror
 | `InputController.Action` (signal `(action, phase, scheme, arg?)`, phase Begin or End) · `aim()` · `aimSource()` · `isFiring()` · `isMoving()` · `scheme()` · `context()` / `setContext(context)` (Combat, Vote or Cards) · `focus()` / `selectCard(i, scheme?)` · `setting(key)` / `effective(key)` / `setSetting(key, value)` · `setTargetProvider(fn)` · `takeYaw()` (`Client/Controllers/InputController`) | combat (A2.5+), card UI (A3.3), vote HUD (A3.6), CameraController, AimController | The only place input is bound (ContextActionService). Intent only: actions Move, Aim, Primary, Dodge, Signature, VoteExtract, VoteHold, CardFocus, CardSelect, AutoFireToggle. `setSetting` applies locally at once and queues `RequestSettings` (one send per 0.25 s). `setTargetProvider` is the auto-aim hook for the enemy view (A2.3/A2.4). |
 | `CameraController.pose(focus, yaw)` · `yaw()` | tests, presentation | Scriptable elevated camera: pitch 55°, distance 44 studs, FOV 50, follow rate 14/s, fixed yaw unless CameraRotate is on. |
 | `SettingsService:get(userId, key)` / `:all(userId)` (`Server/Domains/Data/SettingsService`) | any server code | The player's session settings from `RequestSettings`; nil = device default; cleared on leave. Never affects power. |
+
+### Arenas and collision grid (A2.2, D-024)
+| Call | Caller | Contract |
+|---|---|---|
+| `ArenaService:grid(arenaId)` → `ArenaGrid.Grid` (`Server/Domains/Encounter/ArenaService`) | EnemyService steering (A2.3), spawning | The arena's collision grid, built from `Shared/Definitions/Arenas/<Id>` and checked against `ServerStorage/Arenas/<Template>` at boot (a drift stops the boot). Unknown id throws `[Arena]`. |
+| `ArenaService:place(arenaId, slot)` → `Placed { Id, Slot, Model, Origin, Grid }` · `:release(placed)` · `:slotOrigin(slot)` · `:toLocal(placed, world)` · `:toWorld(placed, local)` · `:spawnCFrame(placed, character)` | run sessions (A3, A5.2), TestArena harness | Clones the template under `Workspace/Arenas/<Id>_<slot>`, pivot at (0, 0, 1600) + slot × 400 studs along X; a taken or fractional slot throws. Enemies live in arena-local space (origin = floor top centre). |
+| `grid:isOpen(x, z)` · `:cellAt(localPos)` → `x?, z?` · `:openAt(localPos)` · `:center(x, z)` → local Vector3 · `:edgeCells(edgeId)` · `:reach(x, z)` → `(visited buffer, count)`; fields `cellSize`, `width`, `depth`, `openCount`, `spawn`, `edges` (`Shared/Util/ArenaGrid`) | steering, stuck recovery, tests | Cells are 1-based, (1, 1) = west/north corner; outside the grid is never open. Grid rules (closed ring, open spawn, all open cells reachable, passages ≥ 2 cells, edges ≥ 8 open cells) hold for every shipped arena (`_Registry`). |
+| `ArenaRaster.rasterize(template, cellSize)` · `.diff(def, result)` · `.source(id, template, result)` (`Shared/Util/ArenaRaster`) | `tools/arena_export.luau`, ArenaService boot check | Template → grid: colliding upright parts within 0.25–8 studs above the floor block the cells their footprint overlaps (touching edges excluded). Pure; never writes. |
 
 ### Clock and platform wrappers (A1.8, D-021)
 | Call | Caller | Contract |

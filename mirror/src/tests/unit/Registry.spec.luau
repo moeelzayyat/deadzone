@@ -1,5 +1,5 @@
 --!strict
--- Definitions/_Registry (A1.6, A1.7): folder layout, schemas, duplicate Ids, references and folder rules.
+-- Definitions/_Registry (A1.6, A1.7, A2.2 Arenas): folder layout, schemas, duplicate Ids, references and folder rules.
 -- Runs on a clone of Shared, so edits to _Registry or the samples are picked up in Edit mode too (Studio caches require
 -- per ModuleScript) and the real folders are never touched. Bad definitions are built by mutating copies of the samples.
 
@@ -76,7 +76,7 @@ return function(t: TestRunner.Spec)
 	local describe, it, expect = t.describe, t.it, t.expect
 
 	describe("folders and schemas", function()
-		it("has one schema for each of the 18 §4.3 definition folders", function()
+		it("has one schema for each of the 19 definition folders (§4.3 plus Arenas, D-024)", function()
 			expect(Registry.KINDS).toEqual({
 				"Classes",
 				"Weapons",
@@ -86,6 +86,7 @@ return function(t: TestRunner.Spec)
 				"Protocol",
 				"Missions",
 				"Zones",
+				"Arenas",
 				"Loot",
 				"Items",
 				"Skills",
@@ -102,7 +103,7 @@ return function(t: TestRunner.Spec)
 				count += 1
 				expect(table.find(Registry.KINDS, kind :: any) ~= nil).toBe(true)
 			end
-			expect(count).toBe(18)
+			expect(count).toBe(19)
 		end)
 
 		it("matches the Studio folders one to one", function()
@@ -125,7 +126,7 @@ return function(t: TestRunner.Spec)
 	describe("shipped definitions", function()
 		it("load clean with at least one sample per folder", function()
 			local registry = Registry.load(freshDefinitions())
-			expect(registry.count).toBe(19)
+			expect(registry.count).toBe(20)
 			for _, kind in Registry.KINDS do
 				expect(#registry:all(kind :: any) >= 1).toBe(true)
 			end
@@ -153,7 +154,7 @@ return function(t: TestRunner.Spec)
 		it("shared() validates Shared/Definitions once and returns the same registry", function()
 			local first = Registry.shared()
 			expect(Registry.shared()).toBe(first)
-			expect(first.count).toBe(19)
+			expect(first.count).toBe(20)
 		end)
 	end)
 
@@ -364,6 +365,24 @@ return function(t: TestRunner.Spec)
 			expect(change("Pets", "MedicalDrone", function(def)
 				def.Layer = "Flat"
 			end)).toThrow("Layer: HealingPct does not take layer Flat (allowed: AdditivePct)")
+		end)
+
+		it("Arenas: the grid rules hold and the zone exists", function()
+			expect(change("Arenas", "TestArena", function(def)
+				def.Rows[1] = string.rep(".", 76)
+			end)).toThrow("Arenas/TestArena: the outer ring must be blocked")
+			expect(change("Arenas", "TestArena", function(def)
+				def.Rows[40] = string.sub(def.Rows[40], 1, 75)
+			end)).toThrow("Arenas/TestArena: Rows[40]: 75 cells, Width is 76")
+			expect(change("Arenas", "TestArena", function(def)
+				def.PlayerSpawn = { X = 1, Z = 1 }
+			end)).toThrow("Arenas/TestArena: PlayerSpawn (1,1) must be an open cell")
+			expect(change("Arenas", "TestArena", function(def)
+				def.ZoneId = "Atlantis"
+			end)).toThrow('Arenas/TestArena: ZoneId: no Zones definition "Atlantis"')
+			expect(change("Arenas", "TestArena", function(def)
+				def.CellSize = 0
+			end)).toThrow("Arenas/TestArena: CellSize: expected number > 0")
 		end)
 
 		it("Quests: the event must be in the event catalog", function()

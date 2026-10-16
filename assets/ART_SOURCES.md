@@ -14,7 +14,8 @@ Generated meshes/textures and primitives are recorded here too, marked `Placehol
 
 | Asset | Type | Asset ID | Origin | Used in | Status |
 |---|---|---|---|---|---|
-| | | | | | |
+| TestArena greybox (72 parts, Evacuation Streets palette) | Model | none (primitives) | generated in Studio, owner-made, A2.2 | `ServerStorage/Arenas/TestArena` | Placeholder |
+| Survivor (10 parts welded to an R15 root, teal) | Model | none (primitives) | generated in Studio, owner-made, A2.2 | `StarterPlayer/StarterCharacter` | Placeholder |
 
 ## Reference art (not shipped)
 | Asset | File | Origin | License | Status |

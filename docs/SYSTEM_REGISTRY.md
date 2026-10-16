@@ -13,7 +13,9 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | Weapon levels | A3.4 | Planned | |
 | Client prediction + lag compensation | A2.5 | Planned | |
 | Enemy simulation (non-Humanoid) | A2.3 | Planned | |
-| Steering / pathing | A2.3 / A4.5 | Planned | |
+| Steering / pathing | A2.3 / A4.5 | Planned | input ready since A2.2: arena collision grid `Shared/Util/ArenaGrid` (isOpen, cellAt, center, edgeCells, reach) (D-024) |
+| Test arena + collision grid (added A2.2, D-024) | A2.2 | Tested | template `ServerStorage/Arenas/TestArena` (greybox, 152 × 152 studs); grid in `Shared/Definitions/Arenas/TestArena` (76 × 76 cells of 2 studs, 4 spawn edges) exported by `tools/arena_export.luau` from `Shared/Util/ArenaRaster`; `Encounter/ArenaService` checks grid vs template at boot and places copies by slot; 32 tests in `ArenaGrid.spec`, `ArenaRaster.spec`, `ArenaService.spec`; walk test 0 stuck spots |
+| Placeholder survivor (added A2.2, D-024) | A2.2 → B4.1 art | Tested | `StarterPlayer/StarterCharacter`: primitives welded to an R15 root, 7 studs, white outline + key light (ART_BIBLE rule 3); 6 tests in `Survivor.spec`; replaced by the A3.5 hero model |
 | Enemy abilities | A4.5 | Planned | |
 | Wave director + spawn budgets | A3.1 | Planned | |
 | XP orbs | A3.2 | Planned | |
@@ -63,7 +65,7 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | Zones 1–3 / 4–6 | B2.2 / B3.5 | Planned | |
 | Difficulties | B2.3 | Planned | |
 | Parties | A5.1 | Planned | |
-| Instanced arenas (same place) | A5.2 | Planned | |
+| Instanced arenas (same place) | A5.2 | In Development | A2.2: `Encounter/ArenaService:place(arenaId, slot)` clones a template to slot origin (0, 0, 1600) + slot × 400 studs along X, `release` frees it (D-024); per-party assignment and streaming checks in A5.2 |
 | Matchmaking (same-server) | B2.4 | Planned | |
 | Squad bonuses | A5.3 | Planned | |
 | Invite reward | A5.7 | Planned | |

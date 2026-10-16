@@ -24,7 +24,7 @@ Both scenes are built from primitives only (no assets, no IDs) and are kept in `
 ## Low-poly style spec
 - Faceted, flat-shaded forms; `SmoothPlastic` base, no PBR noise textures on characters. Environment may use one tiling texture per surface type.
 - Proportions: chunky. Heads ~1/4 of body height on survivors, slightly larger on zombies; hands and weapons oversized ×1.3 so the action reads from the camera.
-- Character height ≈ 7 studs survivor, 6–7 Walker, 9 Brute. Default camera: elevated third-person, ~35° pitch, ~40 studs out (architecture §2.4).
+- Character height ≈ 7 studs survivor, 6–7 Walker, 9 Brute. Default camera: elevated third-person, 55° pitch, 44 studs out, FOV 50 (set in A2.1, D-023; kept in A2.2, D-024, revisable; v0 said ~35° / ~40 studs, architecture §2.4).
 - Edges: bevels only where they catch light (roof caps, car cabins, crystal facets).
 - Lighting: technology is picked in A1 against the mobile FPS budget (Future if it holds 30 FPS on the low-end device, else ShadowMap); one strong colored sun/sky per zone plus warm or cold local lights; Atmosphere haze carries the zone mood.
 

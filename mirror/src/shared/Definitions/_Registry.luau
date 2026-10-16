@@ -7,7 +7,7 @@
 --   registry:all("Enemies")                        -- frozen definitions sorted by Id
 -- Layout: one ModuleScript per definition, directly inside its folder, returning one table whose Id equals the module name.
 -- Ids are unique across all folders, because the Codex and profiles key on bare DefinitionIds (§6.1).
--- Checks: the 18 folders exist and nothing else sits beside them; each module requires cleanly and returns a table; every
+-- Checks: the 19 folders exist and nothing else sits beside them; each module requires cleanly and returns a table; every
 -- field matches the folder schema (required fields present, no unknown fields, types, ranges, enums, asset ids); references
 -- to other definitions resolve; folder rules hold (per-level arrays match MaxLevel, weights sum to 1, skill prerequisites
 -- are acyclic, ...). Every problem is collected and reported in one error, so one boot shows them all.
@@ -17,6 +17,7 @@
 local Catalog = require(script.Parent.Parent.Events.Catalog)
 local StatRegistry = require(script.Parent.Parent.Stats.StatRegistry)
 local Common = require(script.Parent.Parent.Types.Common)
+local ArenaGrid = require(script.Parent.Parent.Util.ArenaGrid)
 
 export type Kind =
 	"Classes"
@@ -27,6 +28,7 @@ export type Kind =
 	| "Protocol"
 	| "Missions"
 	| "Zones"
+	| "Arenas"
 	| "Loot"
 	| "Items"
 	| "Skills"
@@ -383,6 +385,34 @@ local SCHEMAS: { [string]: Schema } = {
 		},
 		checkAll = checkUnique("Order"),
 	},
+	-- Arena collision grids (§8.3, A2.2, D-024): exported from the ServerStorage/Arenas template by tools/arena_export.luau;
+	-- the grid rules live in Util/ArenaGrid, and Encounter/ArenaService checks the rows against the template at boot.
+	Arenas = {
+		settles = "A2.2",
+		fields = {
+			Id = T.id,
+			ZoneId = ref("Zones"),
+			Template = T.string,
+			CellSize = positive(),
+			Width = int(4, 1024),
+			Depth = int(4, 1024),
+			PlayerSpawn = record({ X = int(1), Z = int(1) }),
+			SpawnEdges = array(
+				record({
+					Id = T.string,
+					Min = record({ X = int(1), Z = int(1) }),
+					Max = record({ X = int(1), Z = int(1) }),
+				}),
+				1
+			),
+			Rows = array(T.string, 4),
+		},
+		check = function(def: any, report: Report)
+			for _, problem in ArenaGrid.problems(def) do
+				report(problem)
+			end
+		end,
+	},
 	Loot = {
 		settles = "B1.5",
 		fields = {
@@ -571,7 +601,7 @@ local SCHEMAS: { [string]: Schema } = {
 	},
 }
 
--- §4.3 folder order.
+-- §4.3 folder order, with Arenas after Zones (A2.2, D-024).
 local KINDS: { Kind } = {
 	"Classes",
 	"Weapons",
@@ -581,6 +611,7 @@ local KINDS: { Kind } = {
 	"Protocol",
 	"Missions",
 	"Zones",
+	"Arenas",
 	"Loot",
 	"Items",
 	"Skills",

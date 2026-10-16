@@ -97,6 +97,7 @@ return function(t: TestRunner.Spec)
 				"Economy/TransactionService",
 				"Progression/ClassService",
 				"Combat/CombatService",
+				"Encounter/ArenaService",
 				"Encounter/MissionSessionService",
 				"Encounter/SimulationClock",
 				"Social/PartyService",
