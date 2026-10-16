@@ -153,9 +153,9 @@ Consequences: Init stays synchronous; waiting work (DataStore reads, MemoryStore
 Approved by: implementation detail within §5.2, recorded under the standing owner approval of 2026-10-16 (D-010)
 
 ## D-017 — §5.1 service names that are Roblox built-ins
-2026-10-16 · A1.4 · **Proposed, awaiting owner**
+2026-10-16 · A1.4 · Accepted
 Context: `game:FindService` checked all 49 service names in architecture §5.1. Three are Roblox built-in service names, which CLAUDE.md rule 14 forbids and the A1.4 boot now rejects: `AnalyticsService` (Telemetry, A1.8), `PlayerDataService` (Data, A5), `MatchmakingService` (Social, A5). Renaming them changes §5.1 (STOP AND ASK).
-Proposal: `AnalyticsService` → `MetricsService`, `PlayerDataService` → `ProfileDataService`, `MatchmakingService` → `MatchmakerService` (all three checked free in Studio). A1.4 placeholders avoid the three names, so A1.4 is not blocked; A1.8 needs the answer.
-Approved by: pending (asked in the A1.4 thread, 2026-10-16)
+Decision: `AnalyticsService` → `MetricsService`, `PlayerDataService` → `ProfileDataService`, `MatchmakingService` → `MatchmakerService` (all three checked free in Studio). A1.4 placeholders avoid the three names, so A1.4 was not blocked. Renamed in architecture §5.1 and the A1 deliverables list, ROADMAP A1.8 and EVENTS.md; the Roblox service itself is still called AnalyticsService where the docs mean it.
+Approved by: owner (2026-10-16, "Approved", A1.4 thread 15:46 UTC)
 
 ## CP — A1.4 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16

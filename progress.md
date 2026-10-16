@@ -4,7 +4,7 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 
 ## Current state
 - **Substage:** A1.5 — Event bus (⬜ not started). A1.4 Domains and lifecycle ✅ passed 2026-10-16 (auto-approved). P0 complete.
-- **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency), before B1. D-017 (three §5.1 service names are Roblox built-ins: AnalyticsService, PlayerDataService, MatchmakingService; proposed MetricsService, ProfileDataService, MatchmakerService), before A1.8.
+- **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency), before B1. (D-017 service renames accepted 15:46 UTC.)
 - **Last passed:** A1.4 Domains and lifecycle (auto-approved, D-010; contract D-016). Before that A1.3, A1.2, A1.1.
 - **Lifecycle (D-016):** `Server/Lifecycle` boots the domain folders in §5.2 order. Init resolves dependencies with `Lifecycle.get` and must not yield; Start may yield. Built-in service names fail the boot.
 - **Mirror (D-015):** `docs/MIRROR.md`. Paste `tools/mirror_export.luau` into execute_luau (Edit), then `python tools/mirror_write.py <result files>` → `ALL OK` + `MATCH`. Chunks at 95K (`START = next`); vendor re-sent only with `INCLUDE_VENDOR = true`. 17 scripts now (past script_search's cap of 10).
@@ -156,3 +156,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 ### 2026-10-16 · A1.4 — Domains and lifecycle · ✅ passed (auto-approved, D-010)
 - Commit `c708c1e` (build, mirror, docs, pass), then a commit recording the hash.
 - Steps 1–7 met with real results (TestRunner 17/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.5. D-017 waits on the owner (not blocking A1.5).
+- 15:46 UTC: owner approved D-017 in the A1.4 thread ("Approved"): `AnalyticsService` → `MetricsService`, `PlayerDataService` → `ProfileDataService`, `MatchmakingService` → `MatchmakerService`. Applied to architecture §5.1 + A1 deliverables list, ROADMAP A1.8, EVENTS.md. An earlier re-delivered message ("rename approved for both", 13:19 UTC) was the P0.4 approval (D-011) and was not counted. No Studio change (no service uses these names yet).

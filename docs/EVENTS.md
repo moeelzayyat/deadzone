@@ -49,6 +49,6 @@ Rules:
 | `FeatureFlagChanged` | `{ Flag, Value }` | Platform | all | A1.8 |
 
 ## Funnel events (Telemetry → Roblox AnalyticsService)
-Not bus events; emitted by `AnalyticsService` from bus subscriptions. Names are fixed for dashboard continuity.
+Not bus events; emitted by `MetricsService` from bus subscriptions. Names are fixed for dashboard continuity.
 
 `Joined` · `ArenaEntered` · `FirstKill` · `FirstCard` · `ProtocolReached_N` · `ExtractionWindow` · `Vote` · `RunEnded` · `RunAgain` · `HubEntered` · `Left`

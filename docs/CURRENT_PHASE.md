@@ -23,7 +23,7 @@ TestRunner.
 - Tests: run on a clone of `ServerStorage.Tests` in Edit mode (Studio caches `require` per ModuleScript across `execute_luau` calls); in a play test plain `require` is fresh. Modules under test outside `Tests` (e.g. `Shared/Events`, `Server/Lifecycle`) hit the same cache: run them in a play test or require a clone.
 - Backups: `SerializationService:SerializeInstancesAsync` → `EncodingService:Base64Encode` → JSON padded past 66K so the harness saves it to a file; decode locally and verify length + FNV-1a. Copy unchanged services from the previous backup after a hash match.
 - Every module `--!strict`. Vendor code (`*/Vendor/*`) is out of the zero-warning rule.
-- Open owner items: D-012 (paid random items; before B1) and D-017 (three §5.1 service names are Roblox built-ins; before A1.8).
+- Open owner item: D-012 (paid random items; before B1). D-017 accepted: Telemetry `MetricsService`, Data `ProfileDataService`, Social `MatchmakerService` (Roblox built-in names are rejected at boot).
 
 ## On pass
 Set this file to **A1.6**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.

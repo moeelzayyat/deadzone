@@ -295,13 +295,13 @@ Each domain owns its state, exposes a documented API, and publishes/subscribes t
 | # | Domain | Services inside | Owns |
 |---|---|---|---|
 | 1 | **Platform** | `RemoteConfigService`, `FeatureFlagService`, `TimeService` | Server time, flags, tunables from DataStore/MemoryStore |
-| 2 | **Telemetry** | `AnalyticsService` (wraps Roblox AnalyticsService), `ErrorReportService` | Funnel, progression, economy events; structured errors |
-| 3 | **Data** | `PlayerDataService` (ProfileStore), `MigrationService`, `AdminDataService` | Profile load/save/migrate; admin inspect/repair |
+| 2 | **Telemetry** | `MetricsService` (wraps Roblox AnalyticsService), `ErrorReportService` | Funnel, progression, economy events; structured errors |
+| 3 | **Data** | `ProfileDataService` (ProfileStore), `MigrationService`, `AdminDataService` | Profile load/save/migrate; admin inspect/repair |
 | 4 | **Economy** | `WalletService`, `InventoryService`, `LootService`, `TransactionService` | Currencies, item instances, RNG rolls, idempotent commits |
 | 5 | **Combat** | `CombatService`, `WeaponService`, `AbilityService`, `HitValidationService` | Damage, cooldowns, hit checks, lag compensation |
 | 6 | **Encounter** | `MissionSessionService`, `EnemyService`, `WaveDirectorService`, `ProtocolService`, `XPService`, `UpgradeService`, `EvolutionService`, `ExtractionService`, `SimulationClock` | Everything inside a run |
 | 7 | **Progression** | `ClassService`, `SkillTreeService`, `CodexService`, `QuestService`, `CampaignService`, `RewardService`, `BattlePassService` | Permanent player power and goals |
-| 8 | **Social** | `PartyService`, `MatchmakingService`, `SquadBonusService`, `LeaderboardService`, `InviteService` | Parties, matchmaking, leaderboards (OrderedDataStore), invites |
+| 8 | **Social** | `PartyService`, `MatchmakerService`, `SquadBonusService`, `LeaderboardService`, `InviteService` | Parties, matchmaking, leaderboards (OrderedDataStore), invites |
 | 9 | **Facilities** | `ForgeService`, `CraftingService`, `PetService`, `EggService`, `ShopService` | Hub facilities |
 | 10 | **LiveOps** | `EventService`, `SeasonService`, `CodeRedemptionService`, `PurchaseService`, `RaidService`, `RaidScheduleService`, `DungeonService` | Time-bound content, purchases, endgame modes |
 
@@ -835,7 +835,7 @@ Every phase exits only with: functional tests passing, integration checks, secur
 ## ALPHA
 
 ### A1 — Foundation (target: 1–2 weeks)
-Deliverables: Studio layout, TestRunner, Git mirror, domain skeleton with init order, event bus, `_Registry` with validation, shared types (all of §6), `StatPipeline` with tests, `SimulationClock`, network layer (contracts, token buckets, `buffer` codecs), `AnalyticsService` + `ErrorReportService` wrappers, `RemoteConfig`, docs scaffold.
+Deliverables: Studio layout, TestRunner, Git mirror, domain skeleton with init order, event bus, `_Registry` with validation, shared types (all of §6), `StatPipeline` with tests, `SimulationClock`, network layer (contracts, token buckets, `buffer` codecs), `MetricsService` + `ErrorReportService` wrappers, `RemoteConfig`, docs scaffold.
 Exit: TestRunner green with zero Script Analysis warnings; boots in Studio with ordered log and zero errors; a bad definition fails boot; `StatPipeline` tests cover every layer and cap; README setup works on a clean machine.
 
 ### A2 — Combat Feel (2–3 weeks)
@@ -977,7 +977,7 @@ NEXT RECOMMENDED TASK:
 7. `StatPipeline` + `DamageCalculator` with full unit tests; `STATS.md` seeded with every stat in §10.2.
 8. `SimulationClock` with pause/resume tests.
 9. Network layer: contract registry, token buckets, `buffer` codec helpers, remotes created in Phase 8 only.
-10. `AnalyticsService`, `ErrorReportService`, `RemoteConfigService`, `FeatureFlagService` wrappers.
+10. `MetricsService`, `ErrorReportService`, `RemoteConfigService`, `FeatureFlagService` wrappers.
 11. `docs/CURRENT_PHASE.md` = A1, `README.md` setup, first `HANDOFF_REPORT.md`.
 
 Do not build combat, enemies, upgrades, inventory, pets, Forge, raids or UI beyond a boot HUD in A1.
