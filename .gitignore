@@ -1,0 +1,22 @@
+# Roblox local files
+*.rbxl.lock
+*.rbxlx.lock
+.DS_Store
+Thumbs.db
+
+# Scratch / exports that are not the mirror
+scratch/
+exports/
+
+# Large binaries belong in Roblox, not Git, except store art sources
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+!assets/**
+
+# Per-checkpoint place backups (D-010) stay local
+backups/
+
+# Per-machine Claude Code permissions
+.claude/settings.local.json
