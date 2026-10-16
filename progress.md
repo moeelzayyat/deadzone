@@ -3,12 +3,12 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** A1.1 — Studio layout (⬜ not started). P0 is complete (all six ✅). Next thread opens A1.1; A1 planned start 2026-10-19 (D-013).
-- **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency). Must be decided before B1.
+- **Substage:** A1.1 — Studio layout (🟦 checkpoint pending, started 2026-10-16 13:50 UTC). Steps 1, 3–6 done; step 2 (Script Analysis) can't be read through MCP, asked the owner how to verify it. Handoff record and approval wait on that. P0 is complete (all six ✅).
+- **Waiting on the owner:** A1.1 Script Analysis check (owner reads the Script Analysis window, or allows downloading luau-lsp for an unattended check). D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency). Must be decided before B1.
 - **Last passed:** P0.6 Budget and cadence (owner-approved 2026-10-16, D-013: stage dates, Beta art cap USD 14,300, weekly rhythm in ROADMAP §1.1). Before that, P0.5 Compliance basics (auto-approved).
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
 - **Studio:** place 72812275891657 / universe 10771233280. The Studio MCP lists several open places; always target "Deadzone (placeId: 72812275891657)".
-- **Place contents:** 0 scripts. Root folders exist (`ReplicatedStorage/Shared`, `ServerScriptService/Server`, `StarterPlayerScripts/Client`, `ServerStorage/Tests`) plus `ServerStorage/ArtReference` (P0.3 mood scenes).
+- **Place contents:** §4.3 layout (50 folders under the 4 roots), `Server/Bootstrap` (Script), `Client/Bootstrap` (LocalScript), ProfileStore in `Server/Domains/Data/Vendor` with `ProfileStore_LICENSE`. Plus `ServerStorage/ArtReference` (P0.3 mood scenes).
 - **Restore points (D-010):** `backups/<ID>_passed_<YYYYMMDD-HHMM UTC>/`, one `.rbxm` per service via `SerializationService`, git-ignored.
 - **Working notes:**
   - Backup transfer: `execute_luau` returns base64 JSON. Outputs over ~64K characters are saved by the harness to a tool-results file, which is decoded locally. Outputs over 100K are truncated, so keep each call under that. Verify every file by length and FNV-1a against a hash computed in Studio. In Luau, multiply as `(bit32.lshift(h,24) + h*403) % 2^32`, because a plain `h*16777619` loses float precision.
@@ -77,3 +77,16 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 ### 2026-10-16 · P0.6 — Budget and cadence · ✅ passed (owner-approved, D-013)
 - Handoff record appended, CP line in DECISION_LOG, ROADMAP master tracker P0 → ✅, CURRENT_PHASE advanced to A1.1. P0 exit met.
 - Commit `5dedf15`.
+
+### 2026-10-16 · A1.1 — Studio layout · 🟨 in progress
+- 13:50 UTC: started (ahead of the planned 2026-10-19 A1 start; allowed under unattended mode). Read CLAUDE.md, progress.md, CURRENT_PHASE, ROADMAP A1 table and §0/§18, architecture §4.1–§5.3 and §28, DECISION_LOG D-004…D-013 + CP lines, ART_SOURCES.
+- Plan: create the §4.3 folder tree in Studio (Shared subfolders + Definitions/*, Server Domains/* + Admin, Client Controllers/UI/Effects/Render, Tests unit/integration/fixtures/profiles); `Server/Bootstrap` and `Client/Bootstrap` that walk phases 0–8 and print `[Boot] phases 0–8 complete` with the ordered service list (empty until A1.4 adds placeholder services); insert ProfileStore into `Domains/Data`, diff against GitHub, add a LICENSE StringValue, pin in ART_SOURCES. No domain `Init`/`Start` contract or assertions yet (A1.4).
+- 13:52 UTC: created 45 folders (Shared: Types, Definitions + 18 subfolders, Stats, Net, Events, Config, Util; Server: Domains + 10 domains, Admin; Client: Controllers, UI, Effects, Render; Tests: unit, integration, fixtures/profiles).
+- 13:53 UTC: inserted ProfileStore (asset 109379033046155) into `Server/Domains/Data/Vendor` (a subfolder, so Bootstrap does not count it as a service). Compared with GitHub: `ProfileStore.luau` last changed in 9580f7c (2025-03-25), the same day as the store asset; the store copy equals it except whitespace-only lines (identical after blanking them, FNV-1a a797d1a7 on both sides). Kept unmodified (FNV-1a 1e3a6f3f, 64,517 B). Added `ProfileStore_LICENSE` StringValue, byte-identical to the repo LICENSE (dc4aedc0). ART_SOURCES row updated.
+- Gotcha: `insert_asset` sets `Sandboxed = true` on inserted scripts with a capability list (DataStore, Network, ServerCommunication included). Left as is; a play-test require reached DataStoreState = Access in 0.64 s.
+- Gotcha: ProfileStore has no `--!strict` header (nonstrict). ROADMAP §0 step 2 scopes the zero-warning rule to `--!strict` modules, and editing the vendor file would break "unmodified", so it is not changed.
+- 13:55 UTC: wrote `Server/Bootstrap` and `Client/Bootstrap` (`--!strict`). Server checks the layout, walks phases 0–8 in §5.2 order, lists ModuleScripts directly inside each domain folder as services (none yet), counts remotes under ReplicatedStorage (0), asserts all 10 domains appear exactly once.
+- Play test: `[Boot] phases 0–8 complete in 0.40 ms · services (0): none yet`, client `ready ... in 0.01 ms`, 0 errors, 5 known UIBlox warnings.
+- Script Analysis: no MCP/Luau API exposes it (probed ScriptEditorService and other service names; screen_capture shows only the 3D viewport). No local analyzer on this machine (only rojo under aftman). Asked the owner.
+- 13:57 UTC: backup `backups/A1.1_passed_20261016-1357`: 6 files verified by length + FNV-1a (Lighting and Workspace unchanged since P0.6, copied). Trick: pad the execute_luau JSON past 64K so the harness saves it to a file instead of inlining.
+- Mirror: `mirror/src/server/Bootstrap.server.luau`, `mirror/src/client/Bootstrap.client.luau`, `mirror/src/server/Domains/Data/Vendor/ProfileStore.luau` + `ProfileStore_LICENSE.txt` (Studio `Server`→`server`, `Client`→`client`, `Shared`→`shared`, `Tests`→`tests`, per §4.3). Hashes match Studio.

@@ -2,9 +2,9 @@
 
 **Stage:** A1 — Foundation
 **Substage:** A1.1 — Studio layout
-**Status:** ⬜ Not started
+**Status:** 🟦 Checkpoint pending — step 2 (Script Analysis) cannot be read through MCP; waiting on the owner
 **Last checkpoint passed:** P0.6 (2026-10-16) — P0 exit: all six ✅
-**Started:** —
+**Started:** 2026-10-16 13:50 UTC
 **Planned stage start:** A1 2026-10-19 (D-013)
 
 ## Deliverables (from ROADMAP.md)
