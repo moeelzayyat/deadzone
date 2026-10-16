@@ -916,3 +916,66 @@ NOTES / DEBT:
   - The walk/push test scripts ran through execute_luau (Client) and are not in the place; method and thresholds are in progress.md.
 NEXT: A2.3
 ```
+
+```text
+CHECKPOINT: A2.3 Enemy simulation core  ·  ✅ passed (auto-approved, D-022)
+DATE: 2026-10-16 (started 20:23 UTC, passed 21:20 UTC)
+BUILT: Server/Domains/Encounter/EnemyService (Encounter service + newSim factory: §8.2 records as table rows on
+  SimulationClock, flow-field seek / direct seek in sight, separation + overlap resolution, wall slide, tiers 1/2/4 steps,
+  stuck teleport to a hidden spawn edge, Spawn → Pursue → Telegraph → Attack → Recover, EnemySpawned, snapshot +
+  broadcast, RequestEnemySnapshots handler, EnemyTest harness + EnemyTestProbe); Shared/Util/FlowField, EnemySteering,
+  PositionRing; Shared/Net/EnemySnapshot (7-byte header + 18-byte records, ≤ 49 per packet); Contracts EnemySnapshot (U,
+  S2C, ≤ 889 B) and RequestEnemySnapshots (R, C2S, {}, 1/2); Definitions/Enemies/Runner (Walker comment updated); Flags
+  EnemyTest; Tunables EnemyTestCount 90, EnemySnapshotHz 12; Client/Controllers/EnemyController (snapshot view + auto-aim
+  targets + subscribe); Tests/perf/HeartbeatProbe; tests: EnemyService.spec 22, EnemySnapshot.spec 12, EnemySteering.spec 13,
+  FlowField.spec 9, fixtures/EnemyFixture; Contracts.spec, Registry.spec, Lifecycle.spec, Settings.spec updated. Decisions
+  in D-025.
+TESTRUNNER: 429 passed / 0 failed
+    Edit:  429 passed, 0 failed (25 files, 1870.14 ms)
+    Play (server, after the measurements):  429 passed, 0 failed (25 files, 1724.08 ms)
+    unit.EnemyService.spec 22 0 · unit.EnemySnapshot.spec 12 0 · unit.EnemySteering.spec 13 0 · unit.FlowField.spec 9 0 ·
+    unit.Contracts.spec 9 0 · unit.Registry.spec 28 0 · unit.Lifecycle.spec 14 0 · unit.Settings.spec 11 0 (others as in A2.2)
+  Failures found on the way, all fixed: attack cadence drifted 3 frames per cycle (deadlines now chain), Init touched the
+  server-only event bus in Edit (publisher moved to the harness), a wall made of several cells pushed bodies off its seams
+  (deepest overlap first), Lifecycle and Settings specs needed the new service and contract.
+SCRIPT ANALYSIS: 0 (bash tools/analyze.sh → files 101, diagnostics 0). check_contracts.py → MATCH (registry 4, rows through
+  A2.3 4); check_stats.py → MATCH.
+PLAY TEST (Studio, PC, 4 sessions; the last one is the record):
+    [Boot] phase 3 Definitions: 21 definitions in 19 folders validated in 5.87 ms
+    [Boot] phase 6 Combat → Encounter: Combat [CombatService]; Encounter [ArenaService, EnemyService, MissionSessionService, SimulationClock]
+    [Boot] phase 8 Network: 0 remotes before, 4 created in ReplicatedStorage.Net in 0.32 ms, 4 now
+    [Enemy] test horde: 90 enemies (60 Walkers, 30 Runners) in TestArena slot 0, snapshots at 12 Hz
+    [Enemy] profile TestArena_0: 90 enemies, 1 targets, step avg 0.571 ms, p99 0.754 ms, max 0.977 ms over 1801 steps; 0 teleports
+  Standing: the client decoded 120 packets in 5 s (0 bad), 12.0 snapshots/s, 90 distinct enemies; in session 2, 90 of 90
+  stood within 20 studs of the player. Walking (client Humanoid:MoveTo along grid paths, 978 studs in 62 s at 16 studs/s):
+  the horde followed (mean distance 17–52 studs, 76–81 within 25 studs once the player slowed), 1 stuck teleport logged.
+  Console, final session: Server 0 errors, 0 warnings; Client 0 errors, 5 × known UIBlox "FoundationProvider not found".
+  Session 1 showed 2 client errors ("Remote event invocation discarded event for ReplicatedStorage.Net.EnemySnapshot")
+  → fixed with RequestEnemySnapshots (D-025 point 6). Session 3 showed 92 false stuck teleports while walking → fixed
+  (D-025 point 3).
+  Not covered: screenshots and the camera check by eye. Studio's viewport still did not render (RenderStepped 0 frames in
+  2 s, screen_capture timed out), so the camera stays as decided in D-024 point 8.
+NUMBERS: Server heartbeat (HeartbeatProbe, D-025 point 10), standing 60 s: step work avg 0.639 ms, p95 0.759, p99 0.838,
+  max 1.540; EnemyService step avg 0.568, p99 0.751, max 1.461; Stats.HeartbeatTimeMs avg 0.110, p99 0.319; frame interval
+  avg 16.666, p99 18.715. Walking 55 s: step work avg 0.735, p95 2.260, p99 2.501, max 2.907; EnemyService step avg 0.634,
+  p99 2.386, max 2.764 (273 field builds); frame interval avg 16.666, p99 19.078. Live enemies 90 (60 Walkers, 30 Runners).
+  Snapshots 12 Hz, 2 packets (889 + 745 B), 19.1 KB/s payload per client. Edit, best of 3: FlowField build 1.543 ms,
+  direction 0.335 µs, slide 0.412 µs, snapshot pack 0.040 ms, unpack 0.033 ms, newSim + 90 spawns 0.615 ms. Headless
+  30 s run: ≥ 80 of 90 within 20 studs, overlap < 0.25 studs, 0 off-floor. Scripts: DataModel 102 · under roots 102 ·
+  mirror 102 · StringValues 1/1 · MATCH.
+RESTORE POINT: backups/A2.3_passed_20261016-2114/ — ReplicatedStorage 85592 B 2b53b787 · ServerScriptService 79407 B b158c080 ·
+  ServerStorage 144735 B 0e5f038e · StarterPlayerScripts 20427 B 62e118a5 · StarterPlayer 7664 B 0a853cf1 exported;
+  Lighting 3445 B 866e3754, Workspace 7831 B eaa94454 equal A2.2 (copied); all 7 verified by length + FNV-1a. StarterPlayer
+  serialized smaller than in A2.2 (8456 B) although A2.3 did not touch it; Survivor.spec passes on the live tree.
+MIRROR COMMIT: see the A2.3 commit in git log (hash recorded in the follow-up commit).
+OWNER APPROVAL: auto-approved under standing owner approval of 2026-10-16 (D-022); CP line in DECISION_LOG.
+NOTES / DEBT:
+  - The 900 B unreliable limit is from Roblox's live behaviour; Studio delivered 1,533 B. A2.8 should confirm on a live
+    server with the bandwidth measurement.
+  - Field builds (~1.5–2 ms each, up to 5 per second per moving target) set the walking p99 (2.5 ms). Fine for one player;
+    revisit at 4 players / 3 arenas (A5.2) — options: incremental rebuild, coarser field, one field per party.
+  - The EnemyTest flag spawns a permanent horde in TestArena; turn it off when A3 waves spawn enemies.
+  - Enemies never die yet; damage, Stagger and Dying arrive in A2.5.
+  - The walk script and the probe runs went through execute_luau (Client/Server); HeartbeatProbe is in the place.
+NEXT: A2.4
+```

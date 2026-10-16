@@ -99,6 +99,13 @@
            ]
           },
           {
+           "name": "Runner",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/shared/Definitions/Enemies/Runner.luau"
+           ]
+          },
+          {
            "name": "Walker",
            "className": "ModuleScript",
            "filePaths": [
@@ -350,6 +357,13 @@
          ]
         },
         {
+         "name": "EnemySnapshot",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Net/EnemySnapshot.luau"
+         ]
+        },
+        {
          "name": "Guard",
          "className": "ModuleScript",
          "filePaths": [
@@ -445,10 +459,31 @@
          ]
         },
         {
+         "name": "EnemySteering",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Util/EnemySteering.luau"
+         ]
+        },
+        {
+         "name": "FlowField",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Util/FlowField.luau"
+         ]
+        },
+        {
          "name": "InputRules",
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/shared/Util/InputRules.luau"
+         ]
+        },
+        {
+         "name": "PositionRing",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Util/PositionRing.luau"
          ]
         }
        ]
@@ -552,6 +587,13 @@
            "className": "ModuleScript",
            "filePaths": [
             "mirror/src/server/Domains/Encounter/ArenaService.luau"
+           ]
+          },
+          {
+           "name": "EnemyService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Encounter/EnemyService.luau"
            ]
           },
           {
@@ -709,6 +751,13 @@
          ]
         },
         {
+         "name": "EnemyFixture",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/fixtures/EnemyFixture.luau"
+         ]
+        },
+        {
          "name": "profiles",
          "className": "Folder"
         }
@@ -717,6 +766,19 @@
       {
        "name": "integration",
        "className": "Folder"
+      },
+      {
+       "name": "perf",
+       "className": "Folder",
+       "children": [
+        {
+         "name": "HeartbeatProbe",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/perf/HeartbeatProbe.luau"
+         ]
+        }
+       ]
       },
       {
        "name": "unit",
@@ -765,10 +827,38 @@
          ]
         },
         {
+         "name": "EnemyService.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/EnemyService.spec.luau"
+         ]
+        },
+        {
+         "name": "EnemySnapshot.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/EnemySnapshot.spec.luau"
+         ]
+        },
+        {
+         "name": "EnemySteering.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/EnemySteering.spec.luau"
+         ]
+        },
+        {
          "name": "EventBus.spec",
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/EventBus.spec.luau"
+         ]
+        },
+        {
+         "name": "FlowField.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/FlowField.spec.luau"
          ]
         },
         {
@@ -910,6 +1000,13 @@
            "className": "ModuleScript",
            "filePaths": [
             "mirror/src/client/Controllers/CameraController.luau"
+           ]
+          },
+          {
+           "name": "EnemyController",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/client/Controllers/EnemyController.luau"
            ]
           },
           {

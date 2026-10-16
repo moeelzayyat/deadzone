@@ -5,13 +5,15 @@ Targets come from `architecture.md` §23. "Measured" columns are filled with rea
 ## Server
 | Metric | Target | A2.3 | A2.8 | A4.7 | A5.2 | A5.8 | B4.4 | L1 |
 |---|---|---|---|---|---|---|---|---|
-| Heartbeat avg (ms) @ 90 enemies, 1 arena | ≤ 8 | | | | | | | |
-| Heartbeat p99 (ms) @ 90 enemies, 1 arena | ≤ 16 | | | | | | | |
+| Heartbeat avg (ms) @ 90 enemies, 1 arena | ≤ 8 | 0.64 standing · 0.74 walking | | | | | | |
+| Heartbeat p99 (ms) @ 90 enemies, 1 arena | ≤ 16 | 0.84 standing · 2.50 walking | | | | | | |
 | Heartbeat p99 (ms) @ 12 players, 3 arenas | ≤ 16 | — | — | — | | | | |
-| Live enemies per arena at target heartbeat | 90 fodder + elites | | | | | | | |
+| Live enemies per arena at target heartbeat | 90 fodder + elites | 90 fodder (60 Walkers, 30 Runners) | | | | | | |
 | Memory growth (MB/hour, 2-hour soak) | < 50 | — | — | — | — | | | |
 | Save failures (unresolved) | 0 | — | — | — | — | | | |
 | Rate-limit drops per player-hour (legit play) | < 1 | — | | | | | | |
+
+A2.3 measurement (Studio play on PC, 1 player, TestArena, `Tests/perf/HeartbeatProbe`, D-025 point 10): "heartbeat" = the server step's work, PreSimulation until every Heartbeat handler has run; the Heartbeat frame interval is pinned at 16.67 ms by 60 Hz (p99 18.7 ms). Standing 60 s: work 0.639 avg / 0.838 p99, EnemyService step 0.568 / 0.751, Stats.HeartbeatTimeMs 0.110 / 0.319. Walking 978 studs in 55 s: work 0.735 / 2.501, EnemyService step 0.634 / 2.386 (273 flow-field builds of ~1.5 ms). Snapshot payload 19.1 KB/s per client at 12 Hz (2 packets, 889 + 745 B); A2.8 measures it on the wire.
 
 ## Network
 | Metric | Target | A2.8 | A5.2 | B4.4 |

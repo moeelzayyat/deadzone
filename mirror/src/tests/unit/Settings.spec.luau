@@ -29,13 +29,20 @@ local PLAYER_B: any = { UserId = 202, Name = "B" }
 
 type Rig = { gateway: Gw, service: Service, setTime: (number) -> (), counted: { string } }
 
--- A gateway on the shipped contracts (fake clock, phase 8 for expose) with a SettingsService registered on it.
+-- A gateway on the shipped contracts (fake clock, phase 8 for expose) with a SettingsService registered on it. Other
+-- client→server contracts are left out: their services are not part of this rig, and expose() needs a handler for each.
 local function rig(): Rig
 	local now = 0
 	local phase: number? = nil
 	local counted: { string } = {}
+	local contracts = {}
+	for _, c in Contracts.list do
+		if c.Direction == "S2C" or c.Name == "RequestSettings" then
+			table.insert(contracts, c)
+		end
+	end
 	local gateway = Gateway.new({
-		contracts = Contracts.list,
+		contracts = contracts,
 		parent = Instance.new("Folder") :: Instance,
 		clock = function(): number
 			return now

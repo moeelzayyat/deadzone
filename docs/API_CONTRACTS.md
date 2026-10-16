@@ -44,12 +44,13 @@
 | `RequestRedeemCode` | F | `{ Code: string ≤ 32 }` | — | 1 / 2 (per 10 s) | L1.4 |
 | `RequestRaidJoin` | F | `{ RaidId }` | window open, eligible | 1 / 2 | B3.7 |
 | `RequestSettings` | R | `{ Key, Value: boolean }`, Key one of AutoAim, AutoFire, CameraRotate (whitelist `Shared/Config/Settings`) | whitelist of keys; boolean value; no other fields. Handler: `Data/SettingsService` stores it for the session (A5 persists, D-023). The client sends at most one per 0.25 s | 5 / 10 | A2.1 |
+| `RequestEnemySnapshots` | R | `{}` (an empty table) | empty table only. Handler: `Encounter/EnemyService` marks the player subscribed; EnemySnapshot goes only to subscribed players standing in that arena (an UnreliableRemoteEvent that reaches a client with no handler is discarded with a console error). `Client/EnemyController` sends it once, after connecting its EnemySnapshot handler (D-025) | 1 / 2 | A2.3 |
 | `ClientHeartbeat` | U | `buffer` `{ Seq, ClientTime }` | — | 20 / 30 | A2.5 |
 
 ## Server → Client
 | Remote | Ch | Payload | Notes | Since |
 |---|---|---|---|---|
-| `EnemySnapshot` | U | `buffer`: `[count][ id u16, x f32, y f32, z f32, yaw u8, state u8, hpPct u8 ]...` | 10–15 Hz, interest-filtered per arena | A2.3 |
+| `EnemySnapshot` | U | `buffer` (`Shared/Net/EnemySnapshot`): header `[seq u16, t f32, count u8]`, then `count` × `[id u16, def u8, x f32, y f32, z f32, yaw u8, state u8, hpPct u8]` (7 + 18 B per enemy). `t` = SimulationClock seconds of the snapshot; `def` = 1-based index into the sorted Enemies Ids; x/y/z = world studs (feet); `yaw` in 256 steps; `state` indexes Spawn, Pursue, Telegraph, Attack, Recover, Stagger, Dying; hpPct 0..100 rounded up. At most 49 enemies (889 B) per packet, under the ~900 B unreliable limit; every packet of one snapshot shares `seq` and `t` (90 enemies = 889 + 745 B) | 10–15 Hz (Tunable `EnemySnapshotHz`, default 12), interest-filtered per arena: only players standing in the arena who sent `RequestEnemySnapshots` (D-025) | A2.3 |
 | `CombatResult` | U | `{ Seq, Hits: { {EnemyId, Damage, Crit} } }` | batched per server tick | A2.5 |
 | `FxBurst` | U | `buffer`: `[kind u8, x f32, y f32, z f32, arg u8]` | kill pop, explosion, orb pickup | A2.8 |
 | `RunState` | R | `RunPlayerState` diff | on change | A3.2 |
@@ -73,7 +74,7 @@ Documented per domain in `init.luau` headers; this table lists the cross-domain 
 | Data | `Profiles.Get(userId) → Profile?`, `Profiles.OnLoaded`, `Admin.Inspect/Grant/Rollback` |
 | Economy | `Wallet.Add/Spend(userId, currency, amt, claimId)`, `Inventory.*`, `Loot.Roll(tableId, luck)`, `Transaction.Run(claimId, fn)` |
 | Combat | `Combat.ResolveAttack(req)`, `Weapons.Tick(match, dt)`, `Abilities.Activate(...)`, `Hits.Query(match, shape, atTime)` |
-| Encounter | `Missions.Start/End`, `Enemies.Spawn/Damage/Kill`, `ArenaService:grid/place/release` (A2.2), `Protocol.GetMultiplier(match)`, `Upgrades.Offer/Choose`, `Extraction.OpenWindow/Vote`, `SimulationClock.new()` → `match.Clock:Pause/Resume/Tick/Now` (A1.8) |
+| Encounter | `Missions.Start/End`, `EnemyService.newSim(...)` → `sim:spawn/spawnAtEdge/setTargets/step/snapshot`, `EnemyService:broadcast(sim, players)` (A2.3), `Enemies.Damage/Kill` (A2.5), `ArenaService:grid/place/release` (A2.2), `Protocol.GetMultiplier(match)`, `Upgrades.Offer/Choose`, `Extraction.OpenWindow/Vote`, `SimulationClock.new()` → `match.Clock:Pause/Resume/Tick/Now` (A1.8) |
 | Progression | `Rewards.Grant(userId, claimId, rewards)`, `Skills.*`, `Codex.Discover`, `Quests.*`, `Campaign.Record` |
 | Social | `Parties.*`, `Matchmaking.*`, `Leaderboards.Submit/Read` |
 | Facilities | `Forge.*`, `Pets.*`, `Eggs.Hatch`, `Shop.*` |
@@ -149,6 +150,20 @@ Server and client (prediction uses the same code). Rows in `StatRegistry` mirror
 | `ArenaService:place(arenaId, slot)` → `Placed { Id, Slot, Model, Origin, Grid }` · `:release(placed)` · `:slotOrigin(slot)` · `:toLocal(placed, world)` · `:toWorld(placed, local)` · `:spawnCFrame(placed, character)` | run sessions (A3, A5.2), TestArena harness | Clones the template under `Workspace/Arenas/<Id>_<slot>`, pivot at (0, 0, 1600) + slot × 400 studs along X; a taken or fractional slot throws. Enemies live in arena-local space (origin = floor top centre). |
 | `grid:isOpen(x, z)` · `:cellAt(localPos)` → `x?, z?` · `:openAt(localPos)` · `:center(x, z)` → local Vector3 · `:edgeCells(edgeId)` · `:reach(x, z)` → `(visited buffer, count)`; fields `cellSize`, `width`, `depth`, `openCount`, `spawn`, `edges` (`Shared/Util/ArenaGrid`) | steering, stuck recovery, tests | Cells are 1-based, (1, 1) = west/north corner; outside the grid is never open. Grid rules (closed ring, open spawn, all open cells reachable, passages ≥ 2 cells, edges ≥ 8 open cells) hold for every shipped arena (`_Registry`). |
 | `ArenaRaster.rasterize(template, cellSize)` · `.diff(def, result)` · `.source(id, template, result)` (`Shared/Util/ArenaRaster`) | `tools/arena_export.luau`, ArenaService boot check | Template → grid: colliding upright parts within 0.25–8 studs above the floor block the cells their footprint overlaps (touching edges excluded). Pure; never writes. |
+
+### Enemy simulation (A2.3, D-025)
+| Call | Caller | Contract |
+|---|---|---|
+| `EnemyService.newSim({ matchId, grid, clock, origin?, definitions?, seed?, publish?, log?, onAttack? })` → `Sim` (`Server/Domains/Encounter/EnemyService`) | run sessions (A3), the EnemyTest harness, tests | One simulation per arena copy, in arena-local space on the arena grid. Enemies are plain table rows (the §8.2 record plus bookkeeping), never Instances. `publish` receives `EnemySpawned`; `onAttack(enemy, targetUserId?)` fires when an attack lands (player damage: A2.6). |
+| `sim:spawn(defId, x, z)` · `sim:spawnAtEdge(defId, edgeId?)` → `Enemy` · `sim:remove(id)` · `sim:count()` · fields `Enemies`, `ById`, `Stats` | wave director (A3.1), tests | Unknown definition, blocked cell or unknown edge throws `[Enemy]`. Ids are u16, reused only after release. |
+| `sim:setTargets({ { UserId, Position } })` | the match loop | The players in the arena, arena-local. One FlowField per target, rebuilt when its cell changes (at most every 0.2 s). |
+| `sim:step() → updated` | the match loop, once per server step after `clock:Tick(dt)` | Reads `clock:Now()`; returns 0 and moves nothing when the clock did not advance (paused). Tiers: ≤ 40 studs every step, ≤ 80 every 2nd, else every 4th. Stuck rule: < 2 studs moved in 4 s while no target within 60 studs → teleport to a hidden spawn-edge cell, logged. |
+| `sim:snapshot() → { buffer }` · `EnemyService:broadcast(sim, players) → (packets, bytes)` · `:isSubscribed(userId)` | the match loop | Packs every enemy with world positions (`Net/EnemySnapshot.pack`) and fires each packet to each given player through the Gateway. |
+| `EnemySnapshot.pack(seq, t, rows)` / `.unpack(buffer) → (Packet?, reason?)` · `encodeYaw` / `decodeYaw` / `hpPct` / `defIndex` / `stateIndex` · `DEF_IDS`, `STATES` (`Shared/Net/EnemySnapshot`) | server (pack), client (unpack) | Packing a bad row throws `[Snapshot]`; unpacking untrusted bytes never throws. |
+| `FlowField.new(grid)` → `:build(x, z)` · `:distance(x, z)` · `:next(x, z)` · `:direction(localPos)` (`Shared/Util/FlowField`) | EnemyService | Dial's algorithm over 8 neighbours: 2 straight, 3 diagonal, +2 into a cell touching a wall, no corner cutting. |
+| `EnemySteering.walls(grid)` → `:open` · `:slide(x, z, dx, dz, r)` · `:clear(ax, az, bx, bz)`; `.buckets(size)`; `.separation`; `.resolve`; `.yaw` (`Shared/Util/EnemySteering`) | EnemyService | `slide` pushes a circle out of the deepest blocked cell first (up to 4 passes); a move must be shorter than the radius (EnemyService substeps at 0.5 studs). |
+| `PositionRing.new(capacity)` → `:push(t, pos)` · `:latest()` (`Shared/Util/PositionRing`) | EnemyService (`History`), A2.5 rewind | 16 samples per enemy; times never decrease. |
+| `EnemyController.enemies()` · `.count()` · `.stats()` (`Client/Controllers/EnemyController`) | A2.4 renderers, auto-aim | The latest record per enemy from EnemySnapshot (late packets ignored by `t`, forgotten after 1 s unseen); feeds `InputController.setTargetProvider` with the nearest enemy within 60 studs. |
 
 ### Clock and platform wrappers (A1.8, D-021)
 | Call | Caller | Contract |

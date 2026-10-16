@@ -9,6 +9,7 @@
 --             every client fire on them is dropped and counted (§7.2 "every remote has a per-player token bucket").
 --   Payload   Net/Guard check run before any logic (inbound), and on outgoing pushes in strict mode.
 
+local EnemySnapshot = require(script.Parent.EnemySnapshot)
 local Guard = require(script.Parent.Guard)
 local Settings = require(script.Parent.Parent.Config.Settings)
 
@@ -110,6 +111,13 @@ local flagValue = Guard.oneOf(Guard.boolean(), Guard.number(), Guard.string(MAX_
 
 Contracts.list = Contracts.build({
 	{
+		Name = "EnemySnapshot",
+		Channel = "U",
+		Direction = "S2C",
+		Payload = Guard.buffer(EnemySnapshot.HEADER + EnemySnapshot.MAX_PER_PACKET * EnemySnapshot.RECORD),
+		Since = "A2.3",
+	},
+	{
 		Name = "FlagsUpdate",
 		Channel = "R",
 		Direction = "S2C",
@@ -123,6 +131,14 @@ Contracts.list = Contracts.build({
 		Payload = Guard.record({ Key = Guard.literal(table.unpack(Settings.KEYS)), Value = Guard.boolean() }),
 		Rate = { Sustained = 5, Burst = 10 },
 		Since = "A2.1",
+	},
+	{
+		Name = "RequestEnemySnapshots",
+		Channel = "R",
+		Direction = "C2S",
+		Payload = Guard.empty(),
+		Rate = { Sustained = 1, Burst = 2 },
+		Since = "A2.3",
 	},
 })
 

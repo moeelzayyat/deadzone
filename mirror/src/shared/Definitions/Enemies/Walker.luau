@@ -1,5 +1,6 @@
 --!strict
--- Sample fodder enemy (A1.6): CONTENT_BIBLE §2. Numbers are placeholders until A2.3.
+-- Fodder enemy (A1.6, simulated since A2.3): CONTENT_BIBLE §2 "slow and endless". Numbers are placeholders until the A3
+-- balance pass.
 return {
 	Id = "Walker",
 	Tier = "Fodder",

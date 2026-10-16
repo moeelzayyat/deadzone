@@ -12,10 +12,11 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | Auto-weapons framework | A2.7 | Planned | archetypes: Projectile, Spread, Orbit (A2); Explosive, Zone, Chain (A3); Pierce, Boomerang, Deployable, Aura (A4+) |
 | Weapon levels | A3.4 | Planned | |
 | Client prediction + lag compensation | A2.5 | Planned | |
-| Enemy simulation (non-Humanoid) | A2.3 | Planned | |
-| Steering / pathing | A2.3 / A4.5 | Planned | input ready since A2.2: arena collision grid `Shared/Util/ArenaGrid` (isOpen, cellAt, center, edgeCells, reach) (D-024) |
+| Enemy simulation (non-Humanoid) | A2.3 | Tested | `Encounter/EnemyService` (`newSim` per arena: table rows on SimulationClock, Spawn → Pursue → Telegraph → Attack → Recover, tiers 1/2/4 steps by distance, stuck teleport to a hidden spawn edge, EnemySpawned); Walker + Runner definitions; 22 tests in `EnemyService.spec`; 90 enemies in play at 0.64 ms avg / 0.84 ms p99 server step work (D-025) |
+| Steering / pathing | A2.3 / A4.5 | In Development | A2.3 fodder steering: `Shared/Util/FlowField` (one field per target on the arena grid) + `Shared/Util/EnemySteering` (separation, overlap resolution, wall slide); 9 + 13 tests (D-025). PathfindingService for Brutes/Armored/bosses in A4.5. Grid since A2.2 (D-024) |
 | Test arena + collision grid (added A2.2, D-024) | A2.2 | Tested | template `ServerStorage/Arenas/TestArena` (greybox, 152 × 152 studs); grid in `Shared/Definitions/Arenas/TestArena` (76 × 76 cells of 2 studs, 4 spawn edges) exported by `tools/arena_export.luau` from `Shared/Util/ArenaRaster`; `Encounter/ArenaService` checks grid vs template at boot and places copies by slot; 32 tests in `ArenaGrid.spec`, `ArenaRaster.spec`, `ArenaService.spec`; walk test 0 stuck spots |
 | Placeholder survivor (added A2.2, D-024) | A2.2 → B4.1 art | Tested | `StarterPlayer/StarterCharacter`: primitives welded to an R15 root, 7 studs, white outline + key light (ART_BIBLE rule 3); 6 tests in `Survivor.spec`; replaced by the A3.5 hero model |
+| Enemy snapshot stream (added A2.3, D-025) | A2.3 | Tested | `Shared/Net/EnemySnapshot` (header + 18-byte records, ≤ 49 per packet), `EnemySnapshot` U remote at 12 Hz to subscribed players in the arena (`RequestEnemySnapshots`), `Client/Controllers/EnemyController`; 12 tests in `EnemySnapshot.spec`; 19.1 KB/s payload per client at 90 enemies |
 | Enemy abilities | A4.5 | Planned | |
 | Wave director + spawn budgets | A3.1 | Planned | |
 | XP orbs | A3.2 | Planned | |
