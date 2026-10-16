@@ -91,10 +91,10 @@ Every approved system. Status: `Planned` · `In Development` · `Implemented` ·
 | Remote config + feature flags | A1.8 | Tested | `Platform/RemoteConfigService` (`Config` DataStore, key `Current`, read at boot + every 300 s) and `Platform/FeatureFlagService` (+ `FlagsUpdate` remote, `Client/Controllers/FlagsController`); defaults in `Shared/Config/{Flags,Tunables}`; 14 tests in `Platform.spec` (D-021) |
 | Admin tools (inspect/grant/rollback) | L1.2 | Planned | interface in A5.5 |
 | Profile migration | A5.5 | Planned | |
-| Mobile support | A2.1 onward | In Development | verified every checkpoint. A2.1: touch bindings (dynamic thumbstick, ATTACK/DODGE/ABILITY/AUTO, EXTRACT/HOLD, right-side aim drag), auto-aim + auto-fire defaults (D-023); owner phone check pending |
+| Mobile support | A2.1 onward | In Development | verified every checkpoint. A2.1: touch bindings (dynamic thumbstick, ATTACK/DODGE/ABILITY/AUTO, EXTRACT/HOLD, right-side aim drag), auto-aim + auto-fire defaults (D-023); owner played on a phone and approved A2.1 (2026-10-16) |
 | Controller support | A2.1 onward | In Development | verified every checkpoint. A2.1: RT/B/RB/LB, D-pad votes and card focus + A, right-stick aim with 15° assist, LT + right stick camera turn (D-023) |
-| Camera + input controller (added A2.1, D-023) | A2.1 | Implemented | `Client/Controllers/{InputController,CameraController,AimController}` + `Shared/Util/InputRules` (§2.4 table); 23 tests in `InputRules.spec`; test overlay `Client/UI/InputTestPanel` (flag `InputTestPanel`) |
-| Player settings, session (added A2.1, D-023) | A2.1 / A5 | Implemented | `Data/SettingsService` + `RequestSettings`; whitelist `Shared/Config/Settings`; 11 tests in `Settings.spec`; persisted in A5 |
+| Camera + input controller (added A2.1, D-023) | A2.1 | Tested | `Client/Controllers/{InputController,CameraController,AimController}` + `Shared/Util/InputRules` (§2.4 table); 23 tests in `InputRules.spec`; test overlay `Client/UI/InputTestPanel` (flag `InputTestPanel`) |
+| Player settings, session (added A2.1, D-023) | A2.1 / A5 | Tested | `Data/SettingsService` + `RequestSettings`; whitelist `Shared/Config/Settings`; 11 tests in `Settings.spec`; persisted in A5 |
 
 ## Foundation (A1)
 | System | Target | Status | Notes |

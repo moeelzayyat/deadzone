@@ -217,3 +217,5 @@ Decision: (1) `Client/Controllers/InputController` binds every action except mov
 Alternatives: listed per point.
 Consequences: injected test input cannot move analog sticks or touch, so gamepad Move/Aim and every touch action are verified by the owner (controller emulator or a gamepad, the Studio device emulator and a real phone). The touch button layout (`TOUCH_LAYOUT` in InputController) is a first guess placed inside Roblox's ContextButtonFrame and could not be seen on PC. Measured in Studio on PC: 60.0 FPS average (16.67 ms, p99 18.06 ms) with camera, input, aim marker and panel running; resolveAim 0.18 µs; client boot 4.9 ms for 5 modules; 30 RequestSettings in one frame → 8 accepted, 22 rate-dropped.
 Approved by: implementation detail within §2.4, §4.3, §6.1, §7.1 and §7.2 under the standing owner approval of 2026-10-16 (D-010); points (1), (2) and (7) decided by Claude under owner delegation of 2026-10-16 (D-022, revisable). The A2.1 checkpoint itself waits for the owner's PC and phone play.
+
+## CP — A2.1 passed · 2026-10-16 · Owner-approved ("A2.1 OK", A2.1 thread, 19:33 UTC)

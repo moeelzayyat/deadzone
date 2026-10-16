@@ -787,7 +787,7 @@ NEXT: A2.1
 ```
 
 ```text
-CHECKPOINT: A2.1 Camera and input  ·  🟦 checkpoint pending (owner PC + phone play)
+CHECKPOINT: A2.1 Camera and input  ·  ✅ passed (owner-approved 19:33 UTC)
 DATE: 2026-10-16
 BUILT: Shared/Util/InputRules (§2.4 bindings table + pure rules), Shared/Config/Settings (AutoAim, AutoFire, CameraRotate),
   Client/Controllers/{InputController, CameraController, AimController}, Client/UI/InputTestPanel (flag InputTestPanel),
@@ -846,12 +846,13 @@ RESTORE POINT: backups/A2.1_passed_20261016-1925/ — ReplicatedStorage 61336 B 
   3445 B 866e3754 (equal A1.8, copied); all verified by length + FNV-1a. The StarterPlayer properties are not in a per-service
   .rbxm; they are listed above, in D-023, and checked by InputRules.spec.
 MIRROR COMMIT: 57d1433 "A2.1: camera and input ..." — mirror/src (InputRules, Settings, Contracts, Flags, SettingsService, 3 controllers, InputTestPanel, Bootstrap, 5 specs), mirror/sourcemap.json, docs.
-OWNER APPROVAL: pending — the pass condition is the owner's play on PC and on a phone (Studio device emulator plus one real phone).
+OWNER APPROVAL: yes, 2026-10-16 19:33 UTC — "A2.1 OK" in the A2.1 thread after the owner's play on PC and on a phone
+  (the pass condition); CP line in DECISION_LOG.
 NOTES / DEBT:
   - The touch button layout is a first guess inside Roblox's ContextButtonFrame; the phone check may move buttons.
   - Edit-mode require cache: changed Shared modules were replaced with identical clones so Edit tests load the new source.
   - SettingsService prints "[Settings] <player> <Key>=<Value>" in Studio only (play-test evidence; execute_luau cannot read the
     live service).
   - InputTestPanel is on by default; turn the flag off before the A3.5 public test.
-NEXT: A2.1 owner play, then A2.2
+NEXT: A2.2
 ```

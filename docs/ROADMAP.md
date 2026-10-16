@@ -384,5 +384,5 @@ NEXT: <next ID>
 
 ---
 
-**Current substage:** A2.1 (🟦 checkpoint pending: owner play on PC and a phone)
-**Last checkpoint passed:** A1.8 (2026-10-16); A1 complete
+**Current substage:** A2.2
+**Last checkpoint passed:** A2.1 (2026-10-16, owner-approved)
