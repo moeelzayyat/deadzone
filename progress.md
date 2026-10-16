@@ -217,3 +217,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 ### 2026-10-16 · A1.7 — Types and StatPipeline · ✅ passed (auto-approved, D-010)
 - Steps 1–7 met with real results (TestRunner 196/0, analysis 0, play test 0 errors, numbers recorded, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A1.8.
 - D-020 readings (Bonus form, class multiplier once, Armor Max 300, provisional §6.1 sub-types) are flagged to the owner in the A1.7 thread; PlayerProfile's §6.1 fields are unchanged.
+- Commit `1c2f410` (build, mirror, docs, pass), then a commit recording the hash.

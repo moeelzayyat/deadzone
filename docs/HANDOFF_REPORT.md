@@ -664,7 +664,7 @@ RESTORE POINT: backups/A1.7_passed_20261016-1652/ — 6 × .rbxm (D-010), each v
   serialization: ReplicatedStorage 40913 B 7c82d76a · ServerStorage 79784 B 4c487073 (exported; ServerStorage base64 in three
   calls) · Lighting 3445 B 866e3754 · ServerScriptService 42408 B 0287e81a · StarterPlayerScripts 1961 B 1fc169ff ·
   Workspace 12147 B 5ac584ad (equal A1.6, copied).
-MIRROR COMMIT: (recorded in the next commit)
+MIRROR COMMIT: 1c2f410 "A1.7: §6 types ... and stat pipeline ..." — mirror/src (Types, Stats, _Registry, 4 specs), mirror/sourcemap.json, docs, tools/check_stats.py.
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Details D-020.
 NOTES / DEBT:
   - D-020 readings for the owner to overrule if wanted: Bonus form for percent stats, class DamageMult as a DamagePct
