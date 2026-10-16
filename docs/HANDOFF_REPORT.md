@@ -112,7 +112,7 @@ RESTORE POINT: backups/P0.3_passed_20261016-1303/ — 6 × .rbxm via Serializati
   ServerStorage 48583 B (new: ArtReference) · StarterPlayerScripts 577 B.
   Transfer: base64 from execute_luau, decoded locally; every file's length and FNV-1a match the hash computed
   in Studio (Lighting 866e3754, ServerStorage e36937fc). Every file starts with <roblox!.
-MIRROR COMMIT: see git log "P0.3: art bible v0 ..." (mirror/src empty: 0 scripts to export)
+MIRROR COMMIT: 877f58b "P0.3: art bible v0, mood references, icon sketch; advance to P0.4" (mirror/src empty: 0 scripts to export)
 OWNER APPROVAL: yes, 2026-10-16 ("Yes Approved" in the P0.3 thread, 13:01 UTC)
 NOTES / DEBT:
   - Mood references are original Studio captures of primitive scenes, kept in ServerStorage/ArtReference
