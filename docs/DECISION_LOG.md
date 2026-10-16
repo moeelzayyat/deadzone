@@ -103,12 +103,13 @@ Approved by: owner (2026-10-16, "I do approve, rename approved for both", projec
 ## CP — P0.4 passed · 2026-10-16 · approved by owner ("I do approve, rename approved for both", project chat 13:19 UTC; content bible + D-011)
 
 ## D-012 — Paid random items: Robux cosmetic chests (O-1) and premium-track bonus currency (O-2)
-2026-10-16 · P0.5 · **Proposed, awaiting owner**
+2026-10-16 · P0.5 · Accepted (decided 19:00 UTC; was proposed at P0.5)
 Context: Roblox's paid random items policy covers random items bought directly or indirectly with Robux, including with paid in-game currency, and counts pity systems as probability modifiers. Two lines in the docs would make DEADZONE have paid random items: the §0 table says "Cosmetic-only Robux chests" (this contradicts §21.2 and §21.4 answer 3, "no chance purchases"), and §21.2 gives the premium battle pass "bonus currency". If that currency is Gold, Serum or Samples, eggs, gameplay chests and Forge rerolls become indirect paid random items.
 Proposal (see `docs/COMPLIANCE.md` §3): O-1, sell cosmetics at fixed prices and correct the §0 row. O-2, premium-track bonus currency only buys fixed-price items (e.g. the season's event currency), never Gold, Serum or Samples.
 Alternatives: keep both and treat eggs, chests and rerolls as paid random items (percent odds summing to 100% before spend, `ArePaidRandomItemsRestricted` handling per player).
-Consequences: monetization and §0/§21 wording are owner decisions, so nothing has changed. The questionnaire answer 12 stays "No, pending O-1/O-2". This blocks nothing before B1 (the §21.5 re-check point).
-Approved by: — (pending)
+Decision: both recommended options. O-1: no Robux chests of any kind; cosmetics are sold at fixed prices (architecture §0 Monetization row corrected). O-2: the premium track's bonus currency is event currency spent only on fixed-price items, never Gold, Serum or Samples (§21.2 reworded). Eggs, gameplay chests and Forge rerolls stay pure play rewards, so the experience has no paid random items and questionnaire answer 12 is "No".
+Consequences: no paid-random-item handling (`ArePaidRandomItemsRestricted`, purchase-time odds) is needed while this holds. Egg/chest odds and pity are still published (§21.4, D-006). The shop schema needs no random-item kind. Revisable: choosing the alternative later is a new entry, and it must land before L1.3, where the battle pass and shop are built.
+Approved by: Decided by Claude under owner delegation of 2026-10-16 (revisable). The owner's message in the project chat at 17:30 UTC said "I want a fully unattended experience so you do the recommended decision and later we can change". The owner confirmed this decision with "Yes" in the P0.5 thread at 19:00 UTC.
 
 ## CP — P0.5 passed · 2026-10-16 · Auto-approved under standing owner approval of 2026-10-16 (D-012 remains open for the owner; not covered by this approval)
 

@@ -31,7 +31,7 @@ Answers describe the **most mature content anywhere in the experience**, as the 
 | 9a | | Private spaces? | **No** | — |
 | 10 | Free-form user creation | Present? | **No** | No drawing, painting, spray paint or free text canvases. |
 | 11 | Sensitive issues | Is a sensitive issue the main theme? | **No** | A fictional zombie outbreak with an invented strain. No real-world events, diseases, politics or religion. |
-| 12 | Paid random items | Present? | **No (draft, pending owner decision O-1 and O-2 below)** | §21 sells cosmetics at fixed prices, and eggs, chests and Forge rerolls cost gameplay currency only. Two places in the docs can turn this into a Yes; see §3. |
+| 12 | Paid random items | Present? | **No** | §21 sells cosmetics at fixed prices with no Robux chests, and eggs, chests and Forge rerolls cost gameplay currency only. Premium-track bonus currency never funds a random sink (D-012, §3). |
 | 12a | | Respects `ArePaidRandomItemsRestricted`? | **n/a while 12 is No.** If 12 becomes Yes: **Yes**, checked per player through `PolicyService:GetPolicyInfoForPlayerAsync`. | — |
 | 13 | Paid item trading | Can users trade items they paid for? | **No** | No trading system exists in the architecture or the system registry. |
 | 13a | | Respects `IsPaidItemTradingAllowed`? | **n/a** | — |
@@ -75,7 +75,9 @@ Asset moderation is separate from the label: an uploaded image, mesh or audio wi
 - The fairness test answers stand (§21.4). Receipts go through `ProcessReceipt`, are idempotent and are granted only after the profile commit (§21.5).
 - No anxiety mechanics: no streak wipes, loss threats or countdown pressure (project rule).
 
-### Open owner decisions found while answering question 12
+### Decisions taken while answering question 12 (D-012, decided 2026-10-16 under owner delegation, revisable)
+
+**Outcome:** Option A for both O-1 and O-2. The §0 row and §21.2 are corrected, and answer 12 is "No". The analysis below is kept as the record.
 
 Roblox's policy defines paid random items as random items bought **directly or indirectly** with Robux, including with "paid in-game currency". It names capsules (eggs, chests, wheels), enhancements that may fail, rerolls, and probability modifiers including pity systems. Read against that definition, two lines in the docs conflict with answering "No":
 
@@ -87,7 +89,7 @@ Roblox's policy defines paid random items as random items bought **directly or i
 - Option A (recommended): premium-track bonus currency is limited to a currency that only buys fixed-price items (for example the season's event currency, spent in a fixed-price cosmetic shop). Eggs, chests and rerolls stay pure play rewards, and question 12 stays No.
 - Option B: keep Gold/Serum/Samples on the premium track. Question 12 becomes Yes for eggs, chests and rerolls. Odds and pity rules must be shown before the currency is spent, and restricted players need an alternative path. A fungible currency cannot tell paid coins from earned coins, so in practice the random sink would be blocked for those players.
 
-Neither decision blocks work before B1. §21.5 already schedules a Creator Hub re-check of the paid-random-item policy before B1, and the battle pass and shop are built in L1.3. Until the owner decides, the draft answer to 12 stays "No, pending O-1/O-2", and nothing is built that depends on it.
+Option A was taken for both (D-012). The answer to 12 holds while every Robux purchase is fixed-price and no Robux-derived currency reaches a random sink. Re-answer 12 if either changes.
 
 ---
 
@@ -96,6 +98,6 @@ Neither decision blocks work before B1. §21.5 already schedules a Creator Hub r
 | When | What |
 |---|---|
 | PT.3 (first publish, unlisted) | Submit the questionnaire with these answers. Read the Help Center age-restricted policy, the Community Standards and the Kids and Select requirements. Record the label and descriptors here. |
-| B1 | Re-check the paid-random-item policy on the Creator Hub (§21.5) before gameplay chests and eggs. O-1/O-2 must be decided by then. |
+| B1 | Re-check the paid-random-item policy on the Creator Hub (§21.5) before gameplay chests and eggs. Confirm D-012 still holds. |
 | L1.3 | Re-answer the §21.4 fairness test in writing (roadmap). Check every cosmetic, emote and shop item against §2. |
 | Every season (L3 onward) | Re-check rating and paid-random-item rules (ROADMAP risk table, "Policy change"). Resubmit if any answer changed. |

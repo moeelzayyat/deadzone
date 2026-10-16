@@ -30,7 +30,7 @@ v1.0 was a strong backend blueprint. It did not decide the things that determine
 | Art/audio | Not addressed | Defined style, sourcing plan, and asset ownership rules (§22) |
 | Growth | Not addressed | Discovery-signal-driven growth architecture (§29) |
 | Exit criteria | Opinion-based | Measured, numeric per phase (§24) |
-| Monetization | Chests/eggs for currency | Cosmetic-only Robux chests; gear only from play; fairness test (§21) |
+| Monetization | Chests/eggs for currency | Fixed-price cosmetics, no Robux chests (D-012); gear only from play; fairness test (§21) |
 | Name collisions | `RunService`, `CollectionService` | Renamed (`MissionSessionService`, `CodexService`) |
 
 Pets, Forge and Raids remain in scope. They are **Launch-exit** requirements, not Beta-exit requirements, so they stop blocking the first real player data.
@@ -773,7 +773,7 @@ Gold (general), Serum (classes, respec, advanced), Samples (Forge rerolls, craft
 
 ## 21.2 What Robux buys
 - Cosmetics: skins for classes, weapon VFX colors, extraction flares, emotes, name tags.
-- Battle pass premium track (cosmetics + bonus currency; nothing exclusive to power).
+- Battle pass premium track (cosmetics + bonus event currency spent only on fixed-price items, never Gold, Serum or Samples; nothing exclusive to power; D-012).
 - Supporter packs (cosmetic bundle + a thank-you badge).
 - Convenience that does not gate the loop: extra loadout slots, Quick Deploy skip of hub pan, inventory tabs. No paid sprint, no paid revive, no paid rerolls in-run.
 - Private servers (Roblox standard).
