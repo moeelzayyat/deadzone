@@ -504,7 +504,7 @@ RESTORE POINT: backups/A1.5_passed_20261016-1559/ — 6 × .rbxm (D-010), each v
   serialization: ReplicatedStorage 12640 B 9b94ec0b · ServerScriptService 42144 B e20dbab0 · ServerStorage 63880 B fa603de8 ·
   Workspace 12147 B 5ac584ad (exported) · Lighting 3445 B 866e3754 · StarterPlayerScripts 1961 B 1fc169ff (equal A1.4, copied).
   Workspace serializes to 12147 B again (7831 B at A1.3/A1.4, 12147 B at A1.2) with no Workspace edits; same behaviour seen in A1.2.
-MIRROR COMMIT: (recorded in the next commit)
+MIRROR COMMIT: 3a20f73 "A1.5: typed event bus ..." — mirror/src (Events/Catalog, Events/EventBus, EventBus.spec, Bootstrap), mirror/sourcemap.json, docs.
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Details D-018.
 NOTES / DEBT:
   - multi_edit treats dots in a path as separators: creating "Tests.unit.EventBus.spec" made Folder EventBus + Module "spec".
