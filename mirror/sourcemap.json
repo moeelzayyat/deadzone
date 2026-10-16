@@ -29,6 +29,13 @@
          ]
         },
         {
+         "name": "Settings",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Config/Settings.luau"
+         ]
+        },
+        {
          "name": "Tunables",
          "className": "ModuleScript",
          "filePaths": [
@@ -408,7 +415,16 @@
       },
       {
        "name": "Util",
-       "className": "Folder"
+       "className": "Folder",
+       "children": [
+        {
+         "name": "InputRules",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/shared/Util/InputRules.luau"
+         ]
+        }
+       ]
       }
      ]
     }
@@ -459,6 +475,13 @@
            "className": "ModuleScript",
            "filePaths": [
             "mirror/src/server/Domains/Data/MigrationService.luau"
+           ]
+          },
+          {
+           "name": "SettingsService",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/server/Domains/Data/SettingsService.luau"
            ]
           },
           {
@@ -701,6 +724,13 @@
          ]
         },
         {
+         "name": "InputRules.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/InputRules.spec.luau"
+         ]
+        },
+        {
          "name": "Lifecycle.spec",
          "className": "ModuleScript",
          "filePaths": [
@@ -719,6 +749,13 @@
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/Registry.spec.luau"
+         ]
+        },
+        {
+         "name": "Settings.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/Settings.spec.luau"
          ]
         },
         {
@@ -793,10 +830,31 @@
          "className": "Folder",
          "children": [
           {
+           "name": "AimController",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/client/Controllers/AimController.luau"
+           ]
+          },
+          {
+           "name": "CameraController",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/client/Controllers/CameraController.luau"
+           ]
+          },
+          {
            "name": "FlagsController",
            "className": "ModuleScript",
            "filePaths": [
             "mirror/src/client/Controllers/FlagsController.luau"
+           ]
+          },
+          {
+           "name": "InputController",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/client/Controllers/InputController.luau"
            ]
           }
          ]
@@ -811,7 +869,16 @@
         },
         {
          "name": "UI",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "InputTestPanel",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/client/UI/InputTestPanel.luau"
+           ]
+          }
+         ]
         }
        ]
       }

@@ -1,11 +1,18 @@
 --!strict
 -- Config/Flags (architecture §4.3, §20): feature flag defaults. FeatureFlagService serves them, overridden by the `Flags`
 -- section of the `Config` DataStore; `Client = true` flags are replicated through the FlagsUpdate remote.
+-- InputTestPanel (A2.1) shows the input test overlay (Client/UI/InputTestPanel); it goes off before the A3.5 public test.
 -- SampleFlag is a placeholder that exercises the path until A3.9 adds the first real flags (icon and onboarding variants).
 
 local Schema = require(script.Parent.Schema)
 
 return Schema.build("Flags", {
+	InputTestPanel = {
+		Default = true,
+		Client = true,
+		Description = "Input test overlay (A2.1): scheme, context, settings and per-scheme action counts; off for A3.5.",
+		Since = "A2.1",
+	},
 	SampleFlag = {
 		Default = false,
 		Client = true,

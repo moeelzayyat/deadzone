@@ -38,8 +38,8 @@ return function(t: TestRunner.Spec)
 	local describe, it, expect = t.describe, t.it, t.expect
 
 	describe("shipped registry", function()
-		it("holds FlagsUpdate: server→client, reliable, since A1.8, no client rate", function()
-			expect(#Contracts.list).toBe(1)
+		it("holds two contracts; FlagsUpdate: server→client, reliable, since A1.8, no client rate", function()
+			expect(#Contracts.list).toBe(2)
 			local flags = Contracts.get("FlagsUpdate")
 			expect(flags.Channel).toBe("R")
 			expect(flags.Direction).toBe("S2C")

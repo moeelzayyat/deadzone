@@ -43,7 +43,7 @@
 | `RequestClaimPassTier` | F | `{ Tier, Track, ClaimId }` | XP ≥ tier, premium if track | 3 / 5 | L1.3 |
 | `RequestRedeemCode` | F | `{ Code: string ≤ 32 }` | — | 1 / 2 (per 10 s) | L1.4 |
 | `RequestRaidJoin` | F | `{ RaidId }` | window open, eligible | 1 / 2 | B3.7 |
-| `RequestSettings` | R | `{ Key, Value }` | whitelist of keys | 5 / 10 | A2.1 |
+| `RequestSettings` | R | `{ Key, Value: boolean }`, Key one of AutoAim, AutoFire, CameraRotate (whitelist `Shared/Config/Settings`) | whitelist of keys; boolean value; no other fields. Handler: `Data/SettingsService` stores it for the session (A5 persists, D-023). The client sends at most one per 0.25 s | 5 / 10 | A2.1 |
 | `ClientHeartbeat` | U | `buffer` `{ Seq, ClientTime }` | — | 20 / 30 | A2.5 |
 
 ## Server → Client
@@ -133,6 +133,14 @@ Server and client (prediction uses the same code). Rows in `StatRegistry` mirror
 | `TokenBucket.new(sustained, burst, now)` → `bucket:take(now)` | Gateway | Starts full; refills at `sustained`/s up to `burst`; a clock stepping back adds nothing; burst 0 rejects all. |
 | `Codec.struct(fields, { maxString? })` / `Codec.list(struct, countType?, maxCount?)` → `encode` / `decode` | high-rate remotes (A2.3 snapshots, A2.5 heartbeat, A2.8 FX) | Types `u8 u16 u32 i8 i16 i32 f32 f64 bool vector3 string`. Encoding a bad value throws `[Codec]`; decoding untrusted bytes never throws and returns nil + reason. |
 | `Gateway.server()` | services, Bootstrap | The server's one gateway. `:handle(name, fn)` (client→server, before phase 8, one per remote), `:expose()` (Bootstrap phase 8 only), `:onExposed(fn)`, `:fire(name, player, payload)` / `:fireAll(name, payload)` (server→client, after phase 8), `:isFlagged(userId)`, `:setCounter` (MetricsService), `:setReporter` (ErrorReportService). `Gateway.new(options)` makes private gateways for tests. |
+
+### Input and player settings (A2.1, D-023)
+| Call | Caller | Contract |
+|---|---|---|
+| `InputRules.BINDINGS` / `ROWS` · `schemeOf(inputType, keyCode?)` · `effective(key, explicit, scheme)` · `stickToWorld` · `planeHit` · `resolveAim` · `firing` · `stepFocus` · `activeIn` (`Shared/Util/InputRules`) | InputController, tests | The §2.4 bindings table (ContextActionService inputs and touch buttons per action and context) and pure rules. Device defaults: auto-aim on for touch and gamepad, auto-fire while moving on touch, camera yaw fixed. Aim priority: manual (stick snaps to a target inside 15° when auto-aim is on; the mouse never does) → auto-aim target within 60 studs → move direction → last aim. |
+| `InputController.Action` (signal `(action, phase, scheme, arg?)`, phase Begin or End) · `aim()` · `aimSource()` · `isFiring()` · `isMoving()` · `scheme()` · `context()` / `setContext(context)` (Combat, Vote or Cards) · `focus()` / `selectCard(i, scheme?)` · `setting(key)` / `effective(key)` / `setSetting(key, value)` · `setTargetProvider(fn)` · `takeYaw()` (`Client/Controllers/InputController`) | combat (A2.5+), card UI (A3.3), vote HUD (A3.6), CameraController, AimController | The only place input is bound (ContextActionService). Intent only: actions Move, Aim, Primary, Dodge, Signature, VoteExtract, VoteHold, CardFocus, CardSelect, AutoFireToggle. `setSetting` applies locally at once and queues `RequestSettings` (one send per 0.25 s). `setTargetProvider` is the auto-aim hook for the enemy view (A2.3/A2.4). |
+| `CameraController.pose(focus, yaw)` · `yaw()` | tests, presentation | Scriptable elevated camera: pitch 55°, distance 44 studs, FOV 50, follow rate 14/s, fixed yaw unless CameraRotate is on. |
+| `SettingsService:get(userId, key)` / `:all(userId)` (`Server/Domains/Data/SettingsService`) | any server code | The player's session settings from `RequestSettings`; nil = device default; cleared on leave. Never affects power. |
 
 ### Clock and platform wrappers (A1.8, D-021)
 | Call | Caller | Contract |

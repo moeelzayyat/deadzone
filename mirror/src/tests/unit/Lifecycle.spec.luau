@@ -93,6 +93,7 @@ return function(t: TestRunner.Spec)
 				"Telemetry/ErrorReportService",
 				"Telemetry/MetricsService",
 				"Data/MigrationService",
+				"Data/SettingsService",
 				"Economy/TransactionService",
 				"Progression/ClassService",
 				"Combat/CombatService",

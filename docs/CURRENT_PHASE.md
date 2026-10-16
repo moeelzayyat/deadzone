@@ -2,9 +2,9 @@
 
 **Stage:** A2 — Combat Feel
 **Substage:** A2.1 — Camera and input
-**Status:** ⬜ Not started
+**Status:** 🟦 Checkpoint pending — steps 1–7 done (TestRunner 331/0, analysis 0, PC play test 0 errors, numbers, backup, mirror, handoff); waiting for the owner's play on PC and on a phone
 **Last checkpoint passed:** A1.8 (2026-10-16, auto-approved); A1 Foundation complete
-**Started:** —
+**Started:** 2026-10-16 18:55 UTC
 **Planned stage start:** A2 2026-11-02 (D-013)
 
 ## Deliverables (from ROADMAP.md)
@@ -29,6 +29,13 @@ Play test, `screen_capture`.
 - Backups (D-010): `SerializationService:SerializeInstancesAsync(service:GetChildren())` → `EncodingService:Base64Encode`, base64 chunks of ≤ 90,000 characters per call (padded past 66K), decoded locally and verified by length + FNV-1a. ServerStorage is now 104 KB (139K base64, two calls). Copy unchanged services from the previous backup after a hash match.
 - Every module `--!strict`. Vendor code (`*/Vendor/*`) is out of the zero-warning rule.
 - Open owner item: D-012 (paid random items; before B1).
+
+## Owner play test (the pass condition)
+1. Studio, PC: Play. The INPUT TEST panel (top left) counts each action per scheme. WASD, move the mouse, hold LMB, Space, Shift, Q; F2 → Vote: 1, 2; F2 → Cards: click a card. Every PC cell turns green.
+2. Studio device emulator (Test → Device, a phone, landscape): Play. Left thumb moves; ATTACK (hold), DODGE, ABILITY, AUTO; drag on the right half to aim; tap the panel's Vote button → EXTRACT / HOLD; Cards → tap a card. Touch cells turn green; note any button that overlaps or is hard to reach.
+3. Gamepad (or Studio's controller emulator): left stick, right stick, RT, B, RB, LB; Y → Vote: D-pad left/right; Y → Cards: D-pad + A. Pad cells turn green.
+4. One real phone: File → Publish to Roblox (the place stays private), open the experience on the phone, repeat step 2.
+5. Reply with "A2.1 OK" or what felt wrong.
 
 ## On pass
 Set this file to **A2.2**, update `docs/ROADMAP.md`, append the checkpoint record to `docs/HANDOFF_REPORT.md`, add the approval line to `docs/DECISION_LOG.md`.

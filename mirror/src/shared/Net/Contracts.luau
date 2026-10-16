@@ -10,6 +10,7 @@
 --   Payload   Net/Guard check run before any logic (inbound), and on outgoing pushes in strict mode.
 
 local Guard = require(script.Parent.Guard)
+local Settings = require(script.Parent.Parent.Config.Settings)
 
 export type Channel = "R" | "F" | "U"
 export type Direction = "C2S" | "S2C"
@@ -114,6 +115,14 @@ Contracts.list = Contracts.build({
 		Direction = "S2C",
 		Payload = Guard.map(Guard.string(MAX_FLAG_NAME), flagValue, MAX_FLAGS),
 		Since = "A1.8",
+	},
+	{
+		Name = "RequestSettings",
+		Channel = "R",
+		Direction = "C2S",
+		Payload = Guard.record({ Key = Guard.literal(table.unpack(Settings.KEYS)), Value = Guard.boolean() }),
+		Rate = { Sustained = 5, Burst = 10 },
+		Since = "A2.1",
 	},
 })
 

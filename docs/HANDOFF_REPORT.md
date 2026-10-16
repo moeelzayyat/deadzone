@@ -785,3 +785,73 @@ NOTES / DEBT:
   - D-012 is still open for the owner; nothing here touches monetization.
 NEXT: A2.1
 ```
+
+```text
+CHECKPOINT: A2.1 Camera and input  ·  🟦 checkpoint pending (owner PC + phone play)
+DATE: 2026-10-16
+BUILT: Shared/Util/InputRules (§2.4 bindings table + pure rules), Shared/Config/Settings (AutoAim, AutoFire, CameraRotate),
+  Client/Controllers/{InputController, CameraController, AimController}, Client/UI/InputTestPanel (flag InputTestPanel),
+  Server/Domains/Data/SettingsService + RequestSettings contract (R, C2S, 5/10); client Bootstrap starts UI modules too;
+  StarterPlayer: CharacterJumpHeight 0, EnableMouseLockOption false, DevComputerMovementMode KeyboardMouse,
+  DevTouchMovementMode DynamicThumbstick. Details and delegated choices: D-023.
+TESTRUNNER: 331 passed / 0 failed (Edit, Tests clone):
+    unit.Codec.spec                              21      0    227.10
+    unit.Contracts.spec                           7      0      2.48
+    unit.DamageCalculator.spec                   18      0      3.42
+    unit.EventBus.spec                           24      0    178.73
+    unit.Gateway.spec                            22      0      6.68
+    unit.Guard.spec                              11      0      1.91
+    unit.InputRules.spec                         23      0      3.60
+    unit.Lifecycle.spec                          14      0      2.49
+    unit.Platform.spec                           14      0      4.43
+    unit.Registry.spec                           27      0     34.21
+    unit.Settings.spec                           11      0     16.12
+    unit.SimulationClock.spec                    11      0    130.32
+    unit.StatPipeline.spec                      106      0     10.14
+    unit.Telemetry.spec                           8      0      4.17
+    unit.TestRunner.spec                          3      0    118.71
+    unit.TokenBucket.spec                         7      0      1.98
+    unit.Types.spec                               4      0      6.23
+    331 passed, 0 failed (17 files, 752.85 ms)
+  Server suite in a play session: 331 passed, 0 failed (17 files, 706.31 ms).
+  Mutation controls (source patched, one spec run, restored + hash-checked): auto-fire default on gamepad → 1 failed; mouse
+  aim assist → 1; firing in the card context → 1; auto-aim range ignored → 1; stick dead zone off → 1; Space unbound from
+  dodge → 1; setting value of any type → 2; setting rate 50/100 → 2; extra whitelist key → 3; service ignores the value → 2;
+  forget keeps values → 1; no handler registered → 7. Control before the StarterPlayer change: the place-settings test failed
+  (JumpHeight 7.2).
+SCRIPT ANALYSIS: 0 (bash tools/analyze.sh → files 79, diagnostics 0).
+PLAY TEST (Studio, PC, 3 sessions, injected keyboard/mouse/gamepad key codes):
+    [Camera] elevated · pitch 55° · distance 44 · fov 50
+    [Input] ready · scheme KeyboardMouse · context Combat · touch false · gamepad false
+    [Boot][Client] ready for Lighthouse8282 in 4.88 ms · modules (5): AimController, CameraController, FlagsController, InputController, InputTestPanel
+    [Boot] phase 2 Data: Data [MigrationService, SettingsService]
+    [Boot] phase 8 Network: 0 remotes before, 2 created in ReplicatedStorage.Net in 0.08 ms, 2 now
+    [Boot] config: flags InputTestPanel=true SampleFlag=false · tunables SampleTunable=1
+    [InputTest] overlay on (flag InputTestPanel)
+  Test-panel counts: PC Move, Aim, Primary, Dodge (Shift and Space), Signature (Q), Vote extract (1), Vote hold (2), Card select
+  (click) all ≥ 1; Pad Primary (RT), Dodge (B), Signature (RB, LB), Vote extract / hold (D-pad), Card select (D-pad + A) ≥ 1.
+  Contexts cycled with F2 and gamepad Y. Settings panel: AutoFire and CameraRotate toggled → server
+  "[Settings] … CameraRotate=true", "AutoFire=true"; 180 px right-drag → camera yaw −82.5°; W with auto-fire →
+  "Primary Begin/End · auto". Screenshots taken (vote context, all schemes, rotated camera with auto-fire). RequestSettings
+  fired from the client: unknown key and wrong type dropped by the guard; 30 in one frame → 8 accepted, 22 rate-dropped.
+  Console: Server 0 errors, 0 warnings; Client 0 errors, 5 × known "[UIBlox - Warning] FoundationProvider not found".
+  Not covered here (the injector cannot move analog sticks or touch): gamepad Move/Aim and every touch action → owner check.
+NUMBERS: Client 60.0 FPS (301 frames in 5 s, avg 16.67 ms, p99 18.06 ms) with camera + input + aim marker + panel; resolveAim
+  0.180 µs, stickToWorld 0.199 µs, planeHit 0.050 µs (best of 3 × 10,000); camera height above root 37.5 studs; client boot
+  4.88 ms for 5 modules; RequestSettings client pace ≤ 4/s (contract 5/s, burst 10). Scripts: DataModel 80 · under roots 80 ·
+  mirror 80 · StringValues 1/1 · MATCH. check_contracts.py → MATCH (registry 2, rows through A2.1 2); control --through A2.5
+  → DIFFER.
+RESTORE POINT: backups/A2.1_passed_20261016-1925/ — ReplicatedStorage 61336 B 31532cd9 · ServerScriptService 61369 B d287ca8a ·
+  ServerStorage 111274 B 3acdb04f · StarterPlayerScripts 18156 B 058c2cac · Workspace 7831 B eaa94454 (exported) · Lighting
+  3445 B 866e3754 (equal A1.8, copied); all verified by length + FNV-1a. The StarterPlayer properties are not in a per-service
+  .rbxm; they are listed above, in D-023, and checked by InputRules.spec.
+MIRROR COMMIT: the A2.1 commit ("A2.1: camera and input ...").
+OWNER APPROVAL: pending — the pass condition is the owner's play on PC and on a phone (Studio device emulator plus one real phone).
+NOTES / DEBT:
+  - The touch button layout is a first guess inside Roblox's ContextButtonFrame; the phone check may move buttons.
+  - Edit-mode require cache: changed Shared modules were replaced with identical clones so Edit tests load the new source.
+  - SettingsService prints "[Settings] <player> <Key>=<Value>" in Studio only (play-test evidence; execute_luau cannot read the
+    live service).
+  - InputTestPanel is on by default; turn the flag off before the A3.5 public test.
+NEXT: A2.1 owner play, then A2.2
+```

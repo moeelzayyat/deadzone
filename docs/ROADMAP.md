@@ -37,7 +37,7 @@ A **stage** exits only when every substage is ✅ and the stage's exit numbers (
 |---|---|---|---|---|---|---|
 | P0 | Pre-production | 6 | 1 | 2026-10-16 | Standard | ✅ |
 | A1 | Foundation | 8 | 1.5–2 | 2026-10-19 | Standard | ✅ |
-| A2 | Combat Feel | 8 | 2–3 | 2026-11-02 | Numeric | ⬜ |
+| A2 | Combat Feel | 8 | 2–3 | 2026-11-02 | Numeric | 🟨 |
 | A3 | Run Progression, Protocol, FTUE | 9 | 3 | 2026-11-23 | Numeric | ⬜ |
 | A3.5 | **Public Test** | 6 | 3–4 live | 2026-12-14 | **GO/NO-GO** | ⬜ |
 | A4 | Classes and Bosses | 7 | 4 | 2027-01-11 | Standard | ⬜ |
@@ -384,5 +384,5 @@ NEXT: <next ID>
 
 ---
 
-**Current substage:** A2.1
+**Current substage:** A2.1 (🟦 checkpoint pending: owner play on PC and a phone)
 **Last checkpoint passed:** A1.8 (2026-10-16); A1 complete
