@@ -33,23 +33,63 @@ A **stage** exits only when every substage is ✅ and the stage's exit numbers (
 
 ## 1. Master tracker
 
-| Stage | Name | Substages | Est. weeks | Gate type | Status |
-|---|---|---|---|---|---|
-| P0 | Pre-production | 6 | 1 | Standard | 🟨 |
-| A1 | Foundation | 8 | 1.5–2 | Standard | ⬜ |
-| A2 | Combat Feel | 8 | 2–3 | Numeric | ⬜ |
-| A3 | Run Progression, Protocol, FTUE | 9 | 3 | Numeric | ⬜ |
-| A3.5 | **Public Test** | 6 | 3–4 live | **GO/NO-GO** | ⬜ |
-| A4 | Classes and Bosses | 7 | 4 | Standard | ⬜ |
-| A5 | Multiplayer and Persistence | 8 | 4 | Numeric | ⬜ |
-| B1 | Persistent Progression | 7 | 4 | Standard | ⬜ |
-| B2 | Hub and Campaign | 6 | 3 | Standard | ⬜ |
-| B3 | Facilities and Endgame Foundation | 8 | 5 | Standard | ⬜ |
-| B4 | **Closed Beta** | 7 | 4 | **GO/NO-GO** | ⬜ |
-| L1 | Release Candidate | 8 | 3 | Checklist | ⬜ |
-| L2 | **Public Launch** | 5 | 1 + 2 monitoring | Standard | ⬜ |
-| L3 | Season 1 | 6 | 6–8 | Standard | ⬜ |
-| LO | Live Operations | ongoing | — | Cadence | ⬜ |
+| Stage | Name | Substages | Est. weeks | Planned start | Gate type | Status |
+|---|---|---|---|---|---|---|
+| P0 | Pre-production | 6 | 1 | 2026-10-16 (proposed) | Standard | 🟨 |
+| A1 | Foundation | 8 | 1.5–2 | 2026-10-19 (proposed) | Standard | ⬜ |
+| A2 | Combat Feel | 8 | 2–3 | 2026-11-02 (proposed) | Numeric | ⬜ |
+| A3 | Run Progression, Protocol, FTUE | 9 | 3 | 2026-11-23 (proposed) | Numeric | ⬜ |
+| A3.5 | **Public Test** | 6 | 3–4 live | 2026-12-14 (proposed) | **GO/NO-GO** | ⬜ |
+| A4 | Classes and Bosses | 7 | 4 | 2027-01-11 (proposed) | Standard | ⬜ |
+| A5 | Multiplayer and Persistence | 8 | 4 | 2027-02-08 (proposed) | Numeric | ⬜ |
+| B1 | Persistent Progression | 7 | 4 | 2027-03-08 (proposed) | Standard | ⬜ |
+| B2 | Hub and Campaign | 6 | 3 | 2027-04-05 (proposed) | Standard | ⬜ |
+| B3 | Facilities and Endgame Foundation | 8 | 5 | 2027-04-26 (proposed) | Standard | ⬜ |
+| B4 | **Closed Beta** | 7 | 4 | 2027-05-31 (proposed) | **GO/NO-GO** | ⬜ |
+| L1 | Release Candidate | 8 | 3 | 2027-06-28 (proposed) | Checklist | ⬜ |
+| L2 | **Public Launch** | 5 | 1 + 2 monitoring | 2027-07-19 (proposed) | Standard | ⬜ |
+| L3 | Season 1 | 6 | 6–8 | 2027-08-09 (proposed) | Standard | ⬜ |
+| LO | Live Operations | ongoing | — | 2027-07-30 (proposed) | Cadence | ⬜ |
+
+### 1.1 Schedule, Beta art budget and weekly rhythm (P0.6)
+
+**Status:** proposed by Claude on 2026-10-16, **awaiting the owner's written dates** (P0.6 checkpoint). Every value marked "(proposed)" changes to the owner's value when confirmed.
+
+**How the dates were built:** each stage starts on a Monday; A1 and A2 use the upper estimate (2 and 3 weeks), A3.5 uses 1 prep + 3 live weeks, all other stages use their single estimate. P0 → L2 start = 39.5 weeks (roadmap range 38–44). L3 here is the start of Season 1 production; Season 1 goes live 6–8 weeks after launch (target ~2027-09-06). LO starts with the first Friday update (L2.5).
+
+- A3.5 Public Test (2026-12-14 → 2027-01-08) overlaps the year-end holidays. Holiday traffic helps the diagnostics, but owner availability may not; if the owner prefers, shift A3.5 and everything after it by 2 weeks.
+- Slip rule (from §17): a stage running past 150% of its estimate triggers a scope cut (zones, pets) before any checkpoint is cut. Downstream dates are re-planned at the Friday review, never silently.
+
+**Beta art budget line (architecture §22 step 3, used in B4.1):** proposed cap **— (owner to set)**. Scope and rough cost (USD):
+
+| Item | Count | Lean | Standard | Premium |
+|---|---|---|---|---|
+| Class models, rigged (≤ 6k tris) | 6 | 240 | 900 | 2,400 |
+| Fodder enemy models, rigged (≤ 1.5k tris) | 8 | 200 | 640 | 1,600 |
+| Boss models, rigged (≤ 20k tris) | 6 | 480 | 1,800 | 4,800 |
+| Animations (8 per class, 5 per fodder, 8 per boss) | 136 | 1,360 | 4,080 | 10,200 |
+| Zone dressing kits | 6 | 900 | 3,000 | 9,000 |
+| Hub dressing kit | 1 | 200 | 600 | 2,000 |
+| UI icons (weapons, passives, evolutions, pets, currencies, classes, misc) | ~60 | 300 | 900 | 2,400 |
+| Card frames per rarity + class portraits | 11 | 165 | 550 | 1,320 |
+| **Subtotal** | | **3,845** | **12,470** | **33,720** |
+| **With 15% contingency** | | **~4,400** | **~14,300** | **~38,800** |
+
+- Rates are estimates. The Lean column is anchored on a handful of Roblox freelancer price lists (DevForum, Fiverr, Carrd; mostly undated, checked 2026-10-16); Standard and Premium are assumptions, not quotes. Real quotes replace them at B2.
+- Timing: brief and shortlist during B2 (from 2027-04-05), contracts signed at B3 start (2027-04-26), final delivery by B4 week 2 (2027-06-11). No money is committed before the A3.5 GO decision.
+- Every contract grants the owner the right to use and modify; every asset gets an `assets/ART_SOURCES.md` row.
+- Optional, separate: PT.1 minimum presentation (one hero, Walker/Runner/Brute, one arena, audio) can use generated meshes and licensed Creator Store packs at ~$0–800; owner to decide whether to fund it.
+
+**Weekly working rhythm (proposed):**
+
+| When | Who | What |
+|---|---|---|
+| Mon–Fri working sessions | Owner | Studio open on the Deadzone place (72812275891657) with the Studio MCP connected; work only runs while Studio is open on the owner's computer |
+| During sessions | Claude | One thread per substage, unattended checkpoints (D-010), `progress.md` updated after every step |
+| Any time | Claude | Owner-only questions (dates, scope, art, monetization, schema, gates) posted in the substage thread; work continues where it can |
+| Friday | Owner + Claude | Weekly review: substages passed, dates vs plan, open decisions answered in one batch, next week's target substages |
+| Gates (A3.5, B4) | Owner | Written GO/NO-GO in `DECISION_LOG.md`; nothing after a gate starts without it |
+| From L2.5 | Both | Friday live-ops update (§16), biweekly floor announced if weekly can't hold |
 
 ---
 

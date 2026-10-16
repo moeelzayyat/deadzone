@@ -3,7 +3,7 @@
 Owner rule (2026-10-16): log project progress here so context survives session compression. Read this after `CLAUDE.md` and `docs/CURRENT_PHASE.md`. The log below is append-only; only "Current state" is rewritten.
 
 ## Current state
-- **Substage:** P0.6 — Budget and cadence (⬜ not started). Next thread opens it. Needs the owner's own planned stage dates to pass.
+- **Substage:** P0.6 — Budget and cadence (🟨 in progress). Proposed schedule, Beta art budget line and weekly rhythm drafted; waiting on the owner to write the stage start dates.
 - **Waiting on the owner:** D-012 (paid random items, O-1 Robux cosmetic chests / O-2 premium bonus currency). Must be decided before B1.
 - **Last passed:** P0.5 Compliance basics (auto-approved 2026-10-16, D-010). Before that, P0.4 Content bible v0 (owner-approved, D-011 renames).
 - **Repo:** https://github.com/moeelzayyat/deadzone, branch `main`.
@@ -63,3 +63,11 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 ### 2026-10-16 · P0.5 — Compliance basics · ✅ passed (auto-approved, D-010)
 - Handoff record appended, CP line in DECISION_LOG (D-012 left open for the owner), CURRENT_PHASE advanced to P0.6.
 - Commit `fa73fd4`.
+
+### 2026-10-16 · P0.6 — Budget and cadence · 🟨 in progress
+- 13:39 UTC: started. Read CLAUDE.md, progress.md, CURRENT_PHASE, ROADMAP (P0.6 row, master tracker, §16 LO cadence, §17 risks), architecture §22 (sourcing plan step 3) and §24, DECISION_LOG D-005…D-012 + CP lines.
+- Plan: draft a suggested start date per stage (Mondays, upper/mid estimates), a Beta art budget line (§22 step 3) and a weekly rhythm, mark them "proposed" in ROADMAP, and ask the owner in the P0.6 thread. Dates, budget and rhythm are owner decisions; P0.6 cannot pass until the owner writes the dates. D-012 is not touched here.
+- 13:47 UTC: wrote `docs/ROADMAP.md` §1.1 and a "Planned start" column in the master tracker, every date marked "(proposed)". Schedule: Monday starts, A1/A2 upper estimates, A3.5 = 1 prep + 3 live; P0 → L2 = 39.5 weeks (L2 2027-07-19). A3.5 overlaps year-end holidays; offered a 2-week shift.
+- Beta art budget line (§22 step 3): scope 6 classes, 8 fodder, 6 bosses, 136 animations, 6 zone kits, hub, ~60 icons, 11 cards/portraits. Lean ~$4.4k / Standard ~$14.3k / Premium ~$38.8k with 15% contingency. Lean anchored on a few Roblox freelancer price lists (DevForum, Fiverr, Carrd, mostly undated); Standard/Premium are assumptions. Cap left blank for the owner. Proposed: no spend before A3.5 GO; contracts at B3 start.
+- Weekly rhythm drafted: Mon–Fri Studio sessions with MCP connected, unattended checkpoints, Friday review with batched owner decisions, gates in writing.
+- CURRENT_PHASE set to 🟦 checkpoint pending. Asking the owner in the P0.6 thread for: stage start dates (accept or edit), budget cap, rhythm.

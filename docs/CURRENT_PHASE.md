@@ -2,9 +2,9 @@
 
 **Stage:** P0 — Pre-production
 **Substage:** P0.6 — Budget and cadence
-**Status:** ⬜ Not started
+**Status:** 🟦 Checkpoint pending: proposed dates, Beta art budget and rhythm are in `ROADMAP.md` §1.1; waiting on the owner to write the start date for each stage
 **Last checkpoint passed:** P0.5 (2026-10-16)
-**Started:** —
+**Started:** 2026-10-16
 
 ## Deliverables (from ROADMAP.md)
 - `ROADMAP.md` dates filled in; contractor budget line for Beta art; weekly working rhythm agreed.
