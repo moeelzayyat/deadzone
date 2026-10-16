@@ -362,7 +362,7 @@ RESTORE POINT: backups/A1.3_passed_20261016-1527/ — 6 × .rbxm (D-010), childr
   ServerScriptService 36523 B 314d124c · ServerStorage 54253 B 658e5fb2 · StarterPlayerScripts 1961 B 1fc169ff (these 5 equal
   A1.2, bytes copied) · Workspace 7831 B eaa94454 (exported fresh; children SpawnLocation, Baseplate; A1.2 had 12147 B and
   A1.1 7831 B 68417a0c: same length as A1.1, different hash; not investigated).
-MIRROR COMMIT: <pending> "A1.3: ..." — tools/mirror_export.luau, tools/mirror_write.py, docs/MIRROR.md, mirror/sourcemap.json
+MIRROR COMMIT: 09202d7 "A1.3: Git mirror export procedure ..." — tools/mirror_export.luau, tools/mirror_write.py, docs/MIRROR.md, mirror/sourcemap.json
   (now sorted by name; equivalent to A1.2's ignoring child order). No mirror source changed (Studio code unchanged since A1.2).
 OWNER APPROVAL: Auto-approved under standing owner approval of 2026-10-16 (D-010). Method recorded as D-015.
 NOTES / DEBT:
