@@ -143,7 +143,7 @@ RESTORE POINT: backups/P0.4_passed_20261016-1321/ — 6 × .rbxm (rule: D-010). 
   substage): a fresh SerializationService export of each service matched the P0.3 files on length, FNV-1a and two
   extra hashes (Adler-32, reverse FNV-1a), so the verified P0.3 bytes were copied and re-checked locally (all 6 OK).
   Lighting 3445 B 866e3754 · ServerStorage 48583 B e36937fc · Workspace 7831 B 68417a0c · RS/SSS/SPS 577 B each.
-MIRROR COMMIT: see the commit line below (mirror/src empty: 0 scripts to export)
+MIRROR COMMIT: d4d4a46 "P0.4: content bible v0, D-011 renames (Engineer→Mechanic, Essence→Serum); advance to P0.5" (mirror/src empty: 0 scripts to export)
 OWNER APPROVAL: yes, 2026-10-16 ("I do approve, rename approved for both", project chat 13:19 UTC)
 NOTES / DEBT:
   - D-011: Engineer → Mechanic, Essence → Serum (schema v1 field renamed before any profile exists; no migration).

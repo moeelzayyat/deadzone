@@ -48,3 +48,4 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 
 ### 2026-10-16 · P0.4 — Content bible v0 · ✅ passed (owner-approved)
 - Handoff record appended, CP line in DECISION_LOG, CURRENT_PHASE advanced to P0.5.
+- Commit `d4d4a46`.
