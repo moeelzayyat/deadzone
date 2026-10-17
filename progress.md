@@ -344,5 +344,6 @@ Owner rule (2026-10-16): log project progress here so context survives session c
 - Docs: D-026 + CP line, HANDOFF record, SYSTEM_REGISTRY (client enemy rendering → Tested), API_CONTRACTS (client rendering table, no new remote), PERFORMANCE_BUDGETS A2.4 column, ART_SOURCES (enemy rig placeholders), ART_BIBLE camera line, MIRROR.md (MANIFEST_ONLY), ROADMAP footer, CURRENT_PHASE → A2.5.
 
 ### 2026-10-17 · A2.4 — Client rendering · ✅ passed (auto-approved, D-022)
+- Commit `2e88835` (build, mirror, docs, pass), then a commit recording the hash.
 - Steps 1–7 met with real results (TestRunner 456/0, analysis 0, play test 0 errors, FPS measured with Studio in front, backup verified, mirror committed, handoff appended). CP line written, CURRENT_PHASE advanced to A2.5.
 - Decided under owner delegation (revisable, D-026): interpolation clock and slew, low-end emulation definition (Level01 + CPU ×6), camera kept at 55° / 44 after the eye check.

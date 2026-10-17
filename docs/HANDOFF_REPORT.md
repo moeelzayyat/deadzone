@@ -1020,7 +1020,7 @@ RESTORE POINT: backups/A2.4_passed_20261017-1326/ — ReplicatedStorage 85731 B 
   ServerScriptService 79407 B b158c080 and Lighting 3445 B 866e3754 serialized identical to A2.3 (copied). All 7 verified
   by length + FNV-1a against Studio. Workspace differs from A2.3 in content at the same size; A2.4 did not edit Workspace
   (the place was reopened in between).
-MIRROR COMMIT: (this commit) "A2.4: client rendering ..." — written from the hash-installed drafts with the new MANIFEST_ONLY
+MIRROR COMMIT: 2e88835 "A2.4: client rendering ..." — written from the hash-installed drafts with the new MANIFEST_ONLY
   export (D-026 point 10); mirror_write: ALL OK, 113 files verified against Studio.
 OWNER APPROVAL: auto-approved under standing owner approval of 2026-10-16 (D-022); CP line in DECISION_LOG.
 NOTES / DEBT:
