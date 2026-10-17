@@ -24,6 +24,7 @@ The export refuses to run (lists `errors`, writes nothing) when the one-to-one m
 1. **Export (Studio).** Paste the whole of `tools/mirror_export.luau` into `execute_luau` (datamodel **Edit**). It is read-only. The result is one JSON string with a manifest (path, class, byte length, FNV-1a of every script and StringValue), the tree, the DataModel-wide script count, and as many source texts as fit in ~95K characters.
    - Results under ~64K are inlined into the conversation, so the export pads them to 66K; the harness then saves the result to a `tool-results` file. Use that file path in step 2.
    - If the result has `"next": N`, run the export again with `START = N` and keep every result file. Results over 100K are truncated by `execute_luau`; the 95K limit avoids that.
+   - `MANIFEST_ONLY = true` (A2.4) sends no sources: use it when the mirror files were written from drafts that were installed in Studio by hash. The writer still checks every file by length + FNV-1a against the manifest, so a file that differs from Studio shows as `BAD` and the run fails.
    - Vendor code (`*/Vendor/*`) is not re-sent by default: it is pinned (ART_SOURCES.md) and the existing mirror copy is hash-checked against Studio. If a vendor module changed on purpose, run with `INCLUDE_VENDOR = true`.
 2. **Write (local).** From the repo root: `python tools/mirror_write.py <result file> [<more result files>]`. It
    - writes every source that was sent;

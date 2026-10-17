@@ -10,6 +10,7 @@
 
 local START = 1 -- first source to send (1-based, in manifest order); set to the previous result's `next`
 local INCLUDE_VENDOR = false -- true also sends */Vendor/* sources (only needed when a vendor module changed)
+local MANIFEST_ONLY = false -- true sends no sources: the mirror files already hold them (hash-checked drafts, A2.4); every file is still verified
 local LIMIT = 95000 -- execute_luau truncates results near 100K characters
 local PAD_TO = 66000 -- smaller results are padded so the harness saves them to a file instead of inlining them
 
@@ -145,7 +146,7 @@ local out: { [string]: any } = {
 local used = #HttpService:JSONEncode(out) + 64
 local sources: { [string]: string } = {}
 local sent = 0
-local i = START
+local i = if MANIFEST_ONLY then #entries + 1 else START
 while i <= #entries do
 	local e = entries[i]
 	if e.vendor and not INCLUDE_VENDOR then

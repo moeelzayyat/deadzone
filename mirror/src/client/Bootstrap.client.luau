@@ -1,13 +1,14 @@
 --!strict
 -- Client Bootstrap (architecture §4.3).
--- Checks the client layout (A1.1), then requires every module in Controllers, then every module in UI (name order inside
+-- Checks the client layout (A1.1), then requires every module in Controllers, then Render, then UI (name order inside
 -- each folder), and runs its start() in its own thread, so a module waiting for the server's phase 8 remotes blocks no
--- one (A1.8; UI since A2.1). Each is a ModuleScript returning { Name = <module name>, start = function }.
+-- one (A1.8; UI since A2.1, Render since A2.4). Each is a ModuleScript returning { Name = <module name>, start = function };
+-- library modules live in subfolders (Render/Lib), which are not started.
 
 local Players = game:GetService("Players")
 
 local FOLDERS = { "Controllers", "UI", "Effects", "Render" }
-local STARTED = { "Controllers", "UI" } -- started in this order
+local STARTED = { "Controllers", "Render", "UI" } -- started in this order
 
 local startedAt = os.clock()
 local clientRoot = script.Parent :: Instance

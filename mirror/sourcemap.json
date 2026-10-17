@@ -758,6 +758,13 @@
          ]
         },
         {
+         "name": "RenderFixture",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/fixtures/RenderFixture.luau"
+         ]
+        },
+        {
          "name": "profiles",
          "className": "Folder"
         }
@@ -824,6 +831,13 @@
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/DamageCalculator.spec.luau"
+         ]
+        },
+        {
+         "name": "EnemyPose.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/EnemyPose.spec.luau"
          ]
         },
         {
@@ -904,6 +918,13 @@
          ]
         },
         {
+         "name": "RigPool.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/RigPool.spec.luau"
+         ]
+        },
+        {
          "name": "Settings.spec",
          "className": "ModuleScript",
          "filePaths": [
@@ -915,6 +936,13 @@
          "className": "ModuleScript",
          "filePaths": [
           "mirror/src/tests/unit/SimulationClock.spec.luau"
+         ]
+        },
+        {
+         "name": "SnapshotInterpolation.spec",
+         "className": "ModuleScript",
+         "filePaths": [
+          "mirror/src/tests/unit/SnapshotInterpolation.spec.luau"
          ]
         },
         {
@@ -1031,7 +1059,50 @@
         },
         {
          "name": "Render",
-         "className": "Folder"
+         "className": "Folder",
+         "children": [
+          {
+           "name": "EnemyRenderer",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/client/Render/EnemyRenderer.luau"
+           ]
+          },
+          {
+           "name": "Lib",
+           "className": "Folder",
+           "children": [
+            {
+             "name": "EnemyPose",
+             "className": "ModuleScript",
+             "filePaths": [
+              "mirror/src/client/Render/Lib/EnemyPose.luau"
+             ]
+            },
+            {
+             "name": "EnemyRigs",
+             "className": "ModuleScript",
+             "filePaths": [
+              "mirror/src/client/Render/Lib/EnemyRigs.luau"
+             ]
+            },
+            {
+             "name": "RigPool",
+             "className": "ModuleScript",
+             "filePaths": [
+              "mirror/src/client/Render/Lib/RigPool.luau"
+             ]
+            },
+            {
+             "name": "SnapshotInterpolation",
+             "className": "ModuleScript",
+             "filePaths": [
+              "mirror/src/client/Render/Lib/SnapshotInterpolation.luau"
+             ]
+            }
+           ]
+          }
+         ]
         },
         {
          "name": "UI",
@@ -1042,6 +1113,13 @@
            "className": "ModuleScript",
            "filePaths": [
             "mirror/src/client/UI/InputTestPanel.luau"
+           ]
+          },
+          {
+           "name": "PerfOverlay",
+           "className": "ModuleScript",
+           "filePaths": [
+            "mirror/src/client/UI/PerfOverlay.luau"
            ]
           }
          ]

@@ -165,6 +165,16 @@ Server and client (prediction uses the same code). Rows in `StatRegistry` mirror
 | `PositionRing.new(capacity)` → `:push(t, pos)` · `:latest()` (`Shared/Util/PositionRing`) | EnemyService (`History`), A2.5 rewind | 16 samples per enemy; times never decrease. |
 | `EnemyController.enemies()` · `.count()` · `.stats()` (`Client/Controllers/EnemyController`) | A2.4 renderers, auto-aim | The latest record per enemy from EnemySnapshot (late packets ignored by `t`, forgotten after 1 s unseen); feeds `InputController.setTargetProvider` with the nearest enemy within 60 studs. |
 
+### Client enemy rendering (A2.4, D-026)
+Presentation only: nothing here sends to the server. No new remote.
+| Call | Caller | Contract |
+|---|---|---|
+| `EnemyRenderer.start()` · `.stats() → Stats` (`Client/Render/EnemyRenderer`) | client Bootstrap (Render folder, after Controllers); PerfOverlay | Binds `DZ_Enemies` at RenderPriority.Camera + 2; draws every enemy of `EnemyController.enemies()` with one `workspace:BulkMoveTo`. `Workspace.ClientEnemies` holds the rigs and publishes the Stats as attributes every 0.5 s; attribute `EmulateCpuScale` (≥ 1) stretches the render work for the low-end emulation. |
+| `SnapshotInterpolation.newClock()` · `observe(clock, t, arrival)` · `delay(clock)` · `renderTime(clock, now)` · `newTrack()` · `push(track, t, pos, yaw, state) → boolean` · `sample(track, t, out?) → Result?` (`Render/Lib/SnapshotInterpolation`) | EnemyRenderer (projectiles later) | Renders 2 intervals behind (0.1–0.3 s); render time slews ±10 % and snaps beyond 0.25 s; extrapolates ≤ 0.1 s then holds; > 12 studs between samples is a cut. Late samples return false. |
+| `EnemyPose.newPose()` · `compute(style, input, out) → Pose` (`Render/Lib/EnemyPose`) | EnemyRenderer | Pure; states Spawn, Pursue, Telegraph, Attack, Recover, Stagger, Dying and the renderer's Despawn. Never NaN. |
+| `EnemyRigs.spec(defId) → Spec` · `has(defId)` · `build(spec) → (Model, { BasePart })` · `compose(spec, root, pose, out, at) → next` (`Render/Lib/EnemyRigs`) | EnemyRenderer, RigPool builder | 8 parts per rig, anchored, no collide/query/touch; unknown definitions get the Default rig. |
+| `RigPool.new(container, build)` → `:acquire(defId)` · `:release(rig)` · `:prewarm(defId, n)` · `:trim(now, keep, idle)` · `:parked(defId)` · `:stats()` (`Render/Lib/RigPool`) | EnemyRenderer | Released rigs stay parented, parked at y = 10,000; trim destroys only rigs beyond `keep` idle for `idle` seconds. |
+
 ### Clock and platform wrappers (A1.8, D-021)
 | Call | Caller | Contract |
 |---|---|---|

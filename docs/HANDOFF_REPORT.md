@@ -979,3 +979,56 @@ NOTES / DEBT:
   - The walk script and the probe runs went through execute_luau (Client/Server); HeartbeatProbe is in the place.
 NEXT: A2.4
 ```
+
+```text
+CHECKPOINT: A2.4 Client rendering  ·  ✅ passed (auto-approved, D-022)
+DATE: 2026-10-17 (started 2026-10-17 02:45 UTC; FPS measured 13:15–13:25 UTC after the owner brought Studio forward)
+TESTRUNNER: 456 passed / 0 failed. Edit: "456 passed, 0 failed (28 files, 2185.41 ms)"; server suite in the final play
+  session: "456 passed, 0 failed (28 files, 1904.53 ms)". New specs: SnapshotInterpolation 13, EnemyPose (+ rigs) 10,
+  RigPool 4; Platform.spec updated (PerfOverlay client flag). Mutation controls (source patched, suite run, restored and
+  hash-checked): render delay ½ interval → 3 failed; no slew limit → 2; teleports slide → 1; yaw long arc → 1; pool never
+  reuses → 2; trim ignores idle → 1; Walker arms down → 2; rigs hit by rays → 1; no spawn rise → 1; no lunge → 1.
+SCRIPT ANALYSIS: 0 warnings (tools/analyze.sh: files 111, diagnostics 0; Vendor excluded). check_contracts MATCH (4 rows
+  through A2.4, no new remote), check_stats MATCH (25).
+PLAY TEST: TestArena with the EnemyTest horde (90: 60 Walkers, 30 Runners). Boot clean: client "modules (8): AimController,
+  CameraController, EnemyController, FlagsController, InputController, EnemyRenderer, InputTestPanel, PerfOverlay",
+  "[Render] EnemyRenderer on", "[Perf] overlay on". Windows of 36–60 s standing and walking (injected WASD laps, 474–514
+  studs) on PC and under low-end emulation, plus a ×12 stress window; screenshots assets/screens/A2.4_horde_pc.jpg and
+  A2.4_horde_lowend_emulation.jpg. Console: Client 0 errors, 5 × known UIBlox "FoundationProvider not found" warnings;
+  Server 0 errors, 0 warnings.
+  Found and fixed during the substage: the stream test caught per-frame skips up to 1.5× from clock-offset corrections
+  (→ render-time slew ±10 %); the pool prewarm refilled itself (138 rigs for 90 enemies → 90); the overlay text overflowed
+  its background; per-frame allocations (render work 2.68 → 1.43 ms standing at the throttled rate).
+  Session gotchas: Studio throttles a background window to 15 FPS (owner brought it forward); Humanoid:MoveTo is cancelled
+  by Roblox's ControlModule once the viewport renders, so the first "walking" windows did not move and were discarded.
+NUMBERS (Client, Studio PC, 90 enemies, D-026):
+  PC standing 60 s: 3,601 frames, 60.0 FPS, frame p50 16.63 / p99 18.18 / max 19.81 ms, 0 frames > 33.3 ms; render work
+    avg 1.675 / p99 2.535 / max 3.043 ms; 324,720 enemy-frames interpolated, 0 extrapolated, 0 held, 0 snaps, 0 jumps.
+  PC walking 36 s, 514 studs: 2,161 frames, 60.0 FPS, p99 18.11 / max 18.58 ms; work avg 0.945 / p99 1.827 ms; 0
+    extrapolated, 6 held, 1 snap (server stuck teleport drawn as a cut), 0 jumps, max drawn speed 1.59 × MoveSpeed.
+  Low-end emulation (QualityLevel Level01 + renderer CPU ×6) standing 45 s: 2,701 frames, 60.0 FPS, p99 18.58 / max 23.18
+    ms, 0 > 33.3 ms, 0 jumps. Walking 36 s, 474 studs: 2,161 frames, 60.0 FPS, p99 18.26 / max 25.20 ms, 0 jumps.
+  Stress (Level01 + CPU ×12) 30 s: 39.6 FPS, p50 24.70 / p99 34.67 / max 48.93 ms, 19 of 1,189 frames > 33.3 ms.
+  Interpolation delay 167 ms at 12 Hz. Pooling (90 Walker rigs, best of 5): acquire + release 0.250 ms (2.8 µs/rig) vs
+    build + parent + destroy 9.946 ms (110.5 µs/rig). Profile per frame at 90 enemies: BulkMoveTo of 720 moving parts
+    0.591 ms (FireAllEvents 1.156, per-part CFrame 0.976), pose ×90 0.079, compose ×90 0.219, WorldToViewportPoint ×90
+    0.072, sample ×90 0.035. Stream test (12 Hz, 0–30 ms jitter, 1 packet in 25 lost, 60 FPS): worst frame 1.100 × the
+    true distance, 5 extrapolated frames for 10 losses, 0 holds. Server during play: EnemyService step avg 0.614 ms, p99
+    2.273 ms. Scripts: DataModel 112 · under roots 112 · mirror 112 · StringValues 1/1 · MATCH.
+RESTORE POINT: backups/A2.4_passed_20261017-1326/ — ReplicatedStorage 85731 B 04d57ae4 · ServerStorage 154808 B 1266e1a0 ·
+  StarterPlayerScripts 41610 B 9c3b67c5 · StarterPlayer 8461 B 699a9fde · Workspace 7831 B 68417a0c exported;
+  ServerScriptService 79407 B b158c080 and Lighting 3445 B 866e3754 serialized identical to A2.3 (copied). All 7 verified
+  by length + FNV-1a against Studio. Workspace differs from A2.3 in content at the same size; A2.4 did not edit Workspace
+  (the place was reopened in between).
+MIRROR COMMIT: (this commit) "A2.4: client rendering ..." — written from the hash-installed drafts with the new MANIFEST_ONLY
+  export (D-026 point 10); mirror_write: ALL OK, 113 files verified against Studio.
+OWNER APPROVAL: auto-approved under standing owner approval of 2026-10-16 (D-022); CP line in DECISION_LOG.
+NOTES / DEBT:
+  - Low-end emulation covers graphics quality and our own CPU cost only; a real low-end Android FPS capture is still owed
+    (A3.5 / B4.4, device to be named then).
+  - BulkMoveTo is the largest per-frame cost (0.59 ms for 720 parts); if A3 hordes grow past 90, fewer parts per rig or
+    a lower update rate for distant rigs are the next levers.
+  - Dying uses a generic topple-and-sink; A2.5 should switch it to the ART_BIBLE rule 7 dissolve with the kill pop.
+  - PerfOverlay and InputTestPanel flags go off before A3.5.
+NEXT: A2.5
+```

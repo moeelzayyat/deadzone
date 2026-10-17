@@ -16,6 +16,7 @@ Generated meshes/textures and primitives are recorded here too, marked `Placehol
 |---|---|---|---|---|---|
 | TestArena greybox (72 parts, Evacuation Streets palette) | Model | none (primitives) | generated in Studio, owner-made, A2.2 | `ServerStorage/Arenas/TestArena` | Placeholder |
 | Survivor (10 parts welded to an R15 root, teal) | Model | none (primitives) | generated in Studio, owner-made, A2.2 | `StarterPlayer/StarterCharacter` | Placeholder |
+| Walker / Runner / Default enemy rigs (8 parts each, procedural animation) | Model | none (primitives, built at runtime) | generated in Studio, owner-made, A2.4 | `Client/Render/Lib/EnemyRigs` | Placeholder |
 
 ## Reference art (not shipped)
 | Asset | File | Origin | License | Status |
