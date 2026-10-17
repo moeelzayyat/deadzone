@@ -446,6 +446,7 @@ return function(t: TestRunner.Spec)
 						end,
 					},
 					gateway = { fire = function() end, onExposed = function() end, handle = function() end },
+					combat = { bindArena = function() return function() end end },
 					players = false,
 				})
 				service:Init()
@@ -467,6 +468,7 @@ return function(t: TestRunner.Spec)
 						handlers[name] = handler
 					end,
 				},
+				combat = { bindArena = function() return function() end end },
 				players = false,
 			})
 			service:Init()
@@ -508,6 +510,102 @@ return function(t: TestRunner.Spec)
 			expect(function()
 				PositionRing.new(0)
 			end).toThrow("capacity must be a whole number")
+		end)
+
+		it("at(time) interpolates between the samples around it and holds at both ends (A2.5 rewind)", function()
+			local ring = PositionRing.new(4)
+			expect(ring:at(1)).toBeNil()
+			ring:push(1, Vector3.new(0, 0, 0))
+			ring:push(2, Vector3.new(10, 0, 0))
+			ring:push(3, Vector3.new(10, 0, 20))
+			expect(ring:at(1.5)).toBe(Vector3.new(5, 0, 0))
+			expect(ring:at(2.25)).toBe(Vector3.new(10, 0, 5))
+			expect(ring:at(2)).toBe(Vector3.new(10, 0, 0))
+			expect(ring:at(0)).toBe(Vector3.new(0, 0, 0)) -- before the ring's reach: the oldest sample
+			expect(ring:at(9)).toBe(Vector3.new(10, 0, 20)) -- after the newest: the newest
+			for i = 4, 9 do
+				ring:push(i, Vector3.new(i, 0, 0)) -- wraps: samples 6..9 remain
+			end
+			expect(ring:at(7.5)).toBe(Vector3.new(7.5, 0, 0))
+			expect(ring:at(1)).toBe(Vector3.new(6, 0, 0))
+		end)
+	end)
+
+	describe("damage, Stagger and Dying (A2.5)", function()
+		local function pursuing(): (Setup, any)
+			local s = setup()
+			local e = s.sim:spawn("Walker", 4, 4)
+			s.sim:setTargets({ { UserId = 1, Position = s.grid:center(10, 10) } })
+			run(s, EnemyService.SPAWN_TIME + 0.1)
+			return s, e
+		end
+
+		it("takes health, never below 0, and staggers a pursuing enemy for STAGGER_TIME", function()
+			local s, e = pursuing()
+			expect(e.State).toBe("Pursue")
+			local applied, killed = s.sim:damage(e.Id, 6, 1)
+			expect(applied).toBe(6)
+			expect(killed).toBe(false)
+			expect(e.Health).toBe(14)
+			expect(e.State).toBe("Stagger")
+			local at = e.Pos
+			run(s, EnemyService.STAGGER_TIME - 0.05)
+			expect((e.Pos - at).Magnitude).toBeLessThan(0.001) -- it stands still
+			run(s, 0.1)
+			expect(e.State).toBe("Pursue")
+			expect(s.sim.Stats.Damage).toBe(6)
+		end)
+
+		it("does not interrupt a Telegraph or an Attack", function()
+			local s = setup()
+			local e = s.sim:spawn("Walker", 5, 5)
+			s.sim:setTargets({ { UserId = 1, Position = e.Pos + Vector3.new(3, 0, 0) } })
+			for _ = 1, 200 do
+				run(s, 1 / 60)
+				if e.State == "Telegraph" then
+					break
+				end
+			end
+			expect(e.State).toBe("Telegraph")
+			s.sim:damage(e.Id, 1, 1)
+			expect(e.State).toBe("Telegraph")
+			expect(e.Health).toBe(19)
+		end)
+
+		it("kills at 0 health: Dying, EnemyKilled with the killer and world position, removed after DYING_TIME", function()
+			local s, e = pursuing()
+			local id = e.Id
+			local applied, killed = s.sim:damage(id, 50, 9)
+			expect(applied).toBe(20)
+			expect(killed).toBe(true)
+			expect(e.Health).toBe(0)
+			expect(e.State).toBe("Dying")
+			local event = s.events[#s.events]
+			expect(event.name).toBe("EnemyKilled")
+			expect(event.payload.KillerUserId).toBe(9)
+			expect(event.payload.EnemyId).toBe(id)
+			expect(event.payload.DefId).toBe("Walker")
+			expect(event.payload.MatchId).toBe("M1")
+			expect(event.payload.ProtocolLevel).toBe(0)
+			expect(event.payload.Position).toBe(e.Pos)
+			-- a dying enemy takes no more damage and does not move
+			expect((s.sim:damage(id, 5, 9))).toBe(0)
+			run(s, EnemyService.DYING_TIME - 0.1)
+			expect(s.sim.ById[id]).toBe(e)
+			run(s, 0.2)
+			expect(s.sim.ById[id]).toBeNil()
+			expect(s.sim:count()).toBe(0)
+			expect(s.sim.Stats.Kills).toBe(1)
+			expect(s.sim.Stats.Removed).toBe(1)
+		end)
+
+		it("ignores unknown ids and amounts that are not positive", function()
+			local s, e = pursuing()
+			expect((s.sim:damage(999, 5, 1))).toBe(0)
+			expect((s.sim:damage(e.Id, 0, 1))).toBe(0)
+			expect((s.sim:damage(e.Id, -3, 1))).toBe(0)
+			expect((s.sim:damage(e.Id, 0 / 0, 1))).toBe(0)
+			expect(e.Health).toBe(20)
 		end)
 	end)
 end

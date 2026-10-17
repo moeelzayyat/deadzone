@@ -18,6 +18,10 @@
 -- (counts are cumulative; probes take differences). Setting its attribute `EmulateCpuScale` to k > 1 makes each frame's
 -- render work take k times as long (busy wait), the CPU part of the low-end emulation (D-026).
 --   EnemyRenderer.stats() → Stats
+--   EnemyRenderer.renderTime() → number?     SimulationClock time of the enemies drawn in the last frame (A2.5: the T of
+--                                            RequestAttack and ClientHeartbeat); nil before the first snapshot
+--   EnemyRenderer.drawn() → { Drawn }        every enemy drawn in the last frame that can still be hit (not Dying), at its
+--                                            drawn feet position, as Util/HitScan candidates (A2.5 predicted hits)
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -47,6 +51,7 @@ local UP = Vector3.new(0, 3, 0)
 local TAU = 2 * math.pi
 local DEFAULT_MOVE_SPEED = 8
 local DEFAULT_TELEGRAPH = 0.4
+local DEFAULT_RADIUS = 1.5
 
 type Entry = {
 	Id: number,
@@ -55,6 +60,8 @@ type Entry = {
 	Track: SnapshotInterpolation.Track,
 	MoveSpeed: number,
 	TelegraphTime: number,
+	Radius: number,
+	State: string,
 	Seed: number,
 	PushedT: number,
 	Seen: number,
@@ -66,6 +73,8 @@ type Entry = {
 	Root: CFrame?,
 	GoneAt: number,
 }
+
+export type Drawn = { Id: number, DefId: string, Position: Vector3, Radius: number }
 
 export type Stats = {
 	Frames: number,
@@ -99,7 +108,7 @@ local pose = EnemyPose.newPose()
 local poseInput: EnemyPose.Input = { State = "Pursue", Age = 0, TelegraphTime = 0.4, Phase = 0, Speed = 0, Time = 0 }
 local parts: { BasePart } = {}
 local frames: { CFrame } = {}
-local defCache: { [string]: { MoveSpeed: number, TelegraphTime: number } } = {}
+local defCache: { [string]: { MoveSpeed: number, TelegraphTime: number, Radius: number } } = {}
 local prewarmQueue: { string } = {}
 local prewarmed: { [string]: number } = {}
 local activeRigs = 0
@@ -115,6 +124,7 @@ local workCount = 0
 local frame = 0
 local nextSeed = 0
 local lastT, lastArrival = -math.huge, -math.huge
+local lastRenderT: number? = nil
 local lastTrim, lastStats = 0, 0
 local cpuScale = 1
 local counts = { Interpolated = 0, Extrapolated = 0, Held = 0, Snaps = 0, Jumps = 0, MaxSpeedRatio = 0, MaxSpeedRatioAll = 0 }
@@ -122,12 +132,12 @@ local started = false
 
 local EnemyRenderer = { Name = "EnemyRenderer" }
 
-local function definition(defId: string): { MoveSpeed: number, TelegraphTime: number }
+local function definition(defId: string): { MoveSpeed: number, TelegraphTime: number, Radius: number }
 	local cached = defCache[defId]
 	if cached then
 		return cached
 	end
-	local moveSpeed, telegraph = DEFAULT_MOVE_SPEED, DEFAULT_TELEGRAPH
+	local moveSpeed, telegraph, radius = DEFAULT_MOVE_SPEED, DEFAULT_TELEGRAPH, DEFAULT_RADIUS
 	local folder = ReplicatedStorage.Shared.Definitions:FindFirstChild("Enemies")
 	local module = folder and folder:FindFirstChild(defId)
 	if module and module:IsA("ModuleScript") then
@@ -140,9 +150,12 @@ local function definition(defId: string): { MoveSpeed: number, TelegraphTime: nu
 			if typeof(d.Attack) == "table" and typeof(d.Attack.TelegraphTime) == "number" then
 				telegraph = d.Attack.TelegraphTime
 			end
+			if typeof(d.Radius) == "number" and d.Radius > 0 then
+				radius = d.Radius
+			end
 		end
 	end
-	local fresh = { MoveSpeed = moveSpeed, TelegraphTime = telegraph }
+	local fresh = { MoveSpeed = moveSpeed, TelegraphTime = telegraph, Radius = radius }
 	defCache[defId] = fresh
 	return fresh
 end
@@ -157,6 +170,8 @@ local function newEntry(view: EnemyController.View): Entry
 		Track = SnapshotInterpolation.newTrack(),
 		MoveSpeed = def.MoveSpeed,
 		TelegraphTime = def.TelegraphTime,
+		Radius = def.Radius,
+		State = view.State,
 		Seed = nextSeed,
 		PushedT = -math.huge,
 		Seen = 0,
@@ -181,6 +196,21 @@ local function percentile(sorted: { number }, p: number): number
 		return 0
 	end
 	return sorted[math.clamp(math.ceil(n * p), 1, n)]
+end
+
+function EnemyRenderer.renderTime(): number?
+	return lastRenderT
+end
+
+function EnemyRenderer.drawn(): { Drawn }
+	local out: { Drawn } = {}
+	for id, e in entries do
+		local root = e.Root
+		if root and e.State ~= "Dying" then
+			table.insert(out, { Id = id, DefId = e.DefId, Position = root.Position, Radius = e.Radius })
+		end
+	end
+	return out
 end
 
 function EnemyRenderer.stats(): Stats
@@ -283,6 +313,9 @@ local function step(dt: number)
 	local viewport = if camera then camera.ViewportSize else Vector2.zero
 	local mx, my = viewport.X * SCREEN_MARGIN, viewport.Y * SCREEN_MARGIN
 	local renderT = SnapshotInterpolation.renderTime(clock, now)
+	if clock.Ready then
+		lastRenderT = renderT
+	end
 	table.clear(parts)
 	table.clear(frames)
 	local at = 1
@@ -374,6 +407,7 @@ local function step(dt: number)
 		local root = CFrame.new(position) * CFrame.Angles(0, sampled.Yaw, 0)
 		at = draw(e, rig :: RigPool.Rig, root, at)
 		e.Root = root
+		e.State = sampled.State
 		e.Last = position
 		e.LastAt = now
 	end

@@ -60,8 +60,8 @@ return function(t: TestRunner.Spec)
 			expect((request.Payload(nil))).toBe(false)
 		end)
 
-		it("holds four contracts; FlagsUpdate: server→client, reliable, since A1.8, no client rate", function()
-			expect(#Contracts.list).toBe(4)
+		it("holds seven contracts; FlagsUpdate: server→client, reliable, since A1.8, no client rate", function()
+			expect(#Contracts.list).toBe(7)
 			local flags = Contracts.get("FlagsUpdate")
 			expect(flags.Channel).toBe("R")
 			expect(flags.Direction).toBe("S2C")
@@ -69,6 +69,51 @@ return function(t: TestRunner.Spec)
 			expect(flags.Rate).toBeNil()
 			expect(table.isfrozen(flags)).toBe(true)
 			expect(table.isfrozen(Contracts.list)).toBe(true)
+		end)
+
+		it("RequestAttack (A2.5): reliable client→server at 12/20; Seq, T, Origin, unit Dir, optional TargetHint only", function()
+			local c = Contracts.get("RequestAttack")
+			expect(c.Channel).toBe("R")
+			expect(c.Direction).toBe("C2S")
+			expect(c.Since).toBe("A2.5")
+			expect(c.Rate).toEqual({ Sustained = 12, Burst = 20 })
+			local ok = { Seq = 1, T = 12.5, Origin = Vector3.new(1, 3, 1600), Dir = Vector3.new(0, 0, -1) }
+			expect((c.Payload(ok))).toBe(true)
+			local hinted = table.clone(ok)
+			hinted.TargetHint = 7
+			expect((c.Payload(hinted))).toBe(true)
+			local function bad(field: string, value: any): boolean
+				local v = table.clone(ok) :: any
+				v[field] = value
+				return (c.Payload(v))
+			end
+			expect(bad("Dir", Vector3.new(0, 0, -2))).toBe(false) -- not normalized
+			expect(bad("Dir", Vector3.new(0 / 0, 0, 1))).toBe(false)
+			expect(bad("T", 0 / 0)).toBe(false)
+			expect(bad("T", -1)).toBe(false)
+			expect(bad("Seq", 1.5)).toBe(false)
+			expect(bad("Seq", "1")).toBe(false)
+			expect(bad("Origin", Vector3.new(1e7, 0, 0))).toBe(false)
+			expect(bad("TargetHint", 0)).toBe(false)
+			expect(bad("Damage", 50)).toBe(false) -- the client never sends damage
+			expect(bad("Hits", { 1, 2 })).toBe(false)
+		end)
+
+		it("ClientHeartbeat (A2.5): unreliable client→server at 20/30, a 12-byte buffer; CombatResult: unreliable server push", function()
+			local hb = Contracts.get("ClientHeartbeat")
+			expect(hb.Channel).toBe("U")
+			expect(hb.Direction).toBe("C2S")
+			expect(hb.Rate).toEqual({ Sustained = 20, Burst = 30 })
+			expect((hb.Payload(buffer.create(12)))).toBe(true)
+			expect((hb.Payload(buffer.create(13)))).toBe(false)
+			expect((hb.Payload({ Seq = 1 }))).toBe(false)
+			local result = Contracts.get("CombatResult")
+			expect(result.Channel).toBe("U")
+			expect(result.Direction).toBe("S2C")
+			expect(result.Since).toBe("A2.5")
+			expect(result.Rate).toBeNil()
+			expect((result.Payload(buffer.create(900)))).toBe(true)
+			expect((result.Payload(buffer.create(901)))).toBe(false)
 		end)
 
 		it("FlagsUpdate accepts a flag map and rejects junk", function()
@@ -87,8 +132,8 @@ return function(t: TestRunner.Spec)
 
 		it("get throws for a remote with no contract", function()
 			expect(function()
-				Contracts.get("RequestAttack")
-			end).toThrow("no contract named RequestAttack")
+				Contracts.get("RequestDodge") -- A2.6
+			end).toThrow("no contract named RequestDodge")
 		end)
 	end)
 

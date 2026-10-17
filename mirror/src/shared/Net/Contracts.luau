@@ -9,6 +9,8 @@
 --             every client fire on them is dropped and counted (§7.2 "every remote has a per-player token bucket").
 --   Payload   Net/Guard check run before any logic (inbound), and on outgoing pushes in strict mode.
 
+local ClientHeartbeat = require(script.Parent.ClientHeartbeat)
+local CombatResult = require(script.Parent.CombatResult)
 local EnemySnapshot = require(script.Parent.EnemySnapshot)
 local Guard = require(script.Parent.Guard)
 local Settings = require(script.Parent.Parent.Config.Settings)
@@ -29,6 +31,10 @@ export type Contract = {
 local MAX_FLAGS = 64
 local MAX_FLAG_NAME = 64
 local MAX_FLAG_STRING = 200
+local MAX_SEQ = 4294967295 -- request sequence numbers are u32
+local MAX_TIME = 1e7 -- s; a SimulationClock time hint (T) beyond this is junk
+local MAX_POSITION = 1e6 -- studs from the world origin
+local MAX_ENEMY_ID = 65535 -- enemy ids are u16 (EnemySnapshot)
 
 local function finite(x: number): boolean
 	return x == x and x ~= math.huge and x ~= -math.huge
@@ -111,6 +117,21 @@ local flagValue = Guard.oneOf(Guard.boolean(), Guard.number(), Guard.string(MAX_
 
 Contracts.list = Contracts.build({
 	{
+		Name = "ClientHeartbeat",
+		Channel = "U",
+		Direction = "C2S",
+		Payload = Guard.buffer(ClientHeartbeat.SIZE),
+		Rate = { Sustained = 20, Burst = 30 },
+		Since = "A2.5",
+	},
+	{
+		Name = "CombatResult",
+		Channel = "U",
+		Direction = "S2C",
+		Payload = Guard.buffer(CombatResult.MAX_BYTES),
+		Since = "A2.5",
+	},
+	{
 		Name = "EnemySnapshot",
 		Channel = "U",
 		Direction = "S2C",
@@ -131,6 +152,20 @@ Contracts.list = Contracts.build({
 		Payload = Guard.record({ Key = Guard.literal(table.unpack(Settings.KEYS)), Value = Guard.boolean() }),
 		Rate = { Sustained = 5, Burst = 10 },
 		Since = "A2.1",
+	},
+	{
+		Name = "RequestAttack",
+		Channel = "R",
+		Direction = "C2S",
+		Payload = Guard.record({
+			Seq = Guard.integer(0, MAX_SEQ),
+			T = Guard.number({ min = 0, max = MAX_TIME }),
+			Origin = Guard.vector3({ maxMagnitude = MAX_POSITION }),
+			Dir = Guard.vector3({ unit = true }),
+			TargetHint = Guard.optional(Guard.integer(1, MAX_ENEMY_ID)),
+		}),
+		Rate = { Sustained = 12, Burst = 20 },
+		Since = "A2.5",
 	},
 	{
 		Name = "RequestEnemySnapshots",

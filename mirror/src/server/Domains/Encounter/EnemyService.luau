@@ -6,6 +6,7 @@
 --   sim:spawn(defId, x, z) / sim:spawnAtEdge(defId, edgeId?) → Enemy    -- publishes EnemySpawned
 --   sim:setTargets({ { UserId, Position } })                            -- the players in this arena, arena-local
 --   sim:step() → updated                                                -- once per server step, after clock:Tick(dt)
+--   sim:damage(id, amount, userId) → (applied, killed)                  -- Combat's hits (A2.5); publishes EnemyKilled
 --   sim:snapshot() → { buffer }                                         -- Net/EnemySnapshot packets, world positions
 --   EnemyService:broadcast(sim, players) → (packets, bytes)             -- EnemySnapshot to those players only
 --   EnemyService:isSubscribed(userId) → boolean                         -- the client asked for snapshots
@@ -19,15 +20,20 @@
 -- enemy's own movement, not its distance to the target: a target running away faster than a Walker is not a stuck
 -- Walker.
 -- States (§8.2): Spawn (SPAWN_TIME) → Pursue → Telegraph (TelegraphTime) → Attack (ATTACK_TIME) → Recover → Pursue.
--- Attacks call the sim's onAttack hook; resolving damage on players arrives with A2.6. Stagger and Dying arrive with
--- damage (A2.5).
+-- Attacks call the sim's onAttack hook; resolving damage on players arrives with A2.6.
+-- Damage (A2.5, from Combat/CombatService): a hit takes health (never below 0). A hit on a Pursuing, Recovering or
+-- Staggered enemy staggers it for STAGGER_TIME (it stands still, then pursues); Telegraph and Attack are not
+-- interrupted, so a shooting player still has to dodge. At 0 health the enemy is Dying for DYING_TIME (it cannot be hit
+-- and does not move), EnemyKilled goes out, and then the row is removed.
 -- Snapshots go only to clients that subscribed: Client/EnemyController sends RequestEnemySnapshots once its handler is
 -- connected, because an UnreliableRemoteEvent that reaches a client with no handler is discarded with a console error.
 -- Start registers that handler whatever the flags (every client→server contract needs one before phase 8).
 -- Test harness (flags EnemyTest + TestArena, A2.3): Start fills TestArena slot 0 with EnemyTestCount enemies (two Walkers
--- per Runner), chases the players standing in it, pushes snapshots at EnemySnapshotHz to the subscribed ones, prints a profile
--- line every PROFILE_EVERY s and serves ServerStorage/EnemyTestProbe (BindableFunction, "reset" | "read") for the
--- Tests/perf/HeartbeatProbe measurement. Run sessions (A3) take this over; the flag goes off then.
+-- per Runner) and keeps it full (killed enemies come back from a spawn edge, at most REFILL_PER_STEP per step; A2.5),
+-- binds the arena to Combat/CombatService for the players standing in it (A2.5), chases those players, pushes
+-- snapshots at EnemySnapshotHz to the subscribed ones, prints a profile line every PROFILE_EVERY s and serves
+-- ServerStorage/EnemyTestProbe (BindableFunction, "reset" | "read") for the Tests/perf/HeartbeatProbe measurement. Run
+-- sessions (A3) take this over; the flag goes off then.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -92,6 +98,9 @@ export type SimStats = {
 	Teleports: number,
 	Spawned: number,
 	Attacks: number,
+	Damage: number,
+	Kills: number,
+	Removed: number,
 }
 
 export type SimOptions = {
@@ -122,11 +131,14 @@ export type Sim = {
 	setTargets: (self: Sim, targets: { Target }) -> (),
 	step: (self: Sim) -> number,
 	snapshot: (self: Sim) -> { buffer },
+	damage: (self: Sim, id: number, amount: number, userId: number) -> (number, boolean),
 }
 
 local SPAWN_TIME = 0.6 -- s in Spawn before pursuing (the client plays a rise, A2.4)
 local ATTACK_TIME = 0.2 -- s in Attack (the hit frame; player damage resolves in A2.6)
 local MIN_RECOVER = 0.2 -- s
+local STAGGER_TIME = 0.2 -- s a hit stops a pursuing enemy (A2.5)
+local DYING_TIME = 0.6 -- s between the killing hit and the row's removal (the client plays the death)
 local PLAYER_RADIUS = 1 -- studs; an enemy stops this far plus its own radius from a target's centre
 local TIER_NEAR = 40 -- studs to the nearest target
 local TIER_MID = 80
@@ -152,6 +164,7 @@ local PROBE_NAME = "EnemyTestProbe"
 local SUBSCRIBE_REMOTE = "RequestEnemySnapshots"
 local PROFILE_EVERY = 30 -- s between harness profile lines
 local PROFILE_SAMPLES = 36000 -- step durations kept for the probe (10 min at 60 Hz)
+local REFILL_PER_STEP = 2 -- harness: enemies brought back per step after kills
 
 local function definitionsFromRegistry(): { [string]: EnemyDef }
 	local out: { [string]: EnemyDef } = {}
@@ -192,6 +205,7 @@ local function newSim(options: SimOptions): Sim
 	local lastNow = -1
 	local frame = 0
 	local seq = 0
+	local dead: { number } = {}
 
 	local sim = {} :: Sim
 	sim.MatchId = matchId
@@ -201,7 +215,17 @@ local function newSim(options: SimOptions): Sim
 	sim.Enemies = {}
 	sim.ById = {}
 	sim.Targets = {}
-	sim.Stats = { Steps = 0, Updates = 0, FieldBuilds = 0, Teleports = 0, Spawned = 0, Attacks = 0 }
+	sim.Stats = {
+		Steps = 0,
+		Updates = 0,
+		FieldBuilds = 0,
+		Teleports = 0,
+		Spawned = 0,
+		Attacks = 0,
+		Damage = 0,
+		Kills = 0,
+		Removed = 0,
+	}
 
 	local function allocateId(): number
 		for _ = 1, MAX_ID do
@@ -351,9 +375,13 @@ local function newSim(options: SimOptions): Sim
 				local attack = e.Def.Attack
 				setState(e, "Recover", math.max(MIN_RECOVER, attack.Cooldown - attack.TelegraphTime - ATTACK_TIME), e.StateUntil)
 			end
-		elseif state == "Recover" then
+		elseif state == "Recover" or state == "Stagger" then
 			if now >= e.StateUntil then
 				setState(e, "Pursue", 0, e.StateUntil)
+			end
+		elseif state == "Dying" then
+			if now >= e.StateUntil then
+				table.insert(dead, e.Id)
 			end
 		end
 
@@ -514,7 +542,47 @@ local function newSim(options: SimOptions): Sim
 			end
 		end
 		self.Stats.Updates += updated
+		if #dead > 0 then
+			for _, id in dead do
+				self:remove(id)
+				self.Stats.Removed += 1
+			end
+			table.clear(dead)
+		end
 		return updated
+	end
+
+	function sim.damage(self: Sim, id: number, amount: number, userId: number): (number, boolean)
+		local e = self.ById[id]
+		if e == nil or e.State == "Dying" or not (amount > 0) then
+			return 0, false
+		end
+		local now = clock:Now()
+		local applied = math.min(amount, e.Health)
+		e.Health -= applied
+		self.Stats.Damage += applied
+		if e.Health <= 0 then
+			e.Health = 0
+			setState(e, "Dying", DYING_TIME, now)
+			e.Vel = Vector3.zero
+			self.Stats.Kills += 1
+			if publish then
+				publish("EnemyKilled", {
+					MatchId = matchId,
+					KillerUserId = userId,
+					EnemyId = id,
+					DefId = e.DefId,
+					ProtocolLevel = 0, -- no Outbreak Protocol before A3.5
+					Position = origin:PointToWorldSpace(e.Pos),
+				})
+			end
+			return applied, true
+		end
+		if e.State == "Pursue" or e.State == "Recover" or e.State == "Stagger" then
+			setState(e, "Stagger", STAGGER_TIME, now)
+			e.Vel = Vector3.zero
+		end
+		return applied, false
 	end
 
 	function sim.snapshot(self: Sim): { buffer }
@@ -545,6 +613,9 @@ export type Pusher = {
 	onExposed: (self: any, callback: () -> ()) -> (),
 	handle: (self: any, name: string, handler: (player: Player, payload: any) -> any) -> (),
 }
+export type CombatBinder = {
+	bindArena: (self: any, arena: any, contains: (player: any) -> boolean) -> () -> (),
+}
 export type ArenaReader = {
 	grid: (self: any, arenaId: string) -> ArenaGrid.Grid,
 	slotOrigin: (self: any, slot: number) -> CFrame,
@@ -555,6 +626,7 @@ export type Options = {
 	config: ConfigReader?,
 	arenas: ArenaReader?,
 	gateway: Pusher?,
+	combat: CombatBinder?,
 	harness: boolean?, -- run the test horde when the flags are on (default true)
 	players: boolean?, -- connect Players.PlayerRemoving to forget subscriptions (default true)
 }
@@ -577,6 +649,8 @@ export type EnemyService = {
 	STUCK_WINDOW: number,
 	UNSEEN_DISTANCE: number,
 	DIRECT_RANGE: number,
+	STAGGER_TIME: number,
+	DYING_TIME: number,
 }
 
 local function percentile(sorted: { number }, p: number): number
@@ -602,6 +676,7 @@ local function new(options: Options?): EnemyService
 	local injectedConfig = options and options.config
 	local injectedArenas = options and options.arenas
 	local injectedGateway = options and options.gateway
+	local injectedCombat = options and options.combat
 	local harness = not (options and options.harness == false)
 	local connectPlayers = not (options and options.players == false)
 	local subscribed: { [number]: boolean } = {}
@@ -609,6 +684,7 @@ local function new(options: Options?): EnemyService
 	local flags: FlagReader? = nil
 	local config: ConfigReader? = nil
 	local arenas: ArenaReader? = nil
+	local combat: CombatBinder? = nil
 	local testSim: Sim? = nil
 
 	local service = {} :: EnemyService
@@ -622,6 +698,8 @@ local function new(options: Options?): EnemyService
 	service.STUCK_WINDOW = STUCK_WINDOW
 	service.UNSEEN_DISTANCE = UNSEEN_DISTANCE
 	service.DIRECT_RANGE = DIRECT_RANGE
+	service.STAGGER_TIME = STAGGER_TIME
+	service.DYING_TIME = DYING_TIME
 
 	local function gateway(): Pusher
 		return injectedGateway or (Gateway.server() :: any)
@@ -664,6 +742,7 @@ local function new(options: Options?): EnemyService
 		flags = injectedFlags or (Lifecycle.get("FeatureFlagService") :: any)
 		config = injectedConfig or (Lifecycle.get("RemoteConfigService") :: any)
 		arenas = injectedArenas or (Lifecycle.get("ArenaService") :: any)
+		combat = injectedCombat or (Lifecycle.get("CombatService") :: any)
 	end
 
 	local function startHarness(self: EnemyService, arenaReader: ArenaReader, configReader: ConfigReader)
@@ -691,6 +770,33 @@ local function new(options: Options?): EnemyService
 				runners += 1
 			end
 			sim:spawnAtEdge(defId, grid.edges[(i - 1) % #grid.edges + 1].Id)
+		end
+		local wantRunners = runners
+		local present: { [number]: boolean } = {}
+		if combat then
+			combat:bindArena(sim, function(player: any): boolean
+				return present[player.UserId] == true
+			end)
+		end
+		-- Brings killed enemies back (two Walkers per Runner), a few per step.
+		local function refill()
+			local missing = count - sim:count()
+			if missing <= 0 then
+				return
+			end
+			local runnersNow = 0
+			for _, e in sim.Enemies do
+				if e.DefId == "Runner" then
+					runnersNow += 1
+				end
+			end
+			for _ = 1, math.min(missing, REFILL_PER_STEP) do
+				local defId = if runnersNow < wantRunners then "Runner" else "Walker"
+				if defId == "Runner" then
+					runnersNow += 1
+				end
+				sim:spawnAtEdge(defId)
+			end
 		end
 		print(
 			`[Enemy] test horde: {count} enemies ({count - runners} Walkers, {runners} Runners) in {TEST_ARENA} slot 0, snapshots at {hz} Hz`
@@ -746,6 +852,7 @@ local function new(options: Options?): EnemyService
 			clock:Tick(dt)
 			local targets: { Target } = {}
 			local inArena: { Player } = {}
+			table.clear(present)
 			for _, player in Players:GetPlayers() do
 				local character = player.Character
 				local root = character and character:FindFirstChild("HumanoidRootPart")
@@ -753,6 +860,7 @@ local function new(options: Options?): EnemyService
 					local position = origin:PointToObjectSpace(root.Position)
 					if math.abs(position.Y) < 50 and grid:cellAt(position) ~= nil then
 						table.insert(targets, { UserId = player.UserId, Position = Vector3.new(position.X, 0, position.Z) })
+						present[player.UserId] = true
 						if subscribed[player.UserId] then
 							table.insert(inArena, player)
 						end
@@ -761,6 +869,7 @@ local function new(options: Options?): EnemyService
 			end
 			sim:setTargets(targets)
 			sim:step()
+			refill()
 			accumulator += dt
 			if exposed and accumulator >= interval then
 				accumulator = math.min(accumulator - interval, interval)
